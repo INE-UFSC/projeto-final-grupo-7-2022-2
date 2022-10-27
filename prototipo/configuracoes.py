@@ -1,7 +1,8 @@
 class Configuracoes:
-
     def __init__(self):
-        raise NotImplementedError("Configurações não implementadas")
+        self.__altura_tela = 540
+        self.__largura_tela = 720
+        self.__volume_musica = 0
 
     @property
     def largura_tela(self):
