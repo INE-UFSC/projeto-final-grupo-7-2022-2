@@ -31,4 +31,4 @@ class Jogo:
             jogador.atualizar()
 
             pg.display.update()
-            self.timer.tick()
+            self.timer.tick(self.__configuracoes.fps)

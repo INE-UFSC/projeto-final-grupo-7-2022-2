@@ -3,6 +3,11 @@ class Configuracoes:
         self.__altura_tela = 540
         self.__largura_tela = 720
         self.__volume_musica = 0
+        self.__fps = 60
+
+    @property
+    def fps(self):
+        return self.__fps
 
     @property
     def largura_tela(self):
