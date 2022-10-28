@@ -32,7 +32,7 @@ class Fase:
                 
                 #Faz as substituições dos sprites com base no arquivo csv
                 if col == 'PLAYER':
-                    self.__jogador = Jogador((x, y), [self.visible_sprites], self.obstacle_sprites)
+                    self.__jogador = Jogador((x, y), [self.visible_sprites], self.obstacle_sprites, self.display_surface)
                 elif col == 'parede':
                     Tile((x, y), [self.visible_sprites, self.obstacle_sprites])
                     
