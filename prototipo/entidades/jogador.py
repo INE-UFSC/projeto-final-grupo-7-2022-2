@@ -4,11 +4,13 @@ import pygame as pg
 
 class Jogador(pg.sprite.Sprite):
     def __init__(self, x, y) -> None:
+        self.__escala = 64
         self.__x = x
         self.__y = y
+        self.__image = pg.image.load('sprites/player.png').convert_alpha()
+        self.__rect = self.__image.get_rect(topleft = (self.__x, self.__y))
+        self.__image = pg.transform.scale(self.__image, (self.__escala, self.__escala))
         self.__velocidade = 2
-        self.__dimension_x = 50
-        self.__dimension_y = 70
         self.__direction = pg.math.Vector2()
     
     def input(self):
@@ -41,4 +43,4 @@ class Jogador(pg.sprite.Sprite):
         self.mover()
 
     def renderizar(self, screen):
-        pg.draw.rect(screen,(255, 0, 0), (self.__x, self.__y, self.__dimension_x, self.__dimension_y))
+        screen.blit(self.__image, (self.__x,self.__y))
