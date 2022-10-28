@@ -2,12 +2,12 @@ import pygame as pg, sys
 from configuracoes import Configuracoes
 from maquina_de_estado import MaquinaDeEstado
 from entidades.jogador import Jogador
+from fase import Fase
 
 
 class Jogo:
     def __init__(self):
         self.__configuracoes = Configuracoes()
-        # self.__maquina_de_estado = MaquinaDeEstado()
 
         # Inicia o pygame e define a janela
         pg.init()
@@ -15,20 +15,16 @@ class Jogo:
         pg.display.set_caption('SUPER LAMPARINA ARFANTE') 
 
         self.timer = pg.time.Clock()
+        self.fase = Fase()
 
     def run(self):
-        jogador = Jogador((self.__configuracoes.largura_tela/2)-25,(self.__configuracoes.altura_tela/2)-35)
-        run = True
-        while run:
-            self.screen.fill('black')
+        while True:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    run = False
                     pg.quit()
                     sys.exit()
             
-            jogador.renderizar(self.screen)
-            jogador.atualizar()
-
+            self.screen.fill('black')
+            self.fase.run(self.screen)
             pg.display.update()
             self.timer.tick(self.__configuracoes.fps)

@@ -1,4 +1,4 @@
 from jogo import Jogo
 
-
-Jogo().run()
+jogo = Jogo()
+jogo.run()
