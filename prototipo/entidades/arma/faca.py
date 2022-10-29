@@ -1,4 +1,3 @@
-from tkinter import CENTER, image_names
 import pygame as pg
 #from .arma import Arma
 
@@ -17,7 +16,7 @@ class Faca(pg.sprite.Sprite):
     def usar_arma(self, screen, x, y, escala, sentido):
         print(sentido)
         if sentido == "Direita":
-            screen.blit(self.__image, (x + int(escala*0.95),y + int(escala*0.75)))    
+            screen.blit(self.__image, (x + int(escala*0.95),y + int(escala*0.75)))
         elif sentido == "Esquerda":
             imagem_esquerda = pg.transform.flip(self.__image, True, False)
             screen.blit(imagem_esquerda, (x - self.__escala[0] ,y + int(escala*0.75)))

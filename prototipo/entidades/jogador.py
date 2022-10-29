@@ -1,6 +1,7 @@
 import pygame as pg
 from configuracoes import Configuracoes
 from entidades.arma.faca import Faca
+from entidades.arma.pistola import Pistola
 #from .entidade import Entidade
 
 
@@ -23,6 +24,7 @@ class Jogador(pg.sprite.Sprite):
         self.__sentido = "Baixo"
         self.__janela = screen
         self.__faca = Faca()
+        self.__pistola = Pistola()
     
     def input(self):
         keys = pg.key.get_pressed()
@@ -48,7 +50,7 @@ class Jogador(pg.sprite.Sprite):
             #self.__sentido = "Baixo"
 
         if keys[pg.K_SPACE]:
-            self.__faca.usar_arma(self.__janela, self.rect.x, self.rect.y, self.__escala, self.__sentido)
+            self.__pistola.usar_arma(self.__janela, self.rect.x, self.rect.y, self.__escala, self.__sentido)
 
     def move(self):
         if self.__direction.magnitude() != 0:
