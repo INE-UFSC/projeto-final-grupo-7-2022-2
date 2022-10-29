@@ -10,6 +10,7 @@ class Tile(pg.sprite.Sprite):
 
         self.image = pg.transform.scale(pg.image.load('sprites/bloco_parede.png').convert_alpha(), (self.__configuracoes.tamanhotile, self.__configuracoes.tamanhotile))
         self.rect = self.image.get_rect(topleft = pos)
+        self.hitbox = self.rect.inflate(0, -4)
 
 #Lê o arquivo .csv e organiza as informações em uma lista
 class Mapa(pg.sprite.Sprite):
