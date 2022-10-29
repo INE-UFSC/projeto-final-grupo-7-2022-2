@@ -20,6 +20,6 @@ class Pistola():
         
         self.__tiros.append(Bala(x, y))
         for tiro in self.__tiros:
-            tiro.atirar(sentido, screen,x, y, escala)
-            if not tiro.ativa(x, y):
+            tiro.atirar(sentido, screen, escala)
+            if not tiro.ativo:
                 self.__tiros.remove(tiro)
