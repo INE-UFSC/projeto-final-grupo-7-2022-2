@@ -30,6 +30,33 @@ class Spritesheet():
     def sprite_list(self) -> list:
         return self.__data["frames"].keys()
 
+    @property
+    def animation_frames(self) -> dict:
+        animation_dict = {
+            'right': [],
+            'left': [],
+            'right_idle': [],
+            'left_idle': []
+        } 
+        spr_list = self.sprite_list
+
+        for spr in spr_list:
+            spr = spr
+            spr_info = spr.split("_") # Separa o nome da sprite em um estado e um passo e coloca eles numa lista.
+            state = spr_info[0] # Indica o estado da animação (idle, run, hit, etc)
+            step = self.get_sprite(spr) # Indica o passo da animação (0, 1, 2, ...)
+
+            if 'run' in state:
+                animation_dict['right'].append(step)
+                animation_dict['left'].append(pg.transform.flip(step, True, False))
+            elif 'idle' in state:
+                animation_dict['right_idle'].append(step)
+                animation_dict['left_idle'].append(pg.transform.flip(step, True, False))
+
+        print(animation_dict)
+        return animation_dict
+
+
 '''
 For better reference of what is happening above, check the spritesheet's JSON file structure.
 '''

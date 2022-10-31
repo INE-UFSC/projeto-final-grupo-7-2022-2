@@ -1,4 +1,3 @@
-from curses import KEY_DOWN
 import pygame as pg
 from configuracoes import Configuracoes
 from entidades.arma.faca import Faca
@@ -15,47 +14,97 @@ class Jogador(pg.sprite.Sprite):
         self.__pos = pos
         self.__escala = 1.5 * self.__configuracoes.tamanhotile
 
-        # self.image = pg.transform.scale(pg.image.load('sprites/player.png').convert_alpha(), (self.__escala, self.__escala))
-        self.__spritesheet = Spritesheet("player", 2)
-        self.image = self.__spritesheet.get_sprite("idle_0.png")
+        # Imagem e hitbox
+        self.__spritesheet = Spritesheet("skelet", 1)
+        self.image = self.image('idle_0.png')
+        self.animations = self.__spritesheet.animation_frames
         self.rect = self.image.get_rect(topleft = pos)
-        self.hitbox = self.rect.inflate(0, -4)
+        self.hitbox = self.rect.inflate(0, -8)
 
         self.__obstacle_sprites = obstacle_sprites
         
+        # Movimento
         self.__velocidade = 5
         self.__direction = pg.math.Vector2()
+        self.__attacking = False
+        self.__attack_cd = 400
+        self.__attack_time = None
 
-        self.__sentido = "Baixo"
-        self.__janela = screen
+        # Animação
+        self.__status = 'right'
+        self.__frame_index = 0
+        self.__animation_speed = 0.15
+
+        # Armas
         self.__faca = Faca()
         self.__pistola = Pistola()
+
+        self.__janela = screen
     
+    def image(self, sprite: str):
+        return self.__spritesheet.get_sprite(sprite)
+
     def input(self):
         keys = pg.key.get_pressed()
 
+        # Entradas de movimentação:
         if keys[pg.K_UP]:
             self.__direction.y = -1
-            self.__sentido = "Cima"
+
         elif keys[pg.K_DOWN]:
             self.__direction.y = 1
-            self.__sentido = "Baixo"
+
         else:
             self.__direction.y = 0
-            self.__sentido = "Baixo"
 
         if keys[pg.K_RIGHT]:
             self.__direction.x = 1
-            self.__sentido = "Direita"
+            self.__status = "right"
         elif keys[pg.K_LEFT]:
             self.__direction.x = -1
-            self.__sentido = "Esquerda"
+            self.__status = "left"
         else:
             self.__direction.x = 0
-            #self.__sentido = "Baixo"
 
-        if keys[pg.K_SPACE]:
-            self.__pistola.usar_arma(self.__janela, self.rect.x, self.rect.y, self.__escala, self.__sentido)
+        # Entradas de ataque:
+        if keys[pg.K_SPACE] and not self.__attacking:
+            self.__attacking = True
+            self.__attack_time = pg.time.get_ticks()
+            self.__pistola.usar_arma(self.__janela, self.rect.x, self.rect.y, self.__escala, self.__status)
+
+    def status(self):
+        if self.__direction.x == 0 and self.__direction.y == 0:
+            if not 'idle' in self.__status and not 'attack' in self.__status:
+                self.__status += '_idle'
+        else:
+            if 'idle' in self.__status:
+                self.__status = self.__status.replace('_idle','')
+            
+        
+        # if self.__direction.y > 0:
+        #     if not 'down' in self.__status:
+        #         self.__status += '_down'
+        # elif self.__direction.y < 0:
+        #     if not 'up' in self.__status:
+        #         self.__status += '_up'
+        # else:
+        #     if 'up' in self.__status:
+        #         self.__status.replace('_up','')
+        #     elif 'down' in self.__status:
+        #         self.__status.replace('_down','')
+
+
+        if self.__attacking:
+            self.__direction.x = 0
+            self.__direction.y = 0
+            if not 'attack' in self.__status:
+                if 'idle' in self.__status:
+                    self.__status = self.__status.replace('_idle','_attack')
+                else:
+                    self.__status += '_attack'
+        else:
+            if 'attack' in self.__status:
+                self.__status = self.__status.replace('_attack', '')
 
     def move(self):
         if self.__direction.magnitude() != 0:
@@ -85,28 +134,28 @@ class Jogador(pg.sprite.Sprite):
                     if self.__direction.y < 0:
                         self.hitbox.top = sprite.hitbox.bottom
 
-    @property
-    def animations(self):
-        # Dicionary containg animation states and their steps.
-        animation_dict = {} 
-        spr_list = self.__sprite_sheet.sprite_list
-        
-        for spr in spr_list:
-            spr = spr
-            spr_info = spr.split("_") # Separa o nome da sprite em um estado e um passo e coloca eles numa lista.
-            state = spr_info[0] # Indica o estado da animação (idle, run, hit, etc)
-            step = spr_info[1][1:] # Indica o passo da animação (0, 1, 2, ...)
+    def cooldowns(self):
+        tempo_atual = pg.time.get_ticks()
+        # Controla o tempo de recarga dos ataques:
+        if self.__attacking:
+            if tempo_atual - self.__attack_time >= self.__attack_cd:
+                self.__attacking = False
 
-            if state not in animation_dict:
-                animation_dict.update(state, list(step))
-            else:
-                animation_dict[state] += step
+    def animate(self):
+        animation = self.animations[self.__status]
 
-            return animation_dict
+        self.__frame_index += self.__animation_speed
+        if self.__frame_index >= len(animation):
+            self.__frame_index = 0
+
+        self.image = animation[int(self.__frame_index)]
 
     def update(self):
         self.input()
         self.move()
+        self.cooldowns()
+        self.status()
+        self.animate()
 
     def renderizar(self):
         self.__janela.blit(self.image, self.__pos)
