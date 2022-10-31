@@ -53,7 +53,6 @@ class Spritesheet():
                 animation_dict['right_idle'].append(step)
                 animation_dict['left_idle'].append(pg.transform.flip(step, True, False))
 
-        print(animation_dict)
         return animation_dict
 
 

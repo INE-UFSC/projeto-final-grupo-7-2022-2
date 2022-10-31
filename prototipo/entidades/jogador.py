@@ -26,6 +26,15 @@ class Jogador(pg.sprite.Sprite):
         # Movimento
         self.__velocidade = 5
         self.__direction = pg.math.Vector2()
+
+        # Dash
+        self.__dashing = False
+        self.__dash_duration = 100
+        self.__active_dash = True
+        self.__dash_cd = 1000
+        self.__dash_time = None
+
+        # Ataque
         self.__attacking = False
         self.__attack_cd = 400
         self.__attack_time = None
@@ -72,6 +81,13 @@ class Jogador(pg.sprite.Sprite):
             self.__attack_time = pg.time.get_ticks()
             self.__pistola.usar_arma(self.__janela, self.rect.x, self.rect.y, self.__escala, self.__status)
 
+        # Entrada do dash:
+        if keys[pg.K_s] and not self.__dashing:
+            self.__dashing = True
+            self.__dash_time = pg.time.get_ticks()
+            self.dash()
+            self.__active_dash = False
+
     def status(self):
         if self.__direction.x == 0 and self.__direction.y == 0:
             if not 'idle' in self.__status and not 'attack' in self.__status:
@@ -80,19 +96,6 @@ class Jogador(pg.sprite.Sprite):
             if 'idle' in self.__status:
                 self.__status = self.__status.replace('_idle','')
             
-        
-        # if self.__direction.y > 0:
-        #     if not 'down' in self.__status:
-        #         self.__status += '_down'
-        # elif self.__direction.y < 0:
-        #     if not 'up' in self.__status:
-        #         self.__status += '_up'
-        # else:
-        #     if 'up' in self.__status:
-        #         self.__status.replace('_up','')
-        #     elif 'down' in self.__status:
-        #         self.__status.replace('_down','')
-
 
         if self.__attacking:
             self.__direction.x = 0
@@ -117,6 +120,11 @@ class Jogador(pg.sprite.Sprite):
         self.collision('vertical')
         self.rect.center = self.hitbox.center
 
+    def dash(self):
+        if self.__dashing and self.__active_dash:
+            self.__velocidade = 20
+        
+
     def collision(self, direction):
         if direction == 'horizontal':
             for sprite in self.__obstacle_sprites:
@@ -135,11 +143,19 @@ class Jogador(pg.sprite.Sprite):
                         self.hitbox.top = sprite.hitbox.bottom
 
     def cooldowns(self):
-        tempo_atual = pg.time.get_ticks()
+        current_time = pg.time.get_ticks()
         # Controla o tempo de recarga dos ataques:
         if self.__attacking:
-            if tempo_atual - self.__attack_time >= self.__attack_cd:
+            if current_time - self.__attack_time >= self.__attack_cd:
                 self.__attacking = False
+
+        if self.__dashing:
+            if current_time - self.__dash_time >= self.__dash_duration:
+                self.__dashing = False
+                self.__velocidade = 5
+        if not self.__active_dash:
+            if current_time - self.__dash_time >= self.__dash_cd:
+                self.__active_dash = True
 
     def animate(self):
         animation = self.animations[self.__status]
@@ -156,6 +172,7 @@ class Jogador(pg.sprite.Sprite):
         self.cooldowns()
         self.status()
         self.animate()
+
 
     def renderizar(self):
         self.__janela.blit(self.image, self.__pos)
