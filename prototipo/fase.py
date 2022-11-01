@@ -1,7 +1,9 @@
-from mapa import Mapa, Tile
-from entidades.jogador import Jogador
 import pygame as pg
 from configuracoes import Configuracoes
+from mapa import Mapa, Tile
+from entidades.jogador import Jogador
+from entidades.ladino import Ladino
+
 
 class Fase:
     def __init__(self):
@@ -9,11 +11,15 @@ class Fase:
 
         self.__configuracoes = Configuracoes()
 
-        #Cria dois grupos de sprites, as que estão visíveis e as que são obstáculos
+        # Dois grupos de sprites, as que estão visíveis e as que são obstáculos
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pg.sprite.Group()
 
-        #Cria o mapa baseado em um arquivo csv
+        # Outros grupos de sprites para facilitar a verificacao de colisao e dano
+        self.attack_sprites = pg.sprite.Group()
+        self.attackable_sprites = pg.sprite.Group()
+
+        # Cria o mapa baseado em um arquivo csv
         self.__mapa = Mapa('mapa_teste16x16.csv')
         self.create_map()
 
@@ -35,13 +41,32 @@ class Fase:
                     self.__jogador = Jogador((x, y), [self.visible_sprites], self.obstacle_sprites, self.display_surface)
                 elif col == 'parede':
                     Tile((x, y), [self.visible_sprites, self.obstacle_sprites])
-                    
+                elif col == 'ladino':
+                    Ladino((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, self.dano_no_jogador)
+
+    def player_attack_logic(self):
+        if self.attack_sprites:
+            for attack_sprite in self.attack_sprites:
+                collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
+                if collision_sprites:
+                    for target_sprite in collision_sprites:
+                        if target_sprite.sprite_type == 'inimigo':
+                            target_sprite.get_damage(self.player, attack_sprite.sprite_type)
+
+    def dano_no_jogador(self, quantidade):
+        if self.__jogador.vulneravel:
+            self.__jogador.vida -= quantidade
+            self.__jogador.vulneravel = False
+            # Define o momento que o jogador sofreu o dano
+            self.__jogador.hurt_time = pg.time.get_ticks()
 
     def run(self, screen):
         #Desenha as sprites visíveis e atualiza elas
         self.visible_sprites.custom_draw(self.__jogador)
         self.visible_sprites.update()
-
+        self.visible_sprites.enemy_update(self.__jogador)
+        self.player_attack_logic()
+        
 
 class YSortCameraGroup(pg.sprite.Group):
     def __init__(self):
@@ -62,3 +87,8 @@ class YSortCameraGroup(pg.sprite.Group):
         for sprite in sorted(self.sprites(), key = lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.__offset
             self.__display_surface.blit(sprite.image, offset_pos)
+
+    def enemy_update(self, jogador):
+        sprites_inimigos = [sprite for sprite in self.sprites() if hasattr(sprite, 'tipo_sprite') and sprite.tipo_sprite == 'inimigo']
+        for inimigo in sprites_inimigos:
+            inimigo.enemy_update(jogador)
