@@ -3,6 +3,7 @@ from configuracoes import Configuracoes
 from mapa import Mapa, Tile
 from entidades.jogador import Jogador
 from entidades.ladino import Ladino
+from bomba_de_asma import BombaDeAsma
 
 
 class Fase:
@@ -29,7 +30,6 @@ class Fase:
     def terminar_fase(self):
         raise NotImplementedError("Terminar fase não implementado")
 
-
     def create_map(self):
         for row_index, row in enumerate(self.__mapa.mapa):
             for col_index, col in enumerate(row):
@@ -43,6 +43,8 @@ class Fase:
                     Tile((x, y), [self.visible_sprites, self.obstacle_sprites])
                 elif col == 'ladino':
                     Ladino((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, self.dano_no_jogador)
+                elif col == 'bomba_asma':
+                    BombaDeAsma((x, y), [self.visible_sprites])
 
     def player_attack_logic(self):
         if self.attack_sprites:
@@ -62,6 +64,7 @@ class Fase:
 
     def run(self, screen):
         #Desenha as sprites visíveis e atualiza elas
+        self.visible_sprites.bomba_asma_update(self.__jogador)
         self.visible_sprites.custom_draw(self.__jogador)
         self.visible_sprites.update()
         self.visible_sprites.enemy_update(self.__jogador)
@@ -92,3 +95,8 @@ class YSortCameraGroup(pg.sprite.Group):
         sprites_inimigos = [sprite for sprite in self.sprites() if hasattr(sprite, 'tipo_sprite') and sprite.tipo_sprite == 'inimigo']
         for inimigo in sprites_inimigos:
             inimigo.enemy_update(jogador)
+
+    def bomba_asma_update(self, jogador):
+        for sprite in self.sprites():
+            if hasattr(sprite, 'tipo_sprite') and sprite.tipo_sprite == 'bomba_asma':
+                sprite.bomba_asma_update(jogador)
