@@ -61,13 +61,27 @@ class Fase:
             self.__jogador.vulneravel = False
             # Define o momento que o jogador sofreu o dano
             self.__jogador.hurt_time = pg.time.get_ticks()
+    
+    # Desenha a quantidade de vidas restantes do player
+    def barra_de_vida(self):
+        escala = self.__configuracoes.tamanhotile * 1.5
+        coracao_imagem = pg.image.load('sprites/coracao.png').convert_alpha()
+        coracao_imagem = pg.transform.scale(coracao_imagem, (escala, escala))
+        for c in range(self.__jogador.vida):
+            self.display_surface.blit(coracao_imagem, (c * 50, 0))
 
+    # Função para encerrar o jogo caso o jogador esteja morto
+    def encerra_jogo(self):
+        if self.__jogador.morto:
+            return True
+    
     def run(self, screen):
         #Desenha as sprites visíveis e atualiza elas
         self.visible_sprites.bomba_asma_update(self.__jogador)
         self.visible_sprites.custom_draw(self.__jogador)
         self.visible_sprites.update()
         self.visible_sprites.enemy_update(self.__jogador)
+        self.barra_de_vida()
         self.player_attack_logic()
         
 

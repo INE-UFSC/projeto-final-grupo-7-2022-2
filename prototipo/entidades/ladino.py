@@ -7,40 +7,215 @@ from spritesheet import Spritesheet
 class Ladino(Entidade):
     def __init__(self, pos, groups, obstacle_sprites, dano_no_jogador):
         super().__init__(groups)
+        self.__configuracoes = Configuracoes()
+        self.__escala = self.configuracoes.tamanhotile
 
         # Informacoes Inimigo
-        self.vida = 100
-        self.dano = 40
-        self.velocidade = 4
-        self.resistencia = 3
-        self.raio_ataque = 25
-        self.raio_percepcao = 150
+        self.__vida = 1
+        self.__dano= 1
+        self.__velocidade = 4
+        self.__resistencia = 3
+        self.__raio_ataque = 25
+        self.__raio_percepcao = 150
 
         # Invencibilidade - Para o dano ser único e não multiplicado pelo FPS
-        self.vulneravel = True
-        self.hit_time = None
-        self.duracao_invencibilidade = 300
+        self.__vulneravel = True
+        self.__hit_time = None
+        self.__duracao_invencibilidade = 300
 
-        self.dano_no_jogador = dano_no_jogador
+        self.__dano_no_jogador = dano_no_jogador
 
-        self.pode_atacar = True
-        self.tempo_ataque = None
-        self.cooldown_ataque = 400
+        self.__pode_atacar = True
+        self.__tempo_ataque = None
+        self.__cooldown_ataque = 300
 
         # Configurações de gráfico - Ainda estão provisórias
-        self.tipo_sprite = 'inimigo'
-        self.status = 'right_idle'
-        self.__spritesheet = Spritesheet("skelet", 1)
-        self.image = self.image('idle_0.png')
-        self.animations = self.__spritesheet.animation_frames
+        self.__tipo_sprite = 'inimigo'
+        self.__status = 'right_idle'
+        self.__cor = (255,0,0)
+        self.__image = pg.Surface((self.escala, self.escala))
+        self.__image.fill(self.cor)
 
         # Movimento
-        self.rect = self.image.get_rect(topleft = pos)
-        self.hitbox = self.rect.inflate(0,-10)
-        self.obstacle_sprites = obstacle_sprites
+        self.__rect = self.image.get_rect(topleft = pos)
+        self.__hitbox = self.rect.inflate(0,-10)
+        self.__obstacle_sprites = obstacle_sprites
 
-    def image(self, sprite: str):
-        return self.__spritesheet.get_sprite(sprite)
+    @property
+    def configuracoes(self):
+        return self.__configuracoes
+
+    @configuracoes.setter
+    def configuracoes(self, configuracoes):
+        self.__configuracoes = configuracoes
+
+    @property
+    def cooldown_ataque(self):
+        return self.__cooldown_ataque
+
+    @cooldown_ataque.setter
+    def cooldown_ataque(self, cooldown_ataque):
+        self.__cooldown_ataque = cooldown_ataque
+
+    @property
+    def cor(self):
+        return self.__cor
+
+    @cor.setter
+    def cor(self, cor):
+        self.__cor = cor
+
+    @property
+    def dano(self):
+        return self.__dano
+
+    @dano.setter
+    def dano(self, dano):
+        self.__dano = dano
+
+    @property
+    def dano_no_jogador(self):
+        return self.__dano_no_jogador
+
+    @dano_no_jogador.setter
+    def dano_no_jogador(self, dano_no_jogador):
+        self.__dano_no_jogador = dano_no_jogador
+
+    @property
+    def duracao_invencibilidade(self):
+        return self.__duracao_invencibilidade
+
+    @duracao_invencibilidade.setter
+    def duracao_invencibilidade(self, duracao_invencibilidade):
+        self.__duracao_invencibilidade = duracao_invencibilidade
+
+    @property
+    def escala(self):
+        return self.__escala
+
+    @escala.setter
+    def escala(self, escala):
+        self.__escala = escala
+
+    @property
+    def hit_time(self):
+        return self.__hit_time
+
+    @hit_time.setter
+    def hit_time(self, hit_time):
+        self.__hit_time = hit_time
+
+    @property
+    def hitbox(self):
+        return self.__hitbox
+
+    @hitbox.setter
+    def hitbox(self, hitbox):
+        self.__hitbox = hitbox
+
+    @property
+    def image(self):
+        return self.__image
+
+    @image.setter
+    def image(self, image):
+        self.__image = image
+
+    @property
+    def obstacle_sprites(self):
+        return self.__obstacle_sprites
+
+    @obstacle_sprites.setter
+    def obstacle_sprites(self, obstacle_sprites):
+        self.__obstacle_sprites = obstacle_sprites
+
+    @property
+    def pode_atacar(self):
+        return self.__pode_atacar
+
+    @pode_atacar.setter
+    def pode_atacar(self, pode_atacar):
+        self.__pode_atacar = pode_atacar
+
+    @property
+    def raio_ataque(self):
+        return self.__raio_ataque
+
+    @raio_ataque.setter
+    def raio_ataque(self, raio_ataque):
+        self.__raio_ataque = raio_ataque
+
+    @property
+    def raio_percepcao(self):
+        return self.__raio_percepcao
+
+    @raio_percepcao.setter
+    def raio_percepcao(self, raio_percepcao):
+        self.__raio_percepcao = raio_percepcao
+
+    @property
+    def rect(self):
+        return self.__rect
+
+    @rect.setter
+    def rect(self, rect):
+        self.__rect = rect
+
+    @property
+    def resistencia(self):
+        return self.__resistencia
+
+    @resistencia.setter
+    def resistencia(self, resistencia):
+        self.__resistencia = resistencia
+
+    @property
+    def status(self):
+        return self.__status
+
+    @status.setter
+    def status(self, status):
+        self.__status = status
+
+    @property
+    def tempo_ataque(self):
+        return self.__tempo_ataque
+
+    @tempo_ataque.setter
+    def tempo_ataque(self, tempo_ataque):
+        self.__tempo_ataque = tempo_ataque
+
+    @property
+    def tipo_sprite(self):
+        return self.__tipo_sprite
+
+    @tipo_sprite.setter
+    def tipo_sprite(self, tipo_sprite):
+        self.__tipo_sprite = tipo_sprite
+
+    @property
+    def velocidade(self):
+        return self.__velocidade
+
+    @velocidade.setter
+    def velocidade(self, velocidade):
+        self.__velocidade = velocidade
+
+    @property
+    def vida(self):
+        return self.__vida
+
+    @vida.setter
+    def vida(self, vida):
+        self.__vida = vida
+
+    @property
+    def vulneravel(self):
+        return self.__vulneravel
+
+    @vulneravel.setter
+    def vulneravel(self, vulneravel):
+        self.__vulneravel = vulneravel
 
     # Calcula a distancia e a direcao que o jogador esta
     def get_distancia_direcao_jogador(self, jogador):
@@ -83,16 +258,16 @@ class Ladino(Entidade):
             self.direction = pg.math.Vector2()
 
     def animate(self):
-        animation = self.animations[self.status]
+        #animation = self.animations[self.status]
 		
         self.frame_index += self.animation_speed
-        if self.frame_index >= len(animation):
-            # if self.status == 'attack': - A linha seguinte é provisória
-            if self.status == 'right':
-                self.pode_atacar = False
-            self.frame_index = 0
+        #if self.frame_index >= len(animation):
+        if self.status == 'attack': # A linha seguinte é provisória
+            #if self.status == 'right':
+            self.pode_atacar = False
+        self.frame_index = 0
 
-        self.image = animation[int(self.frame_index)]
+        #self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center = self.hitbox.center)
 
         # Oscila a visibilidade quando é atacado

@@ -26,10 +26,11 @@ class Jogador(Entidade):
         # Movimento
         self.velocidade = 5
         
-        self.vida = 100
+        self.vida = 3
         self.vulneravel = True
         self.hurt_time = None
         self.duracao_invencibilidade = 300
+        self.morto = False
 
         # Dash
         self.__dashing = False

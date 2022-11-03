@@ -24,6 +24,10 @@ class Jogo:
                     pg.quit()
                     sys.exit()
             
+            if self.fase.encerra_jogo():
+                pg.quit()
+                sys.exit()
+            
             self.screen.fill('black')
             self.fase.run(self.screen)
             pg.display.update()
