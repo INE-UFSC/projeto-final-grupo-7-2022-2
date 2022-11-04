@@ -4,6 +4,8 @@ from configuracoes import Configuracoes
 from mapa import Mapa, Tile
 from entidades.jogador import Jogador
 from entidades.ladino import Ladino
+from entidades.guerreiro import Guerreiro
+from entidades.arqueiro import Arqueiro
 from bomba_de_asma import BombaDeAsma
 from entidades.arma.pistola import Pistola
 
@@ -74,6 +76,12 @@ class Fase:
                     Tile(self, (x, y), [self.__grupo_de_entidade, self.__grupo_de_obstaculos])
                 elif col == 'ladino':
                     Ladino(self, (x, y), [self.__grupo_de_entidade, self.attackable_sprites],
+                           self.__grupo_de_obstaculos, self.dano_no_jogador)
+                elif col == 'guerreiro':
+                    Guerreiro(self, (x, y), [self.__grupo_de_entidade, self.attackable_sprites],
+                           self.__grupo_de_obstaculos, self.dano_no_jogador)
+                elif col == 'arqueiro':
+                    Arqueiro(self, (x, y), [self.__grupo_de_entidade, self.attackable_sprites],
                            self.__grupo_de_obstaculos, self.dano_no_jogador)
                 elif col == 'bomba_asma':
                     BombaDeAsma(self, (x, y), [self.__grupo_de_entidade])

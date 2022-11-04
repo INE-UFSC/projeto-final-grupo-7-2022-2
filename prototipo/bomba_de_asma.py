@@ -19,10 +19,22 @@ class BombaDeAsma(pg.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
 
     @property
+    def configuracoes (self):
+        return self.__configuracoes
+
+    @property
+    def escala(self):
+        return self.__escala
+
+    @property
+    def cor(self):
+        return self.__cor
+
+    @property
     def tipo(self):
         return "bomba_de_asma"
 
-    def get_distancia_direcao_jogador(self, jogador):
+    def pegar_distancia_direcao_jogador(self, jogador):
         vetor_bombinha = pg.math.Vector2(self.rect.center)
         vetor_jogador = pg.math.Vector2(jogador.rect.center)
         distancia = (vetor_jogador - vetor_bombinha).magnitude()
@@ -38,7 +50,7 @@ class BombaDeAsma(pg.sprite.Sprite):
         for sprite in self.groups()[0].sprites():
             if sprite.tipo == "jogador":
                 jogador = sprite
-                distancia = self.get_distancia_direcao_jogador(jogador)[0]
+                distancia = self.pegar_distancia_direcao_jogador(jogador)[0]
                 if distancia <= self.__raio_coletar:
                     self.kill()
                 break
