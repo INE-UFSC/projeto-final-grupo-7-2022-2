@@ -10,7 +10,7 @@ class Tile(pg.sprite.Sprite):
 
         self.image = pg.transform.scale(pg.image.load('sprites/bloco_parede.png').convert_alpha(), (self.__configuracoes.tamanho_tile, self.__configuracoes.tamanho_tile))
         self.rect = self.image.get_rect(topleft = pos)
-        self.hitbox = self.rect.inflate(0, -4)
+        self.hitbox = self.rect
     
     def atualizar(self, tempo_passado):
         pass

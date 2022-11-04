@@ -81,11 +81,12 @@ class Fase:
     def player_attack_logic(self):
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
-                collision_sprites = pg.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
-                if collision_sprites:
-                    for target_sprite in collision_sprites:
-                        if target_sprite.tipo_sprite == 'inimigo':
-                            target_sprite.toma_dano()
+                if attack_sprite.ativo:
+                    collision_sprites = pg.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
+                    if collision_sprites:
+                        for target_sprite in collision_sprites:
+                            if target_sprite.tipo_sprite == 'inimigo':
+                                target_sprite.toma_dano()
 
     def dano_no_jogador(self, quantidade):
         if self.__jogador.vulneravel:
