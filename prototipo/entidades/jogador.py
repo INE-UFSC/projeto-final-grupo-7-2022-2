@@ -218,6 +218,7 @@ class Jogador(Entidade):
         if self.vida <= 0:
             self.morto = True
             self.kill()
+            self.__pistola.kill()
 
     def atualizar(self, tempo_passado):
         self.calcular_direcao()
