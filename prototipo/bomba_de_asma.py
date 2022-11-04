@@ -44,4 +44,4 @@ class BombaDeAsma(pg.sprite.Sprite):
                 break
 
     def desenhar(self):
-        raise NotImplementedError("Desenhar não implementado")
+        return (self,)

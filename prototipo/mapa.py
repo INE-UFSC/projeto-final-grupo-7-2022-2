@@ -18,6 +18,9 @@ class Tile(pg.sprite.Sprite):
     @property
     def tipo(self):
         return "tile"
+
+    def desenhar(self):
+        return (self,)
 #Lê o arquivo .csv e organiza as informações em uma lista
 class Mapa(pg.sprite.Sprite):
     def __init__(self, arquivocsv):

@@ -159,7 +159,7 @@ class Jogador(Entidade):
         self.check_death()
 
     def desenhar(self):
-        self.__janela.blit(self.image, self.__pos)
+        return (self,)
 
     # Desenha a quantidade de vidas restantes do player
 

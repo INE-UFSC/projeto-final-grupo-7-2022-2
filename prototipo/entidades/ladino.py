@@ -317,3 +317,6 @@ class Ladino(Entidade):
     def enemy_update(self, jogador):
         self.get_status(jogador)
         self.actions(jogador)
+
+    def desenhar(self):
+        return (self,)

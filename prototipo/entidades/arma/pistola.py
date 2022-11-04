@@ -23,3 +23,6 @@ class Pistola():
             tiro.atirar(sentido, screen, escala)
             if not tiro.ativo:
                 self.__tiros.remove(tiro)
+
+    def desenhar(self):
+        return (self,)

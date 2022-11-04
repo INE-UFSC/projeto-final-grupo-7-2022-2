@@ -18,7 +18,7 @@ class Fase:
 
         # Dois grupos de sprites, as que estão visíveis e as que são obstáculos
         self.__grupo_de_entidade = YSortCameraGroup()
-        self.obstacle_sprites = pg.sprite.Group()
+        self.__grupo_de_obstaculos = pg.sprite.Group()
 
         # Outros grupos de sprites para facilitar a verificacao de colisao e dano
         self.attack_sprites = pg.sprite.Group()
@@ -45,12 +45,12 @@ class Fase:
                     self.__jogador = Jogador(self,
                                              (x, y),
                                              [self.__grupo_de_entidade],
-                                             self.obstacle_sprites, self.display_surface)
+                                             self.__grupo_de_obstaculos, self.display_surface)
                 elif col == 'parede':
-                    Tile(self, (x, y), [self.__grupo_de_entidade, self.obstacle_sprites])
+                    Tile(self, (x, y), [self.__grupo_de_entidade, self.__grupo_de_obstaculos])
                 elif col == 'ladino':
                     Ladino(self, (x, y), [self.__grupo_de_entidade, self.attackable_sprites],
-                           self.obstacle_sprites, self.dano_no_jogador)
+                           self.__grupo_de_obstaculos, self.dano_no_jogador)
                 elif col == 'bomba_asma':
                     BombaDeAsma(self, (x, y), [self.__grupo_de_entidade])
 
@@ -82,6 +82,7 @@ class Fase:
         self.player_attack_logic()
 
     def desenhar(self):
+        self.display_surface.fill('black')
         self.__grupo_de_entidade.desenhar(self.__jogador)
 
 
@@ -101,7 +102,11 @@ class YSortCameraGroup(pg.sprite.Group):
         # Ao invés de desenharmos os objetos numa posição fixa, nos os posicionamos de acordo com a posição do jogador.
         # Essa posição sempre segue uma disntância fixa do jogador.
         # Além disso, a ordem de desenho dos objetos na tela é crescente com relação a sua posição y
-        for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
+        sprite_para_desenhar = []
+        for sprite in self.sprites():
+            sprite_para_desenhar.extend(sprite.desenhar())
+        
+        for sprite in sorted(sprite_para_desenhar, key=lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.__offset
             self.__display_surface.blit(sprite.image, offset_pos)
 
