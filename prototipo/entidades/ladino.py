@@ -12,23 +12,15 @@ class Ladino(Entidade):
         self.__escala = self.configuracoes.tamanho_tile
 
         # Informacoes Inimigo
-        self.__vida = 1
-        self.__dano = 1
         self.__velocidade = 4
-        self.__resistencia = 3
         self.__raio_ataque = 25
         self.__raio_percepcao = 150
-
-        # Invencibilidade - Para o dano ser único e não multiplicado pelo FPS
-        self.__vulneravel = True
-        self.__hit_time = None
-        self.__duracao_invencibilidade = 300
 
         self.__dano_no_jogador = dano_no_jogador
 
         self.__pode_atacar = True
         self.__tempo_ataque = None
-        self.__cooldown_ataque = 300
+        self.__tempo_de_recarga_ataque = 10 * self.__configuracoes.tps
 
         # Configurações de gráfico - Ainda estão provisórias
         self.__tipo_sprite = 'inimigo'
@@ -55,12 +47,12 @@ class Ladino(Entidade):
         self.__configuracoes = configuracoes
 
     @property
-    def cooldown_ataque(self):
-        return self.__cooldown_ataque
+    def tempo_de_recarga_ataque(self):
+        return self.__tempo_de_recarga_ataque
 
-    @cooldown_ataque.setter
-    def cooldown_ataque(self, cooldown_ataque):
-        self.__cooldown_ataque = cooldown_ataque
+    @tempo_de_recarga_ataque.setter
+    def tempo_de_recarga_ataque(self, tempo_de_recarga_ataque):
+        self.__tempo_de_recarga_ataque = tempo_de_recarga_ataque
 
     @property
     def cor(self):
@@ -71,14 +63,6 @@ class Ladino(Entidade):
         self.__cor = cor
 
     @property
-    def dano(self):
-        return self.__dano
-
-    @dano.setter
-    def dano(self, dano):
-        self.__dano = dano
-
-    @property
     def dano_no_jogador(self):
         return self.__dano_no_jogador
 
@@ -87,28 +71,12 @@ class Ladino(Entidade):
         self.__dano_no_jogador = dano_no_jogador
 
     @property
-    def duracao_invencibilidade(self):
-        return self.__duracao_invencibilidade
-
-    @duracao_invencibilidade.setter
-    def duracao_invencibilidade(self, duracao_invencibilidade):
-        self.__duracao_invencibilidade = duracao_invencibilidade
-
-    @property
     def escala(self):
         return self.__escala
 
     @escala.setter
     def escala(self, escala):
         self.__escala = escala
-
-    @property
-    def hit_time(self):
-        return self.__hit_time
-
-    @hit_time.setter
-    def hit_time(self, hit_time):
-        self.__hit_time = hit_time
 
     @property
     def hitbox(self):
@@ -167,14 +135,6 @@ class Ladino(Entidade):
         self.__rect = rect
 
     @property
-    def resistencia(self):
-        return self.__resistencia
-
-    @resistencia.setter
-    def resistencia(self, resistencia):
-        self.__resistencia = resistencia
-
-    @property
     def status(self):
         return self.__status
 
@@ -206,24 +166,8 @@ class Ladino(Entidade):
     def velocidade(self, velocidade):
         self.__velocidade = velocidade
 
-    @property
-    def vida(self):
-        return self.__vida
-
-    @vida.setter
-    def vida(self, vida):
-        self.__vida = vida
-
-    @property
-    def vulneravel(self):
-        return self.__vulneravel
-
-    @vulneravel.setter
-    def vulneravel(self, vulneravel):
-        self.__vulneravel = vulneravel
-
-    # Calcula a distancia e a direcao que o jogador esta
-    def get_distancia_direcao_jogador(self, jogador):
+    # Calcula a distância e a direção que o jogador está
+    def pegar_distancia_direcao_jogador(self, jogador):
         vetor_inimigo = pg.math.Vector2(self.rect.center)
         vetor_jogador = pg.math.Vector2(jogador.rect.center)
         distancia = (vetor_jogador - vetor_inimigo).magnitude()
@@ -235,86 +179,45 @@ class Ladino(Entidade):
         return (distancia, direcao)
 
     def get_status(self, jogador):
-        # Pega a distancia do player e o inimigo
-        distancia = self.get_distancia_direcao_jogador(jogador)[0]
+        # Pega a distância do player e o inimigo
+        distancia = self.pegar_distancia_direcao_jogador(jogador)[0]
 
-        # As cinco linhas seguintes que estão comentadas (que usam attack e move) são as que devem ficar, as que estão logo abaixo (que usam right e left) são apenas provisórias
         if distancia <= self.raio_ataque and self.pode_atacar:
-            # if self.status != 'attack':
-            if self.status != 'right':
-                self.frame_index = 0
-            # self.status = 'attack'
-            self.status = 'right'
+            if self.status != 'attack':
+                self.status = 'attack'
         elif distancia <= self.raio_percepcao:
-            # self.status = 'move'
-            self.status = 'left'
+            self.status = 'move'
         else:
             self.status = 'right_idle'
 
     def actions(self, player):
-        # if self.status == 'attack':
-        if self.status == 'right':
+        if self.status == 'attack':
             self.tempo_ataque = pg.time.get_ticks()
-            self.dano_no_jogador(self.dano)
-        # if self.status == 'move':
-        elif self.status == 'left':
-            self.direction = self.get_distancia_direcao_jogador(player)[1]
+            self.dano_no_jogador()
+            self.pode_atacar = False
+        elif self.status == 'move':
+            self.direction = self.pegar_distancia_direcao_jogador(player)[1]
         else:
             self.direction = pg.math.Vector2()
 
     def animate(self):
-        #animation = self.animations[self.status]
-
-        self.frame_index += self.animation_speed
-        # if self.frame_index >= len(animation):
-        if self.status == 'attack':  # A linha seguinte é provisória
-            # if self.status == 'right':
-            self.pode_atacar = False
-        self.frame_index = 0
-
-        #self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
-        # Oscila a visibilidade quando é atacado
-        if not self.vulneravel:
-            alpha = self.wave_value()
-            self.image.set_alpha(alpha)
-        else:
-            self.image.set_alpha(255)
-
-    def cooldowns(self):
+    def tempos_de_recarga(self):
         tempo_atual = pg.time.get_ticks()
         if not self.pode_atacar:
-            if tempo_atual - self.tempo_ataque >= self.cooldown_ataque:
+            if tempo_atual - self.tempo_ataque >= self.tempo_de_recarga_ataque:
                 self.pode_atacar = True
 
-        if not self.vulneravel:
-            if tempo_atual - self.hit_time >= self.duracao_invencibilidade:
-                self.vulneravel = True
-
     def toma_dano(self):
-        if self.vulneravel:
-            self.kill()
-        self.hit_time = pg.time.get_ticks()
-        self.vulnerable = False
-
-    def check_death(self):
-        if self.vida <= 0:
-            self.kill()
-
-    # Se afasta um pouco caso for atingido
-    def hit_reaction(self):
-        if not self.vulneravel:
-            self.direction *= -self.resistencia
+        self.kill()
 
     def atualizar(self, tempo_passado):
-        self.hit_reaction()
         self.move(tempo_passado)
         self.get_status(self.__fase.jogador)
         self.actions(self.__fase.jogador)
         self.animate()
-        self.cooldowns()
-        self.check_death() 
+        self.tempos_de_recarga()
 
     def desenhar(self):
         return (self,)

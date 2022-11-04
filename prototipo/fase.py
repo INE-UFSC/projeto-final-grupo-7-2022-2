@@ -87,9 +87,9 @@ class Fase:
                         if target_sprite.tipo_sprite == 'inimigo':
                             target_sprite.toma_dano()
 
-    def dano_no_jogador(self, quantidade):
+    def dano_no_jogador(self):
         if self.__jogador.vulneravel:
-            self.__jogador.vida -= quantidade
+            self.__jogador.vida -= 1
             self.__jogador.vulneravel = False
             # Define o momento que o jogador sofreu o dano
             self.__jogador.hurt_time = pg.time.get_ticks()

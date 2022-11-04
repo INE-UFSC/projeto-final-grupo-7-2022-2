@@ -179,7 +179,7 @@ class Jogador(Entidade):
             self.__esta_atacando = True
             self.__tempo_do_ataque = pg.time.get_ticks()
 
-            if type(arma) == Pistola:
+            if type(arma) == Pistola and not self.morto:
                 self.__pistola.atirar(self.pos_mouse)
             elif type(arma) == Faca:
                 pass
@@ -188,6 +188,7 @@ class Jogador(Entidade):
         if self.vida <= 0:
             self.morto = True
             self.kill()
+            self.__pistola.kill()
 
     def atualizar(self, tempo_passado):
         self.calcular_direcao()
