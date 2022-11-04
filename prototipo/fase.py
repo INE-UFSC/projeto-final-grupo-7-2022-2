@@ -5,7 +5,7 @@ from mapa import Mapa, Tile
 from entidades.jogador import Jogador
 from entidades.ladino import Ladino
 from bomba_de_asma import BombaDeAsma
-
+from entidades.arma.pistola import Pistola
 
 class Fase:
     def __init__(self, partida: Partida):
@@ -21,12 +21,33 @@ class Fase:
         self.__grupo_de_obstaculos = pg.sprite.Group()
 
         # Outros grupos de sprites para facilitar a verificacao de colisao e dano
-        self.attack_sprites = pg.sprite.Group()
-        self.attackable_sprites = pg.sprite.Group()
+        self.__attack_sprites = pg.sprite.Group()
+        self.__attackable_sprites = pg.sprite.Group()
 
         # Cria o mapa baseado em um arquivo csv
         self.__mapa = Mapa('mapa_teste16x16.csv')
         self.criar_mapa()
+
+    @property
+    def grupo_de_entidade(self):
+        return self.__grupo_de_entidade
+
+    @property
+    def grupo_de_obstaculos(self):
+        return self.__grupo_de_obstaculos
+
+    @property
+    def attack_sprites(self):
+        return self.__attack_sprites
+
+    @property
+    def attackable_sprites(self):
+        return self.__attackable_sprites
+
+    @property
+    def config(self):
+        return self.__configuracoes
+
 
     def registrar_evento(self, tipo, callback: callable):
         return self.__partida.registrar_evento(tipo, callback)
