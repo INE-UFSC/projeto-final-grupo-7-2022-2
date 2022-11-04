@@ -48,6 +48,9 @@ class Fase:
     def config(self):
         return self.__configuracoes
 
+    @property
+    def jogador(self):
+        return self.__jogador
 
     def registrar_evento(self, tipo, callback: callable):
         return self.__partida.registrar_evento(tipo, callback)

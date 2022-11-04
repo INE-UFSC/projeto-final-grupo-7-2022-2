@@ -8,6 +8,7 @@ class Pistola(pg.sprite.Sprite):
         super().__init__(groups)
 
         self.__fase = fase
+        self.__tipo_sprite = 'pistola'
 
         # Imagem
         self.image = pg.Surface((10, 10))
@@ -21,6 +22,8 @@ class Pistola(pg.sprite.Sprite):
         self.v_mouse = None
         self.posicao = None
 
+    def tipo(self):
+        return 'pistola'
 
     def mover(self, posicao_jogador: tuple, posicao_mouse: tuple):
         # Direção da arma e ajuste de posição com relação ao jogador

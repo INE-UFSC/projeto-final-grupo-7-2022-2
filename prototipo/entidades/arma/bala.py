@@ -27,6 +27,9 @@ class Bala(pg.sprite.Sprite):
         # Ativo
         self.__ativo = True
 
+    def tipo(self):
+        return 'bala'
+
     @property
     def ativo(self):
         return self.__ativo

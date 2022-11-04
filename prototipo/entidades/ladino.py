@@ -7,6 +7,7 @@ from spritesheet import Spritesheet
 class Ladino(Entidade):
     def __init__(self, fase, pos, groups, obstacle_sprites, dano_no_jogador):
         super().__init__(groups)
+        self.__fase = fase
         self.__configuracoes = Configuracoes()
         self.__escala = self.configuracoes.tamanho_tile
 
@@ -309,13 +310,11 @@ class Ladino(Entidade):
     def atualizar(self, tempo_passado):
         self.hit_reaction()
         self.move()
+        self.get_status(self.__fase.jogador)
+        self.actions(self.__fase.jogador)
         self.animate()
         self.cooldowns()
-        self.check_death()
-
-    def enemy_update(self, jogador):
-        self.get_status(jogador)
-        self.actions(jogador)
+        self.check_death() 
 
     def desenhar(self):
         return (self,)
