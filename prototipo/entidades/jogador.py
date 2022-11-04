@@ -13,6 +13,13 @@ class Jogador(Entidade):
         fase.registrar_evento(pg.KEYUP, self.evento_tecla_solta)
         fase.registrar_evento(pg.KEYDOWN, self.evento_tecla_apertada)
         fase.registrar_evento(pg.MOUSEBUTTONDOWN, self.evento_mouse)
+        self.__teclas_usadas_estado = {
+            pg.K_w: False,
+            pg.K_a: False,
+            pg.K_s: False,
+            pg.K_d: False,
+            pg.K_SPACE: False
+        }
 
         self.__fase = fase
         self.__configuracoes = Configuracoes()
@@ -46,7 +53,6 @@ class Jogador(Entidade):
         self.__esta_atacando = False
         self.__attack_cd = 400
         self.__tempo_do_ataque = None
-
         # Animação
         self.__status = 'right'
 
@@ -56,33 +62,41 @@ class Jogador(Entidade):
 
         self.__janela = screen
 
-    def evento_tecla_solta(self, evento):
-        # Entradas de movimentação:
-        if evento.key == pg.K_w or evento.key == pg.K_s:
-            self.direction.y = 0
-        elif evento.key == pg.K_a or evento.key == pg.K_d:
-            self.direction.x = 0
+    def calcular_direcao(self):
 
-    def evento_tecla_apertada(self, evento):
-        if evento.key == pg.K_w:
+        if self.__teclas_usadas_estado[pg.K_w] == self.__teclas_usadas_estado[pg.K_s]:
+            self.direction.y = 0
+        elif self.__teclas_usadas_estado[pg.K_w]:
             self.direction.y = -1
-        elif evento.key == pg.K_s:
+        elif self.__teclas_usadas_estado[pg.K_s]:
             self.direction.y = 1
-        elif evento.key == pg.K_a:
+
+        if self.__teclas_usadas_estado[pg.K_a] == self.__teclas_usadas_estado[pg.K_d]:
+            self.direction.x = 0
+        elif self.__teclas_usadas_estado[pg.K_a]:
             self.direction.x = -1
             self.__status = 'left'
-        elif evento.key == pg.K_d:
-            self.__status == 'right'
+        elif self.__teclas_usadas_estado[pg.K_d]:
             self.direction.x = 1
+            self.__status == 'right'
 
-        if evento.key == pg.K_s and not self.__esta_com_impulso:
+    def calcula_impulso(self):
+        if self.__teclas_usadas_estado[pg.K_SPACE] and not self.__esta_com_impulso:
             self.__esta_com_impulso = False
             self.__tempo_do_impulso = pg.time.get_ticks()
 
+    def evento_tecla_solta(self, evento):
+        # Entradas de movimentação:
+        if evento.key in self.__teclas_usadas_estado:
+            self.__teclas_usadas_estado[evento.key] = False
+
+    def evento_tecla_apertada(self, evento):
+        if evento.key in self.__teclas_usadas_estado:
+            self.__teclas_usadas_estado[evento.key] = True
+
     def evento_mouse(self, evento):
-        if evento.type == pg.MOUSEBUTTONDOWN:
-            if evento.button == 1:
-                self.atacar(self.__pistola)
+        if evento.button == 1:
+            self.atacar(self.__pistola)
 
     @property
     def tipo(self):
@@ -158,13 +172,13 @@ class Jogador(Entidade):
             alpha = self.wave_value()
             self.image.set_alpha(alpha)
         else:
-            self.image.set_alpha(255)   
+            self.image.set_alpha(255)
 
     def atacar(self, arma):
         if not self.__esta_atacando:
             self.__esta_atacando = True
             self.__tempo_do_ataque = pg.time.get_ticks()
-            
+
             if type(arma) == Pistola:
                 self.__pistola.atirar(self.pos_mouse)
             elif type(arma) == Faca:
@@ -175,7 +189,9 @@ class Jogador(Entidade):
             self.morto = True
             self.kill()
 
-    def atualizar(self, tempo_passado):        
+    def atualizar(self, tempo_passado):
+        self.calcular_direcao()
+        self.calcula_impulso()
         self.move()
         self.cooldowns()
         self.status()
