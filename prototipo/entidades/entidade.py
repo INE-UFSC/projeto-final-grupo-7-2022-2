@@ -59,8 +59,8 @@ class Entidade(pg.sprite.Sprite):
     def atualizar(self, delta: float):
         raise NotImplementedError("Atualizar não implementado")
 
-    def renderizar(self, tela: pg.Surface):
-        raise NotImplementedError("Renderizar não implementado")
+    def desenhar(self, tela: pg.Surface):
+        raise NotImplementedError("Desenhar não implementado")
 
     def receber_dano(self, dano: int):
         raise NotImplementedError("Receber dano não implementado")

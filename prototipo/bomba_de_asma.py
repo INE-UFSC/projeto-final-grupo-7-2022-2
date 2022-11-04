@@ -3,21 +3,24 @@ from configuracoes import Configuracoes
 
 
 class BombaDeAsma(pg.sprite.Sprite):
-    def __init__(self, pos, groups):
+    def __init__(self, fase, pos, groups):
         super().__init__(groups)
-        self.tipo_sprite = 'bomba_asma'
 
         self.__configuracoes = Configuracoes()
-        self.__escala = self.__configuracoes.tamanhotile
+        self.__escala = self.__configuracoes.tamanho_tile
 
         # Raio em que o jogador deve ficar para coletar o item
         self.__raio_coletar = self.__escala * 0.7
 
         # Define o retângulo que representa o item
-        self.__cor = (0,255,127)
+        self.__cor = (0, 255, 127)
         self.image = pg.Surface((self.__escala, self.__escala))
         self.image.fill(self.__cor)
-        self.rect = self.image.get_rect(topleft = pos)
+        self.rect = self.image.get_rect(topleft=pos)
+
+    @property
+    def tipo(self):
+        return "bomba_de_asma"
 
     def get_distancia_direcao_jogador(self, jogador):
         vetor_bombinha = pg.math.Vector2(self.rect.center)
@@ -31,13 +34,14 @@ class BombaDeAsma(pg.sprite.Sprite):
         return (distancia, direcao)
 
     # Atualiza o objeto, verificando a proximidade do player
-    def bomba_asma_update(self, jogador):
-        distancia = self.get_distancia_direcao_jogador(jogador)[0]
-        if distancia <= self.__raio_coletar:
-            self.kill()
+    def atualizar(self, tempo_passado):
+        for sprite in self.groups()[0].sprites():
+            if sprite.tipo == "jogador":
+                jogador = sprite
+                distancia = self.get_distancia_direcao_jogador(jogador)[0]
+                if distancia <= self.__raio_coletar:
+                    self.kill()
+                break
 
-    def atualizar(self, eventos: list):
-        raise NotImplementedError("Atualizar não implementado")
-
-    def renderizar(self):
-        raise NotImplementedError("Renderizar não implementado")
+    def desenhar(self):
+        raise NotImplementedError("Desenhar não implementado")

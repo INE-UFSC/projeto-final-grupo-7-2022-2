@@ -5,14 +5,14 @@ from spritesheet import Spritesheet
 
 
 class Ladino(Entidade):
-    def __init__(self, pos, groups, obstacle_sprites, dano_no_jogador):
+    def __init__(self, fase, pos, groups, obstacle_sprites, dano_no_jogador):
         super().__init__(groups)
         self.__configuracoes = Configuracoes()
-        self.__escala = self.configuracoes.tamanhotile
+        self.__escala = self.configuracoes.tamanho_tile
 
         # Informacoes Inimigo
         self.__vida = 1
-        self.__dano= 1
+        self.__dano = 1
         self.__velocidade = 4
         self.__resistencia = 3
         self.__raio_ataque = 25
@@ -32,14 +32,18 @@ class Ladino(Entidade):
         # Configurações de gráfico - Ainda estão provisórias
         self.__tipo_sprite = 'inimigo'
         self.__status = 'right_idle'
-        self.__cor = (255,0,0)
+        self.__cor = (255, 0, 0)
         self.__image = pg.Surface((self.escala, self.escala))
         self.__image.fill(self.cor)
 
         # Movimento
-        self.__rect = self.image.get_rect(topleft = pos)
-        self.__hitbox = self.rect.inflate(0,-10)
+        self.__rect = self.image.get_rect(topleft=pos)
+        self.__hitbox = self.rect.inflate(0, -10)
         self.__obstacle_sprites = obstacle_sprites
+
+    @property
+    def tipo(self):
+        return "ladino"
 
     @property
     def configuracoes(self):
@@ -232,7 +236,7 @@ class Ladino(Entidade):
     def get_status(self, jogador):
         # Pega a distancia do player e o inimigo
         distancia = self.get_distancia_direcao_jogador(jogador)[0]
-        
+
         # As cinco linhas seguintes que estão comentadas (que usam attack e move) são as que devem ficar, as que estão logo abaixo (que usam right e left) são apenas provisórias
         if distancia <= self.raio_ataque and self.pode_atacar:
             # if self.status != 'attack':
@@ -246,7 +250,7 @@ class Ladino(Entidade):
         else:
             self.status = 'right_idle'
 
-    def actions(self,player):
+    def actions(self, player):
         # if self.status == 'attack':
         if self.status == 'right':
             self.tempo_ataque = pg.time.get_ticks()
@@ -259,16 +263,16 @@ class Ladino(Entidade):
 
     def animate(self):
         #animation = self.animations[self.status]
-		
+
         self.frame_index += self.animation_speed
-        #if self.frame_index >= len(animation):
-        if self.status == 'attack': # A linha seguinte é provisória
-            #if self.status == 'right':
+        # if self.frame_index >= len(animation):
+        if self.status == 'attack':  # A linha seguinte é provisória
+            # if self.status == 'right':
             self.pode_atacar = False
         self.frame_index = 0
 
         #self.image = animation[int(self.frame_index)]
-        self.rect = self.image.get_rect(center = self.hitbox.center)
+        self.rect = self.image.get_rect(center=self.hitbox.center)
 
         # Oscila a visibilidade quando é atacado
         if not self.vulneravel:
@@ -276,7 +280,7 @@ class Ladino(Entidade):
             self.image.set_alpha(alpha)
         else:
             self.image.set_alpha(255)
-    
+
     def cooldowns(self):
         tempo_atual = pg.time.get_ticks()
         if not self.pode_atacar:
@@ -286,7 +290,7 @@ class Ladino(Entidade):
         if not self.vulneravel:
             if tempo_atual - self.hit_time >= self.duracao_invencibilidade:
                 self.vulneravel = True
-    
+
     def get_damage(self, jogador):
         if self.vulneravel:
             self.direction = self.get_player_distance_direction(player)[1]
@@ -303,7 +307,7 @@ class Ladino(Entidade):
         if not self.vulneravel:
             self.direction *= -self.resistencia
 
-    def update(self):
+    def atualizar(self, tempo_passado):
         self.hit_reaction()
         self.move()
         self.animate()

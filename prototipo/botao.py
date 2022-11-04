@@ -9,5 +9,5 @@ class Botao:
     def on_click(self):
         raise NoneImplementedError("On click não implementado")
 
-    def renderizar(self):
-        raise NoneImplementedError("Renderizar não implementado")
+    def desenhar(self):
+        raise NoneImplementedError("Desenhar não implementado")

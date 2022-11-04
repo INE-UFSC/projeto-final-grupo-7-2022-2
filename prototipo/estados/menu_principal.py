@@ -5,5 +5,5 @@ class MenuPrincipal:
     def atualizar(self, eventos: list):
         raise NotImplementedError("Atualizar não implementado")
 
-    def renderizar(self):
-        raise NotImplementedError("Renderizar não implementado")
+    def desenhar(self):
+        raise NotImplementedError("Desenhar não implementado")
