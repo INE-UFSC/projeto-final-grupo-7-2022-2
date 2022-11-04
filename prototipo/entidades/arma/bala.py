@@ -1,4 +1,3 @@
-from re import X
 import pygame as pg
 
 
@@ -10,14 +9,14 @@ class Bala(pg.sprite.Sprite):
         self.__fase = fase
 
         # Imagem
-        self.__escala = (4, 4)
+        self.__escala = (8, 8)
         self.__image = pg.Surface(self.__escala)
         self.__image.fill((255, 255, 255))
         self.__rect = self.__image.get_rect(center = pos_inicial)
 
         # Movimento
         self.__direcao = direcao
-        self.__velocidade = 10
+        self.__velocidade = 50
 
         # Dano
         self.__alvos = self.__fase.attackable_sprites
@@ -63,12 +62,8 @@ class Bala(pg.sprite.Sprite):
         
         for parede in self.__parede:
             if parede.hitbox.colliderect(self.__rect):
-                self.kill()
                 self.__ativo = False
-
-    @property
-    def ativo(self):
-        return self.__ativo
+                self.kill()
 
 
     def desenhar(self):
