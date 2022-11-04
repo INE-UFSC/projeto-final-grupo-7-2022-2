@@ -12,11 +12,10 @@ class Jogador(Entidade):
 
         fase.registrar_evento(pg.KEYUP, self.evento_tecla_solta)
         fase.registrar_evento(pg.KEYDOWN, self.evento_tecla_apertada)
+        fase.registrar_evento(pg.MOUSEBUTTONDOWN, self.evento_mouse)
 
+        self.__fase = fase
         self.__configuracoes = Configuracoes()
-
-        self.__pos = pos
-        self.__escala = 1.5 * self.__configuracoes.tamanho_tile
 
         # Imagem e hitbox
         self.__spritesheet = Spritesheet("skelet", 1)
@@ -28,7 +27,7 @@ class Jogador(Entidade):
         self.obstacle_sprites = obstacle_sprites
 
         # Movimento
-        self.__velocidade = 5
+        self.velocidade = 5
 
         self.vida = 3
         self.vulneravel = True
@@ -53,7 +52,7 @@ class Jogador(Entidade):
 
         # Armas
         self.__faca = Faca()
-        self.__pistola = Pistola()
+        self.__pistola = Pistola(self.fase, [self.fase.grupo_de_entidade])
 
         self.__janela = screen
 
@@ -71,16 +70,31 @@ class Jogador(Entidade):
             self.direction.y = 1
         elif evento.key == pg.K_a:
             self.direction.x = -1
+            self.__status = 'left'
         elif evento.key == pg.K_d:
+            self.__status == 'right'
             self.direction.x = 1
 
         if evento.key == pg.K_s and not self.__esta_com_impulso:
             self.__esta_com_impulso = False
             self.__tempo_do_impulso = pg.time.get_ticks()
 
+    def evento_mouse(self, evento):
+        if evento.type == pg.MOUSEBUTTONDOWN:
+            if evento.button == 1:
+                self.atacar(self.__pistola)
+
     @property
     def tipo(self):
         return "jogador"
+
+    @property
+    def fase(self):
+        return self.__fase
+
+    @property
+    def pos_mouse(self):
+        return pg.mouse.get_pos()
 
     def image(self, sprite: str):
         return self.__spritesheet.get_sprite(sprite)
@@ -96,14 +110,14 @@ class Jogador(Entidade):
         if self.__esta_atacando:
             self.direction.x = 0
             self.direction.y = 0
-            if not 'attack' in self.__status:
-                if 'idle' in self.__status:
-                    self.__status = self.__status.replace('_idle', '_attack')
-                else:
-                    self.__status += '_attack'
-        else:
-            if 'attack' in self.__status:
-                self.__status = self.__status.replace('_attack', '')
+        #     if not 'attack' in self.__status:
+        #         if 'idle' in self.__status:
+        #             self.__status = self.__status.replace('_idle', '_attack')
+        #         else:
+        #             self.__status += '_attack'
+        # else:
+        #     if 'attack' in self.__status:
+        #         self.__status = self.__status.replace('_attack', '')
 
     def dash(self):
         if self.__dashing and self.__active_dash:
@@ -144,19 +158,30 @@ class Jogador(Entidade):
             alpha = self.wave_value()
             self.image.set_alpha(alpha)
         else:
-            self.image.set_alpha(255)
+            self.image.set_alpha(255)   
+
+    def atacar(self, arma):
+        if not self.__esta_atacando:
+            self.__esta_atacando = True
+            self.__tempo_do_ataque = pg.time.get_ticks()
+            
+            if type(arma) == Pistola:
+                self.__pistola.atirar(self.pos_mouse)
+            elif type(arma) == Faca:
+                pass
 
     def check_death(self):
         if self.vida <= 0:
             self.morto = True
             self.kill()
 
-    def atualizar(self, tempo_passado):
+    def atualizar(self, tempo_passado):        
         self.move()
         self.cooldowns()
         self.status()
         self.animate()
         self.check_death()
+        self.__pistola.mover(self.rect.center, self.pos_mouse)
 
     def desenhar(self):
         return (self,)
