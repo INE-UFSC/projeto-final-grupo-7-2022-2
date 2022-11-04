@@ -291,10 +291,9 @@ class Ladino(Entidade):
             if tempo_atual - self.hit_time >= self.duracao_invencibilidade:
                 self.vulneravel = True
 
-    def get_damage(self, jogador):
+    def toma_dano(self):
         if self.vulneravel:
-            self.direction = self.get_player_distance_direction(player)[1]
-            self.vida -= jogador.dar_dano()
+            self.kill()
         self.hit_time = pg.time.get_ticks()
         self.vulnerable = False
 

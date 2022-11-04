@@ -81,8 +81,8 @@ class Fase:
                 collision_sprites = pg.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
                 if collision_sprites:
                     for target_sprite in collision_sprites:
-                        if target_sprite.sprite_type == 'inimigo':
-                            target_sprite.get_damage(self.player, attack_sprite.sprite_type)
+                        if target_sprite.tipo_sprite == 'inimigo':
+                            target_sprite.toma_dano()
 
     def dano_no_jogador(self, quantidade):
         if self.__jogador.vulneravel:
