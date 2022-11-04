@@ -9,13 +9,13 @@ class Entidade(pg.sprite.Sprite):
         self.velocidade = 0
         self.sprite = None
         self.direction = pg.math.Vector2()
-    
+
         self.frame_index = 0
         self.animation_speed = 0.15
 
-    def move(self):
+    def move(self, tempo_passado):
         if self.direction.magnitude() != 0:
-            self.direction = self.direction.normalize()
+            self.direction = self.direction.normalize() * tempo_passado / 10
 
         # Realiza o movimento e checa a existência de colisões com a hitbox
         self.hitbox.x += self.direction.x * self.velocidade

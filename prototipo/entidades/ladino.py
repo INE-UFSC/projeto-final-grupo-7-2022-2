@@ -309,7 +309,7 @@ class Ladino(Entidade):
 
     def atualizar(self, tempo_passado):
         self.hit_reaction()
-        self.move()
+        self.move(tempo_passado)
         self.get_status(self.__fase.jogador)
         self.actions(self.__fase.jogador)
         self.animate()

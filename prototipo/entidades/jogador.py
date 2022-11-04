@@ -78,7 +78,7 @@ class Jogador(Entidade):
             self.__status = 'left'
         elif self.__teclas_usadas_estado[pg.K_d]:
             self.direction.x = 1
-            self.__status == 'right'
+            self.__status = 'right'
 
     def calcula_impulso(self):
         if self.__teclas_usadas_estado[pg.K_SPACE] and not self.__esta_com_impulso:
@@ -192,7 +192,7 @@ class Jogador(Entidade):
     def atualizar(self, tempo_passado):
         self.calcular_direcao()
         self.calcula_impulso()
-        self.move()
+        self.move(tempo_passado)
         self.cooldowns()
         self.status()
         self.animate()
