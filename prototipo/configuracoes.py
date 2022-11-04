@@ -1,7 +1,7 @@
 class Configuracoes:
     def __init__(self):
-        self.__altura_tela = 540
-        self.__largura_tela = 720
+        self.__altura_tela = 720
+        self.__largura_tela = 1280 
         self.__tamanho_tile = 32
         self.__volume_musica = 0
         self.__max_fps = 240
