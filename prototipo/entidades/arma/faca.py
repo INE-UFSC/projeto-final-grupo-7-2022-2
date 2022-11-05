@@ -1,6 +1,5 @@
 import pygame as pg
 from .arma import Arma
-from math import sin
 
 
 class Faca(Arma):
@@ -22,11 +21,11 @@ class Faca(Arma):
         
         if self.ativo:
             if not self.chegou_no_30:
-                self.distancia += 1
-                if self.distancia == 30:
+                self.distancia += 5
+                if self.distancia == 50:
                     self.chegou_no_30 = True
             else:
-                self.distancia -= 1
+                self.distancia -= 5
                 if self.distancia == 20:
                     self.ativo = False
                     self.chegou_no_30 = False

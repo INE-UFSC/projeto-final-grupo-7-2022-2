@@ -112,11 +112,12 @@ class Jogador(Entidade):
             self.__teclas_usadas_estado[evento.key] = True
         if evento.key == pg.K_LSHIFT:
             self.trocar_arma()
+        if evento.key == pg.K_r:
+            self.arma.recarregar()
 
     def evento_mouse(self, evento):
         if evento.button == 1:
             self.atacar()
-
 
 
     @property
@@ -234,12 +235,3 @@ class Jogador(Entidade):
 
     def desenhar(self):
         return (self,)
-
-    # Desenha a quantidade de vidas restantes do player
-
-    def barra_de_vida(self):
-        escala = self.__configuracoes.tamanho_tile * 1.5
-        coracao_imagem = pg.image.load('sprites/coracao.png').convert_alpha()
-        coracao_imagem = pg.transform.scale(coracao_imagem, (escala, escala))
-        for c in range(self.__jogador.vida):
-            self.display_surface.blit(coracao_imagem, (c * 50, 0))
