@@ -19,7 +19,6 @@ class Jogador(Entidade):
             pg.K_s: False,
             pg.K_d: False,
             pg.K_SPACE: False,
-            pg.K_LSHIFT: False
         }
 
         self.__fase = fase
@@ -86,18 +85,16 @@ class Jogador(Entidade):
         elif self.__teclas_usadas_estado[pg.K_d]:
             self.direction.x = 1
 
-    def trocar_arma(self):
-        if self.__teclas_usadas_estado[pg.K_LSHIFT]:
-            if self.arma == self.__faca:
-                self.arma = self.__pistola
-                self.__faca.kill()
-                self.__pistola.add([self.fase.grupo_de_entidade])
-            else:
-                self.arma = self.__faca
-                self.__pistola.kill()
-                self.__faca.add([self.fase.grupo_de_entidade,
-                                self.fase.attack_sprites])
-
+    def trocar_arma(self): 
+        if self.arma == self.__faca:
+            self.arma = self.__pistola
+            self.__faca.kill()
+            self.__pistola.add([self.fase.grupo_de_entidade])
+        else:
+            self.arma = self.__faca
+            self.__pistola.kill()
+            self.__faca.add([self.fase.grupo_de_entidade,
+                            self.fase.attack_sprites])
 
     def calcula_impulso(self):
         if self.__teclas_usadas_estado[pg.K_SPACE] and not self.__esta_com_impulso:
@@ -108,14 +105,19 @@ class Jogador(Entidade):
         # Entradas de movimentação:
         if evento.key in self.__teclas_usadas_estado:
             self.__teclas_usadas_estado[evento.key] = False
+    
 
     def evento_tecla_apertada(self, evento):
         if evento.key in self.__teclas_usadas_estado:
             self.__teclas_usadas_estado[evento.key] = True
+        if evento.key == pg.K_LSHIFT:
+            self.trocar_arma()
 
     def evento_mouse(self, evento):
         if evento.button == 1:
             self.atacar()
+
+
 
     @property
     def tipo(self):
@@ -228,7 +230,6 @@ class Jogador(Entidade):
         self.status()
         self.animate()
         self.check_death()
-        self.trocar_arma()
         self.arma.mover(self.rect.center, self.pos_mouse)
 
     def desenhar(self):
