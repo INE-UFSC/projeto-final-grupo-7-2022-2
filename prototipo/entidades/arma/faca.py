@@ -10,6 +10,7 @@ class Faca(Arma):
         self.fase = fase
         self.tipo = 'faca'
         self.chegou_no_30 = False
+        self.tipo_sprite = 'faca'
 
         self.__escala = (10, 10)
         self.image  = pg.Surface(self.__escala)

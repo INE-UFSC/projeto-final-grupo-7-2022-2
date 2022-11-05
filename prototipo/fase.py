@@ -1,5 +1,6 @@
 from estados import Partida
 import pygame as pg
+import os
 from configuracoes import Configuracoes
 from mapa import Mapa, Tile
 from entidades.jogador import Jogador
@@ -27,7 +28,7 @@ class Fase:
         self.__attackable_sprites = pg.sprite.Group()
 
         # Cria o mapa baseado em um arquivo csv
-        self.__mapa = Mapa('mapa_teste16x16.csv')
+        self.__mapa = Mapa(os.path.join('mapa_teste16x16.csv'))
         self.criar_mapa()
 
     @property
@@ -89,7 +90,7 @@ class Fase:
     def player_attack_logic(self):
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
-                if attack_sprite.ativo:
+                if attack_sprite.ativo and attack_sprite.tipo_sprite != 'flecha':
                     collision_sprites = pg.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
                     if collision_sprites:
                         for target_sprite in collision_sprites:
@@ -108,10 +109,7 @@ class Fase:
         return self.__grupo_de_entidade.sprites()
 
     def atualizar(self, tempo_passado):
-        # Desenha as sprites visíveis e atualiza elas
-        # self.__grupo_de_entidade.bomba_asma_update(self.__jogador)
         self.__grupo_de_entidade.atualizar(tempo_passado)
-        # self.__grupo_de_entidade.enemy_update(self.__jogador)
         self.player_attack_logic()
 
     def desenhar(self):
@@ -142,17 +140,6 @@ class YSortCameraGroup(pg.sprite.Group):
         for sprite in sorted(sprite_para_desenhar, key=lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.__offset
             self.__display_surface.blit(sprite.image, offset_pos)
-
-    def enemy_update(self, jogador):
-        sprites_inimigos = [sprite for sprite in self.sprites() if hasattr(sprite, 'tipo_sprite')
-                            and sprite.tipo_sprite == 'inimigo']
-        for inimigo in sprites_inimigos:
-            inimigo.enemy_update(jogador)
-
-    def bomba_asma_update(self, jogador):
-        for sprite in self.sprites():
-            if hasattr(sprite, 'tipo_sprite') and sprite.tipo_sprite == 'bomba_asma':
-                sprite.bomba_asma_update(jogador)
 
     def atualizar(self, tempo_passado):
         for entidade in self.sprites():

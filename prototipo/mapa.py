@@ -1,14 +1,15 @@
 import csv
+import os
 from configuracoes import Configuracoes
 import pygame as pg
+
 
 
 class Tile(pg.sprite.Sprite):
     def __init__(self, fase, pos, groups):
         super().__init__(groups)
         self.__configuracoes = Configuracoes()
-
-        self.image = pg.transform.scale(pg.image.load('sprites/bloco_parede.png').convert_alpha(), (self.__configuracoes.tamanho_tile, self.__configuracoes.tamanho_tile))
+        self.image = pg.transform.scale(pg.image.load(os.path.join('sprites', 'bloco_parede.png')).convert_alpha(), (self.__configuracoes.tamanho_tile, self.__configuracoes.tamanho_tile))
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect
     
@@ -21,6 +22,7 @@ class Tile(pg.sprite.Sprite):
 
     def desenhar(self):
         return (self,)
+
 #Lê o arquivo .csv e organiza as informações em uma lista
 class Mapa(pg.sprite.Sprite):
     def __init__(self, arquivocsv):

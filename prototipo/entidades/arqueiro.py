@@ -2,6 +2,7 @@ from .entidade import Entidade
 import pygame as pg
 from configuracoes import Configuracoes
 from spritesheet import Spritesheet
+from .flecha import Flecha
 
 
 class Arqueiro(Entidade):
@@ -13,14 +14,16 @@ class Arqueiro(Entidade):
 
         # Informacoes Inimigo
         self.__velocidade = 2
-        self.__raio_ataque = 20
+        self.__raio_ataque = 200
         self.__raio_percepcao = 300
+        self.__posicao = pos
 
         self.__dano_no_jogador = dano_no_jogador
 
         self.__pode_atacar = True
         self.__tempo_ataque = None
-        self.__tempo_de_recarga_ataque = 6 * self.__configuracoes.tps
+        self.__tempo_de_recarga_ataque = 20 * self.__configuracoes.tps
+        self.__flechas = []
 
         # Configurações de gráfico - Ainda estão provisórias
         self.__tipo_sprite = 'inimigo'
@@ -180,6 +183,17 @@ class Arqueiro(Entidade):
             direcao = pg.math.Vector2()
         return (distancia, direcao)
 
+    def direcao_jogador(self, jogador):
+        vetor_inimigo = pg.math.Vector2(self.rect.center)
+        vetor_jogador = pg.math.Vector2(jogador.rect.center)
+        distancia = (vetor_jogador - vetor_inimigo).magnitude()
+
+        if distancia > 0:
+            direcao = (vetor_jogador - vetor_inimigo).normalize()
+        else:
+            direcao = pg.math.Vector2()
+        return direcao
+
     def get_status(self, jogador):
         # Pega a distância do player e o inimigo
         distancia = self.pegar_distancia_direcao_jogador(jogador)[0]
@@ -195,7 +209,7 @@ class Arqueiro(Entidade):
     def actions(self, player):
         if self.status == 'attack':
             self.tempo_ataque = pg.time.get_ticks()
-            self.dano_no_jogador()
+            self.atirar()
             self.pode_atacar = False
         elif self.status == 'move':
             self.direction = self.pegar_distancia_direcao_jogador(player)[1]
@@ -213,6 +227,17 @@ class Arqueiro(Entidade):
 
     def toma_dano(self):
             self.kill()
+
+    def atirar(self):
+        if self.__pode_atacar:
+            self.__pode_atacar = False
+            vetor = pg.math.Vector2(self.rect.center)
+            direcao = self.direcao_jogador(self.__fase.jogador)
+            self.__flechas.append(Flecha(
+                                self.__fase, 
+                                [self.__fase.grupo_de_entidade, 
+                                self.__fase.attack_sprites], 
+                                vetor, direcao, self.__dano_no_jogador))
 
     def atualizar(self, tempo_passado):
         self.move(tempo_passado)
