@@ -3,6 +3,7 @@ import pygame as pg
 import pygame.time as pg_time
 from maquina_de_estado import MaquinaDeEstado
 from configuracoes import Configuracoes
+from evento_tps import evento_TPS
 
 
 class Jogo:
@@ -17,7 +18,7 @@ class Jogo:
 
         self.__timer_fps = pg.time.Clock()
         self.__timer_tps = pg.time.Clock()
-        # pg_time.set_timer(evento_TPS, 1000 // self.__configuracoes.tps)
+        pg_time.set_timer(evento_TPS, 1000 // self.__configuracoes.tps)
 
     @property
     def tela(self):
@@ -35,9 +36,9 @@ class Jogo:
                 if event.type == pg.QUIT:
                     pg.quit()
                     sys.exit()
-                    '''elif event.type == evento_TPS.type:
-                        self.maquina_de_estado.estado_atual.atualizar(eventos, self.__timer_tps.tick())
-                        eventos = []'''
+                elif event.type == evento_TPS.type:
+                    self.maquina_de_estado.estado_atual.atualizar(eventos, self.__timer_tps.tick())
+                    eventos = []
                 else:
                     eventos.append(event)
 
