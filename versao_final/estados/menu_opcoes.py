@@ -21,7 +21,7 @@ class MenuOpcoes(Estado):
         
     def desenhar(self):
         self.__superficie.blit(self.__imagens, (0, 0))
-        # self.__superficie.blit(self.__botao_back.desenhar(), (1080, 580))
+        # self.__botao_voltar.desenhar(self.__superficie)
 
     def atualizar(self, eventos: list, delta_time: float):
         self.__botao_voltar.atualizar()

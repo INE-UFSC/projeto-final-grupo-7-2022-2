@@ -21,8 +21,8 @@ class FimDeJogo(Estado):
     
     def desenhar(self):
         self.__superficie.blit(self.__imagens, (0, 0))
-        # self.__superficie.blit(self.__botao_back.desenhar(), (430, 500))
-        # self.__superficie.blit(self.__botao_ranking.desenhar(), (670, 500))
+        # self.__botao_voltar.desenhar(self.__superficie)
+        # self.__botao_ranking.desenhar(self.__superficie)
 
     def __evento_botao_iniciar_clicado(self):
         self.maquina_de_estado.voltar_para_inicio()

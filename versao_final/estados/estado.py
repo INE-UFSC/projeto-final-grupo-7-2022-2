@@ -16,4 +16,4 @@ class Estado(ABC):
 
     @abstractmethod
     def atualizar(self, eventos: list, delta_time: float):
-        raise NotImplementedError("Atualizar não implementado")
+        pass
