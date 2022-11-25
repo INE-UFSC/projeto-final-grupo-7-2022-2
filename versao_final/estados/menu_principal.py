@@ -29,6 +29,8 @@ class MenuPrincipal(Estado):
 
         self.__musica_control.parar_musica()
         self.__musica_control.iniciar_musica(self.__configuracoes.musica_menu)
+        self.__musica_control.mudar_volume_musica()
+
 
     def desenhar(self):
         self.__titulo_rect.center = (self.__configuracoes.largura_tela // 2, self.__configuracoes.altura_tela // 10)

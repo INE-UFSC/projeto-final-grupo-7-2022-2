@@ -58,6 +58,7 @@ class Jogo:
                     sys.exit()
                 elif event.type == evento_TPS.type:
                     self.__maquina_de_estado.estado_atual.atualizar(eventos, self.__timer_tps.tick())
+                    #print(self.__maquina_de_estado.estado_atual)
                     eventos = []
                 else:
                     eventos.append(event)
