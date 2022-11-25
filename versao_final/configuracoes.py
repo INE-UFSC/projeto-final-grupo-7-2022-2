@@ -30,6 +30,12 @@ class Configuracoes(Singleton):
         fonte.init()
         self.__fonte_titulo = fonte.SysFont('Arial', 80)
 
+        self.__fases = ['test']
+
+    @property
+    def fases(self):
+        return self.__fases
+
     @property
     def fonte_titulo(self):
         return self.__fonte_titulo

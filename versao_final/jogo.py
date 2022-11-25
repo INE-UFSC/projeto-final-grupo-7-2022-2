@@ -12,7 +12,7 @@ from estados.menu_opcoes import MenuOpcoes
 from estados.fim_de_jogo import FimDeJogo
 from estados.menu_ranking import MenuRanking
 from estados.menu_registro import MenuRegistro
-# from fase import Fase
+from fase import Fase
 
 
 class Jogo:
@@ -38,7 +38,8 @@ class Jogo:
         menu_opcoes = MenuOpcoes(self.__maquina_de_estado, self.__tela)
         fim_de_jogo = FimDeJogo(self.__maquina_de_estado, self.__tela)
 
-        # partida.registrar_fase(Fase(partida))
+        for fase in self.__configuracoes.fases: 
+            partida.registrar_fase(Fase(partida, fase))
 
         self.__maquina_de_estado.adicionar_estado("partida", partida)
         self.__maquina_de_estado.adicionar_estado("menu_principal", menu_principal)
