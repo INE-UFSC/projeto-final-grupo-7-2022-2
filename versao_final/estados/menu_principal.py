@@ -1,5 +1,6 @@
 from os import path
 import pygame as pg
+import sys
 from configuracoes import Configuracoes
 from estados.estado import Estado
 from botao import Botao
@@ -31,10 +32,10 @@ class MenuPrincipal(Estado):
         self.__titulo_rect.center = (self.__configuracoes.largura_tela // 2, self.__configuracoes.altura_tela // 10)
         self.__superficie.blit(self.__imagens, (0, 0))
         self.__superficie.blit(self.__titulo, self.__titulo_rect)
-        # self.__superficie.blit(self.__botao_play.desenhar(), (75, 150))
-        # self.__superficie.blit(self.__botao_opcoes.desenhar(), (75, 310))
-        # self.__superficie.blit(self.__botao_creditos.desenhar(), (75, 430))
-        # self.__superficie.blit(self.__botao_sair.desenhar(), (75, 580))
+        # self.__botao_jogar.desenhar(self.__superficie)
+        # self.__botao_opcoes.desenhar(self.__superficie)
+        # self.__botao_creditos.desenhar(self.__superficie)
+        # self.__botao_sair.desenhar(self.__superficie)
 
     def tocar_musica(self):
         self.__ctrl_musica.parar_musica()
@@ -51,7 +52,8 @@ class MenuPrincipal(Estado):
         self.__ctrl_musica.som_click()
         
     def __evento_botao_sair_clicado(self):
-        pass
+        pg.quit()
+        sys.exit()
 
     def atualizar(self, eventos: list, delta_time: float):
         self.__botao_jogar.atualizar()
