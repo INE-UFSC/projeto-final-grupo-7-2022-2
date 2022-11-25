@@ -1,5 +1,6 @@
+import pygame as pg
 from pygame import font as fonte
-from os import path
+import os
 
 
 class Singleton(object):
@@ -21,6 +22,10 @@ class Configuracoes(Singleton):
         self.__tamanho_tile = 32
         self.__max_fps = 240
         self.__tps = 60
+
+        self.__musica_menu = os.path.join('musicas', '8_Bit_Nostalgia.ogg')
+        self.__musica_creditos = os.path.join('musicas','wind_sound.ogg')
+        self.__som_hit = os.path.join('musicas', 'hit_sound.ogg')
 
         fonte.init()
         self.__fonte_titulo = fonte.SysFont('Arial', 80)
@@ -56,3 +61,15 @@ class Configuracoes(Singleton):
     @volume_musica.setter
     def volume_musica(self, volume_musica):
         self.__volume_musica = volume_musica
+
+    @property
+    def musica_menu(self):
+        return (self.__musica_menu)
+
+    @property
+    def musica_creditos(self):
+        return(self.__musica_creditos)
+
+    @property
+    def som_hit(self):
+        return(self.__som_hit)

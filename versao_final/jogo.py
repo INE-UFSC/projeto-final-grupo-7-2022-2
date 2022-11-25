@@ -9,12 +9,14 @@ from evento_tps import evento_TPS
 class Jogo:
     def __init__(self):
         pg.init()
+       # pg.mixer.init()
 
         self.__maquina_de_estado = MaquinaDeEstado()
         self.__configuracoes = Configuracoes()
 
         self.__tela = pg.display.set_mode((self.__configuracoes.largura_tela, self.__configuracoes.altura_tela))
         pg.display.set_caption('SUPER LAMPARINA ARFANTE')
+
 
         self.__timer_fps = pg.time.Clock()
         self.__timer_tps = pg.time.Clock()
@@ -43,5 +45,6 @@ class Jogo:
                     eventos.append(event)
 
             self.maquina_de_estado.estado_atual.desenhar()
+            #self.maquina_de_estado.estado_atual.tocar_musica()
             pg.display.update()
             self.__timer_fps.tick(self.__configuracoes.max_fps)
