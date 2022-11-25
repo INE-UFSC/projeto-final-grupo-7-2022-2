@@ -27,6 +27,9 @@ class MenuPrincipal(Estado):
         self.__titulo = self.__configuracoes.fonte_titulo.render('Super Lamparina Arfante', True, (0, 0, 0))
         self.__titulo_rect = self.__titulo.get_rect()
 
+        self.__musica_control.parar_musica()
+        self.__musica_control.iniciar_musica(self.__configuracoes.musica_menu)
+
     def desenhar(self):
         self.__titulo_rect.center = (self.__configuracoes.largura_tela // 2, self.__configuracoes.altura_tela // 10)
         self.__superficie.blit(self.__imagens, (0, 0))
