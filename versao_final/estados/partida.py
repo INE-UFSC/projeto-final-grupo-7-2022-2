@@ -1,6 +1,6 @@
 import pygame as pg
 from configuracoes import Configuracoes
-# from callback_de_evento import CallbackDeEvento
+from callback_de_evento import CallbackDeEvento
 from estados.estado import Estado
 
 
@@ -17,8 +17,8 @@ class Partida(Estado):
 
     def registrar_evento(self, tipo: int, callback: callable) -> int:
         id = self.__id_indice
-        # callback_de_evento = CallbackDeEvento(id, tipo, callback)
-        # self.__callback_de_eventos.append(callback_de_evento)
+        callback_de_evento = CallbackDeEvento(id, tipo, callback)
+        self.__callback_de_eventos.append(callback_de_evento)
         self.__id_indice += 1
         return id
 
@@ -38,10 +38,10 @@ class Partida(Estado):
 
     def desenhar(self):
         self.__superficie.fill('black')
-        # self.__fases[self.__fase_atual_indice].desenhar()
+        self.__fases[self.__fase_atual_indice].desenhar()
 
     def atualizar(self, eventos: list, delta_time: float):
-        #self.__fases[self.__fase_atual_indice].atualizar(delta_time)
+        self.__fases[self.__fase_atual_indice].atualizar(delta_time)
         for evento in eventos:
             for callback_de_evento in self.__callback_de_eventos:
                 if evento.type == callback_de_evento.tipo:

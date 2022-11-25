@@ -23,6 +23,7 @@ class Fase:
         self.__camera = Camera()
         self.__colisores = pg.sprite.Group()
         self.__grupo_de_entidade = pg.sprite.Group()
+        self.__attackable_sprites = pg.sprite.Group()
         self.__inimigos = pg.sprite.Group()
         self.__attack_sprites = pg.sprite.Group()
 
@@ -65,7 +66,8 @@ class Fase:
         return self.__grupo_de_entidade.sprites()
 
     def atualizar(self, tempo_passado):
-        self.__grupo_de_entidade.atualizar(tempo_passado)
+        for entidade in self.__grupo_de_entidade.sprites():
+            entidade.atualizar(tempo_passado)
         self.player_attack_logic()
 
     def desenhar(self):
