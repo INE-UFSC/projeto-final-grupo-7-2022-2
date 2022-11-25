@@ -6,12 +6,11 @@ from estados.estado import Estado
 from botao import Botao
 from controlador_de_music import Controlador_de_Musica
 
-
 class MenuPrincipal(Estado):
     def __init__(self, maquina_de_estado, tela):
         super().__init__(maquina_de_estado)
         self.__configuracoes = Configuracoes()
-        self.__ctrl_musica = Controlador_de_Musica()
+        self.__musica_control = Controlador_de_Musica()
         self.__tela = tela
         self.__superficie = pg.display.get_surface()
 
@@ -37,10 +36,6 @@ class MenuPrincipal(Estado):
         # self.__botao_creditos.desenhar(self.__superficie)
         # self.__botao_sair.desenhar(self.__superficie)
 
-    def tocar_musica(self):
-        self.__ctrl_musica.parar_musica()
-        self.__ctrl_musica.iniciar_musica(self.__configuracoes.musica_menu)
-
     def __evento_botao_jogar_clicado(self):
         self.maquina_de_estado.mover_para_estado('menu_registro')
     
@@ -49,7 +44,7 @@ class MenuPrincipal(Estado):
         
     def __evento_botao_creditos_clicado(self):
         self.maquina_de_estado.mover_para_estado('menu_creditos')
-        self.__ctrl_musica.som_click()
+        self.__musica_control.som_click()
         
     def __evento_botao_sair_clicado(self):
         pg.quit()

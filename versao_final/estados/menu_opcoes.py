@@ -3,12 +3,14 @@ import pygame as pg
 from configuracoes import Configuracoes
 from estados.estado import Estado
 from botao import Botao
+from controlador_de_music import Controlador_de_Musica
 
 
 class MenuOpcoes(Estado):
     def __init__(self, maquina_de_estado, tela):
         super().__init__(maquina_de_estado)
         self.__configuracoes = Configuracoes()
+        self.__musica_control = Controlador_de_Musica()
         self.__tela = tela
         self.__superficie = pg.display.get_surface()
         
@@ -18,6 +20,7 @@ class MenuOpcoes(Estado):
     
     def __evento_botao_voltar_clicado(self):
         self.maquina_de_estado.voltar()
+        self.__musica_control.som_click()
         
     def desenhar(self):
         self.__superficie.blit(self.__imagens, (0, 0))

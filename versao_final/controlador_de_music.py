@@ -21,5 +21,5 @@ class Controlador_de_Musica(Singleton):
     def som_click(self):
         self.__som_click.play()
 
-    def tocar_com(self,som):
+    def tocar_som(self,som):
         self.som.play()
