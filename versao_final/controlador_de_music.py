@@ -2,6 +2,7 @@ import pygame as pg
 import os
 from configuracoes import Configuracoes
 from configuracoes import Singleton
+import time
 
 
 class Controlador_de_Musica(Singleton):
@@ -9,7 +10,7 @@ class Controlador_de_Musica(Singleton):
         self.__configuracoes = Configuracoes()
         pg.mixer.init()
         self.__som_click = pg.mixer.Sound(self.__configuracoes.som_hit)
-        self.__volume_musica = 1
+        self.__volume_musica = 0.5
         self.__volume_som = 1
 
     def iniciar_musica(self, path):
@@ -38,7 +39,7 @@ class Controlador_de_Musica(Singleton):
             self.__volume_musica = 0
         else:
             self.__volume_musica = 1
-        
+
         pg.mixer.music.set_volume(self.__volume_musica)
 
     def mudar_volume_som(self):

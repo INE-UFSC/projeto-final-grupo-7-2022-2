@@ -1,4 +1,5 @@
 import pygame as pg
+import time
 
 
 class Botao:
@@ -25,6 +26,7 @@ class Botao:
             if pg.mouse.get_pressed()[0] == 1:
                 if self.__on_click_callback:
                     self.__on_click_callback()
+                    time.sleep(0.2)
 
     def on_click(self, callback):
         self.__on_click_callback = callback
