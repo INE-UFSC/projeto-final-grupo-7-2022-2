@@ -19,7 +19,7 @@ class Configuracoes(Singleton):
 
         self.__volume_musica = None
 
-        self.__tamanho_tile = 32
+        self.__tamanho_tile = 64
         self.__max_fps = 240
         self.__tps = 60
 
