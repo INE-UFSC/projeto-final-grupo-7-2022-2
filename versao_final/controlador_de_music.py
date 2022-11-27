@@ -62,5 +62,8 @@ class Controlador_de_Musica(Singleton):
             path = self.__configuracoes.musica_creditos
         elif rotulo == "menu_opcoes":
             path = self.__configuracoes.musica_menu
-                  
-        # self.iniciar_musica(path)
+        else:
+            #Provisório
+            path = self.__configuracoes.musica_menu
+        
+        self.iniciar_musica(path)

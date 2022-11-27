@@ -29,6 +29,7 @@ class Configuracoes(Singleton):
 
         fonte.init()
         self.__fonte_titulo = fonte.SysFont('Arial', 80)
+        self.__fonte_botao = fonte.SysFont('Arial', 40)
 
         self.__fases = ['test2']
 
@@ -39,6 +40,10 @@ class Configuracoes(Singleton):
     @property
     def fonte_titulo(self):
         return self.__fonte_titulo
+
+    @property
+    def fonte_botao(self):
+        return self.__fonte_botao
 
     @property
     def tps(self):
@@ -70,12 +75,12 @@ class Configuracoes(Singleton):
 
     @property
     def musica_menu(self):
-        return (self.__musica_menu)
+        return self.__musica_menu
 
     @property
     def musica_creditos(self):
-        return(self.__musica_creditos)
+        return self.__musica_creditos
 
     @property
     def som_hit(self):
-        return(self.__som_hit)
+        return self.__som_hit

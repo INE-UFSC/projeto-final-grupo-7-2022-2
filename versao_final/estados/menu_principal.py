@@ -20,13 +20,13 @@ class MenuPrincipal(Estado):
         self.__botao_off = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_off.png'))
         self.__botao_on = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_on.png'))
 
-        self.__botao_jogar = Botao((75, 150), 300, 100, (self.__botao_off, self.__botao_on))
+        self.__botao_jogar = Botao((75, 150), (self.__botao_off, self.__botao_on), 'Jogar')
         self.__botao_jogar.on_click(self.__evento_botao_jogar_clicado)
-        self.__botao_opcoes = Botao((72, 310), 260, 80, (self.__botao_off, self.__botao_on))
+        self.__botao_opcoes = Botao((75, 290), (self.__botao_off, self.__botao_on), 'Opções')
         self.__botao_opcoes.on_click(self.__evento_botao_opcoes_clicado)
-        self.__botao_creditos = Botao((72, 430), 260, 100, (self.__botao_off, self.__botao_on))
+        self.__botao_creditos = Botao((75, 430), (self.__botao_off, self.__botao_on), 'Créditos')
         self.__botao_creditos.on_click(self.__evento_botao_creditos_clicado)
-        self.__botao_sair = Botao((75, 580), 260, 90, (self.__botao_off, self.__botao_on))
+        self.__botao_sair = Botao((75, 570), (self.__botao_off, self.__botao_on), 'Sair')
         self.__botao_sair.on_click(self.__evento_botao_sair_clicado)
 
 
@@ -43,10 +43,6 @@ class MenuPrincipal(Estado):
         self.__botao_opcoes.desenhar(self.__superficie)
         self.__botao_creditos.desenhar(self.__superficie)
         self.__botao_sair.desenhar(self.__superficie)
-        # self.__botao_jogar.desenhar(self.__superficie)
-        # self.__botao_opcoes.desenhar(self.__superficie)
-        # self.__botao_creditos.desenhar(self.__superficie)
-        # self.__botao_sair.desenhar(self.__superficie)
 
     def __evento_botao_jogar_clicado(self):
         self.maquina_de_estado.mover_para_estado('menu_registro')

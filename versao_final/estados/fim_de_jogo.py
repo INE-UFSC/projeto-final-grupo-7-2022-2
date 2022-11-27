@@ -15,10 +15,10 @@ class FimDeJogo(Estado):
         self.__botao_off = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_off.png'))
         self.__botao_on = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_on.png'))
 
-        self.__botao_voltar = Botao((430, 500), 200, 80, (self.__botao_off, self.__botao_on))
+        self.__botao_voltar = Botao((430, 500), (self.__botao_off, self.__botao_on), 'Voltar')
         self.__botao_voltar.on_click(self.__evento_botao_iniciar_clicado)
         
-        self.__botao_ranking = Botao((670, 500), 200, 80, (self.__botao_off, self.__botao_on))
+        self.__botao_ranking = Botao((670, 500), (self.__botao_off, self.__botao_on), 'Ranking')
         self.__botao_ranking.on_click(self.__evento_botao_ranking_clicado)
         self.__imagens = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'fim_de_jogo.png')), (self.__configuracoes.largura_tela, self.__configuracoes.altura_tela))
     
