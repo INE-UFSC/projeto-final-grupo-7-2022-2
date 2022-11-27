@@ -30,7 +30,7 @@ class Configuracoes(Singleton):
         fonte.init()
         self.__fonte_titulo = fonte.SysFont('Arial', 80)
 
-        self.__fases = ['test']
+        self.__fases = ['test2']
 
     @property
     def fases(self):

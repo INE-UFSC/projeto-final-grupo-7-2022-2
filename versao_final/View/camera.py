@@ -20,7 +20,7 @@ class Camera(pg.sprite.Group):
         sprite_para_desenhar = []
         for sprite in self.sprites():
             sprite_para_desenhar.extend(sprite.desenhar())
-        
+
         for sprite in sorted(sprite_para_desenhar, key=lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.__offset
             self.__display_surface.blit(sprite.image, offset_pos)

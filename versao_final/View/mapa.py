@@ -1,43 +1,75 @@
 import pygame as pg
 import pytmx
-from .tile import Tile
+from .tile import Tile, Estrutura, Chao
 import os
+from configuracoes import Configuracoes
 
 
 class Mapa():
-    def __init__(self, nome, fase):
+    def __init__(self, nome):
+
+        self.__config = Configuracoes()
+        self.__nome = nome
+
         # Carrega o arquivo .tmx
-        file_path = os.path.join('./View/mapas', nome, 'data/tmx/', nome + '.tmx')
-        self.__data = pytmx.load_pygame(file_path, pixelalpha=True)
+        tmx_path = os.path.join('./View/mapas', self.__nome, self.__nome + '.tmx')
+        self.__data = pytmx.load_pygame(tmx_path, pixelalpha=True)
 
-        self.__fase = fase
-
+            
+        self.__fase = {
+            'floor': self.__gerar_chao(),
+            'tiles': self.__gerar_tiles(),
+            'colisores': self.__gerar_colisores(),
+            'objetos': self.__gerar_estruturas()
+        }
 
     @property
     def data(self):
         return self.__data
 
-    def gerar_mapa(self) -> list:
-        mapa = []
+    @property
+    def fase(self):
+        return self.__fase
 
+    def __gerar_chao(self):
+        floor_path = os.path.join('./View/mapas', self.__nome, 'floor.png')
+        floor_surf = pg.image.load(floor_path).convert_alpha()
+        height = self.__data.height
+        width = self.__data.width
+
+        return Chao(width, height, pos = (0, 0), surf = floor_surf)
+
+
+    def __gerar_tiles(self) -> list:
+
+        tiles = []
         for layer in self.__data.visible_layers:
             if hasattr(layer,'data'):
                 for x, y, surf in layer.tiles():
-                    pos = (x * 32, y * 32)
-                    Tile([self.__fase.camera], pos = pos, surf = surf)
-                
-        return mapa
+                    pos = (x * self.__config.tamanho_tile, y * self.__config.tamanho_tile)
+                    tiles.append(Tile(pos = pos, surf = surf))
 
-    def gerar_colisores(self):
-        # Percorre o arquivo tmx e inlcui os tiles invisíveis no seu respectivo grupo
-        for layer in self.__data.invisible_layers:
-            if hasattr(layer,'data'):
-                for x, y, surf in layer.tiles():
-                    pos = (x * 128, y * 128)
-                    Tile(pos = pos, surf = surf)
+        return tiles
 
-    def gerar_objetos(self):
+    def __gerar_colisores(self):
+
+        colisores = []
+        for layer in self.__data.layers:
+            if layer not in self.__data.visible_layers:
+                if hasattr(layer,'data'):
+                    if layer.name == 'collision' or layer.name == 'object_obstacles':
+                        for x, y, surf in layer.tiles():
+                            pos = (x * self.__config.tamanho_tile, y * self.__config.tamanho_tile)
+                            colisores.append(Tile(pos = pos, surf = surf))
+
+        return colisores
+
+    def __gerar_estruturas(self):
+        
+        estruturas = []
         # Percorre o arquivo tmx e inlcui os objetos em seu respectivo grupo
-        for obj in self.__data.objects:
-            pos = obj.x, obj.y
-            Tile(pos = pos, surf = obj.image)
+        for estrutura in self.__data.objects:
+            pos = estrutura.x, estrutura.y
+            estruturas.append(Estrutura(pos = pos, surf = obj.image))
+
+        return estruturas

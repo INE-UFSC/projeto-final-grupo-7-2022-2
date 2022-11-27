@@ -21,17 +21,17 @@ class Fase:
         self.__configuracoes = Configuracoes()
 
         self.__camera = Camera()
-        self.__colisores = pg.sprite.Group()
+        self.__obstacle_sprites = pg.sprite.Group()
         self.__grupo_de_entidade = pg.sprite.Group()
         self.__attackable_sprites = pg.sprite.Group()
         self.__inimigos = pg.sprite.Group()
         self.__attack_sprites = pg.sprite.Group()
 
-        self.__mapa = Mapa(nome, self)
+        self.__mapa = Mapa(nome)
 
         self.gerar_fase()
 
-        self.__jogador = Jogador(self, (320,320), [self.__camera, self.__grupo_de_entidade], self.__colisores, self.display_surface)
+        self.__jogador = Jogador(self, (120,120), [self.__camera, self.__grupo_de_entidade], self.__obstacle_sprites, self.display_surface)
 
 
     def registrar_evento(self, tipo, callback: callable):
@@ -41,7 +41,16 @@ class Fase:
         self.__partida.terminar_fase()
 
     def gerar_fase(self):
-        self.__mapa.gerar_mapa()
+        self.__mapa.fase['floor'].add(self.__camera)
+        
+        for tile in self.__mapa.fase['tiles']:
+            tile.add(self.__camera)
+
+        for obstacle in self.__mapa.fase['colisores']:
+            obstacle.add(self.__obstacle_sprites)
+
+        for objeto in self.__mapa.fase['objetos']:
+            objeto.add(self.__camera)
 
 
     def player_attack_logic(self):
