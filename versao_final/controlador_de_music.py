@@ -41,7 +41,6 @@ class Controlador_de_Musica(Singleton):
             self.__volume_musica = 1
 
         pg.mixer.music.set_volume(self.__volume_musica)
-        print(self.__volume_musica)
 
     def mudar_volume_som(self):
         if self.__volume_som == 1:
@@ -63,8 +62,5 @@ class Controlador_de_Musica(Singleton):
             path = self.__configuracoes.musica_creditos
         elif rotulo == "menu_opcoes":
             path = self.__configuracoes.musica_menu
-            
-        print(self.__volume_musica)
-        print(rotulo)
-        
-        self.iniciar_musica(path)
+                  
+        # self.iniciar_musica(path)
