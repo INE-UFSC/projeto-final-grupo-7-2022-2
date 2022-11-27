@@ -29,6 +29,10 @@ class EntradaTextoUsuario:
     def texto_usuario(self):
         return self.__texto_usuario
 
+    @texto_usuario.setter
+    def texto_usuario(self, texto_usuario):
+        self.__texto_usuario = texto_usuario
+
     def atualizar(self, eventos: list):
         for evento in eventos:         
             if evento.type == pg.KEYDOWN and self.__ativo:
@@ -36,8 +40,7 @@ class EntradaTextoUsuario:
                     self.__texto_usuario = self.__texto_usuario[:-1]
                 elif evento.key == pg.K_RETURN or evento.key == pg.K_KP_ENTER or evento.key == pg.K_TAB:
                     self.__ativo = False
-                # Ver
-                elif self.__fonte_ret.width < self.__retangulo.width - 50:
+                elif pg.font.Font.size(self.__configuracoes.fonte_titulo, self.__texto_usuario + evento.unicode)[0] < self.__largura - 5:
                     self.__texto_usuario += evento.unicode
 
         pos = pg.mouse.get_pos()

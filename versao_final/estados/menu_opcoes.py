@@ -17,11 +17,11 @@ class MenuOpcoes(Estado):
         self.__botao_off = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_off.png'))
         self.__botao_on = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_on.png'))
         
-        self.__botao_voltar = Botao((1080, 580), 200, 80, (self.__botao_off, self.__botao_on))
+        self.__botao_voltar = Botao((1080, 580), (self.__botao_off, self.__botao_on), 'Voltar')
         self.__botao_voltar.on_click(self.__evento_botao_voltar_clicado)
         self.__imagens = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'menu_opcoes.png')), (self.__configuracoes.largura_tela, self.__configuracoes.altura_tela))
 
-        self.__botao_volume_musica = Botao((75, 150), 300, 100, (self.__botao_off, self.__botao_on))
+        self.__botao_volume_musica = Botao((75, 150), (self.__botao_off, self.__botao_on), '')
         self.__botao_volume_musica.on_click(self.__evento_botao_volume_musica_clicado)
     
     def __evento_botao_voltar_clicado(self):

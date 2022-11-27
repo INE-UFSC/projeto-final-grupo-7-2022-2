@@ -1,4 +1,6 @@
+import pygame as pg
 from controlador_de_music import Controlador_de_Musica
+
 
 class MaquinaDeEstado:
     def __init__(self):
@@ -7,6 +9,9 @@ class MaquinaDeEstado:
         self.__estado_atual: Estado | None = None
         self.__estado_inicial: Estado | None = None
         self.__musica_control = Controlador_de_Musica()
+
+        self.__cooldown = 300
+        self.__ultimo_chamado = 0
 
     @property
     def estado_inicial(self):
@@ -26,10 +31,12 @@ class MaquinaDeEstado:
             self.__estado_inicial = rotulo
 
     def mover_para_estado(self, rotulo: str):
-        self.__estado_pilha.append(self.__estado_atual)
-        self.__estado_atual = self.__estados[rotulo]
-        self.__musica_control.seletor_de_musica(rotulo)
-        print(rotulo)
+        atual = pg.time.get_ticks()
+        if (self.__ultimo_chamado + self.__cooldown <= atual and len(self.__estado_pilha) > 0) or (len(self.__estado_pilha) == 0):
+            self.__ultimo_chamado = pg.time.get_ticks()
+            self.__estado_pilha.append(self.__estado_atual)
+            self.__estado_atual = self.__estados[rotulo]
+            self.__musica_control.seletor_de_musica(rotulo)
 
     def voltar_para_inicio(self):
         self.__estado_atual = self.__estado_inicial
