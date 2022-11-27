@@ -3,7 +3,6 @@ import os
 from configuracoes import Configuracoes
 
 
-
 class Tile(pg.sprite.Sprite):
     def __init__(self, pos, surf):
         super().__init__()

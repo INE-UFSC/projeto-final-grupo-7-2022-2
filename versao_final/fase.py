@@ -1,37 +1,33 @@
 from estados import Partida
 import pygame as pg
-import os
+
 from configuracoes import Configuracoes
-from View.mapa import Mapa
+from View.fase_construtor import FaseConstrutor
 from View.camera import Camera
 
 from entidades.jogador import Jogador
-# from entidades.ladino import Ladino
-# from entidades.guerreiro import Guerreiro
-# from entidades.arqueiro import Arqueiro
-# from bomba_de_asma import BombaDeAsma
-# from entidades.arma.pistola import Pistola
 
 class Fase:
     def __init__(self, partida: Partida, nome: str):
 
-        self.__partida = partida
-        self.__nome = nome
-        self.display_surface = pg.display.get_surface()
         self.__configuracoes = Configuracoes()
 
-        self.__camera = Camera()
-        self.__obstacle_sprites = pg.sprite.Group()
-        self.__grupo_de_entidade = pg.sprite.Group()
-        self.__attackable_sprites = pg.sprite.Group()
-        self.__inimigos = pg.sprite.Group()
-        self.__attack_sprites = pg.sprite.Group()
+        self.__partida = partida
+        self.__nome = nome
+        
+        self.display_surface = pg.display.get_surface()
 
-        self.__mapa = Mapa(nome)
+        # Grupos de elementos da fase
+        self.__camera               = Camera()
+        self.__colisores              = pg.sprite.Group()
+        self.__entidades            = pg.sprite.Group()
+        self.attack_sprites         = pg.sprite.Group()
+        self.__attackable_sprites   = pg.sprite.Group()
+        self.__inimigos             = pg.sprite.Group()
+        self.__ameacas              = pg.sprite.Group()
 
+        self.__fase_construtor = FaseConstrutor(self, nome)
         self.gerar_fase()
-
-        self.__jogador = Jogador(self, (120,120), [self.__camera, self.__grupo_de_entidade], self.__obstacle_sprites, self.display_surface)
 
 
     def registrar_evento(self, tipo, callback: callable):
@@ -40,17 +36,23 @@ class Fase:
     def terminar_fase(self):
         self.__partida.terminar_fase()
 
+    # Inclusão de todos os elementos da fase em seus grupos
     def gerar_fase(self):
-        self.__mapa.fase['floor'].add(self.__camera)
+        self.__fase_construtor.grupos['chao'].add(self.__camera)
         
-        for tile in self.__mapa.fase['tiles']:
-            tile.add(self.__camera)
+        for bloco in self.__fase_construtor.grupos['blocos']:
+            bloco.add(self.__camera)
 
-        for obstacle in self.__mapa.fase['colisores']:
-            obstacle.add(self.__obstacle_sprites)
+        for colisor in self.__fase_construtor.grupos['colisores']:
+            colisor.add(self.__colisores)
 
-        for objeto in self.__mapa.fase['objetos']:
-            objeto.add(self.__camera)
+        # for estrutura in self.__mapa.fase_grupos['estruturas']:
+        #     estrutura.add(self.__camera)
+
+        for entidade in self.__fase_construtor.grupos['entidades']:
+            entidade.add(self.__camera, self.__entidades)
+            if isinstance(entidade, Jogador):
+                self.__jogador = entidade
 
 
     def player_attack_logic(self):
@@ -63,6 +65,8 @@ class Fase:
                             if target_sprite.tipo_sprite == 'inimigo':
                                 target_sprite.toma_dano()
 
+
+    # Logica de controle de dano
     def dano_no_jogador(self):
         if self.__jogador.vulneravel:
             self.__jogador.vida -= 1
@@ -70,12 +74,9 @@ class Fase:
             # Define o momento que o jogador sofreu o dano
             self.__jogador.hurt_time = pg.time.get_ticks()
 
-    @property
-    def entidades(self):
-        return self.__grupo_de_entidade.sprites()
 
     def atualizar(self, tempo_passado):
-        for entidade in self.__grupo_de_entidade.sprites():
+        for entidade in self.__entidades.sprites():
             entidade.atualizar(tempo_passado)
         self.player_attack_logic()
 
@@ -83,32 +84,8 @@ class Fase:
         self.display_surface.fill('black')
         self.__camera.desenhar(self.__jogador)
 
-
-    # Propriedades
+    
     @property
-    def camera(self):
-        return self.__camera
-
-    @property
-    def grupo_de_entidade(self):
-        return self.__grupo_de_entidade
-
-    @property
-    def grupo_de_obstaculos(self):
-        return self.__grupo_de_obstaculos
-
-    @property
-    def attack_sprites(self):
-        return self.__attack_sprites
-
-    @property
-    def attackable_sprites(self):
-        return self.__attackable_sprites
-
-    @property
-    def config(self):
-        return self.__configuracoes
-
-    @property
-    def jogador(self):
-        return self.__jogador
+    def colisores(self):
+        return self.__colisores
+        
