@@ -3,8 +3,8 @@ from .arma import Arma
 
 
 class Faca(Arma):
-    def __init__(self, fase, groups):
-        super().__init__(fase, groups)
+    def __init__(self, fase):
+        super().__init__(fase)
         
         self.fase = fase
         self.tipo = 'faca'

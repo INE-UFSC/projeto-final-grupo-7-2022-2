@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 import pygame as pg
 
 class Arma(ABC, pg.sprite.Sprite):
-    def __init__(self, fase, groups):
-        super().__init__(groups)
+    def __init__(self, fase):
+        super().__init__()
         
         self.__fase = fase
         self.__tipo = None

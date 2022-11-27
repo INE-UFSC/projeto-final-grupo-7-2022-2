@@ -2,8 +2,8 @@ import pygame as pg
 
 
 class Bala(pg.sprite.Sprite):
-    def __init__(self, fase, groups, pos_inicial, direcao) -> None:
-        super().__init__(groups)
+    def __init__(self, fase, pos_inicial, direcao) -> None:
+        super().__init__()
 
         self.tipo_sprite = 'bala'
         self.__fase = fase

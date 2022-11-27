@@ -7,8 +7,10 @@ from .entidade import Entidade
 
 
 class Jogador(Entidade):
-    def __init__(self, fase, pos, groups, obstacle_sprites, screen) -> None:
-        super().__init__(groups)
+    def __init__(self, fase, pos) -> None:
+        super().__init__()
+
+        self.obstacle_sprites = fase.colisores
 
         fase.registrar_evento(pg.KEYUP, self.evento_tecla_solta)
         fase.registrar_evento(pg.KEYDOWN, self.evento_tecla_apertada)
@@ -25,14 +27,12 @@ class Jogador(Entidade):
         self.__configuracoes = Configuracoes()
 
         # Imagem e hitbox
-        self.__spritesheet = Spritesheet("skelet", 1)
+        self.__spritesheet = Spritesheet("skelet", 2)
         self.image = self.image('idle_0.png')
         self.animations = self.__spritesheet.animation_frames
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -8)
-
-        self.obstacle_sprites = obstacle_sprites
-
+        
         # Movimento
         self.velocidade = 5
 
@@ -58,16 +58,12 @@ class Jogador(Entidade):
         self.__status = 'right'
 
         # Armas
-        self.__faca = Faca(self.fase, 
-                            [self.fase.grupo_de_entidade, 
-                            self.fase.attack_sprites])
+        self.__faca = Faca(self.fase)
         
-        self.__pistola = Pistola(self.fase, 
-                                [self.fase.grupo_de_entidade])
+        self.__pistola = Pistola(self.fase)
        
         self.arma = self.__faca
 
-        self.__janela = screen
 
     def calcular_direcao(self):
 
@@ -131,8 +127,8 @@ class Jogador(Entidade):
     # Posição do mouse relativa ao jogador
     @property
     def pos_mouse(self):
-        return (pg.mouse.get_pos()[0] - self.__fase.config.largura_tela // 2,
-                pg.mouse.get_pos()[1] - self.__fase.config.altura_tela // 2)
+        return (pg.mouse.get_pos()[0] - self.__configuracoes.largura_tela // 2,
+                pg.mouse.get_pos()[1] - self.__configuracoes.altura_tela // 2)
 
     def image(self, sprite: str):
         return self.__spritesheet.get_sprite(sprite)

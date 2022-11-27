@@ -4,8 +4,8 @@ from entidades.arma.arma import Arma
 
 
 class Pistola(Arma):
-    def __init__(self, fase, groups) -> None:
-        super().__init__(fase, groups)
+    def __init__(self, fase) -> None:
+        super().__init__(fase)
 
         # Identicadores
         self.fase = fase
@@ -24,9 +24,7 @@ class Pistola(Arma):
     def usar_arma(self):
         if len(self.__tiros) <= self.__regarga:
             self.__tiros.append(Bala(
-                                self.fase, 
-                                [self.fase.grupo_de_entidade, 
-                                self.fase.attack_sprites], 
+                                self.fase,
                                 self.posicao, self.vetor))
 
     def recarregar(self):

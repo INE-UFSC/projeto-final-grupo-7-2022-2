@@ -4,8 +4,8 @@ from math import sin
 
 
 class Entidade(pg.sprite.Sprite):
-    def __init__(self, groups) -> None:
-        super().__init__(groups)
+    def __init__(self) -> None:
+        super().__init__()
         self.velocidade = 0
         self.sprite = None
         self.direction = pg.math.Vector2()
