@@ -25,7 +25,9 @@ class Configuracoes(Singleton):
 
         self.__musica_menu = os.path.join('musicas', '8_Bit_Nostalgia.ogg')
         self.__musica_creditos = os.path.join('musicas','wind_sound.ogg')
-        self.__som_hit = os.path.join('musicas', 'hit_sound.ogg')
+        self.__som_opcoes = os.path.join('musicas','som_grama.ogg')
+        #self.__som_hit = os.path.join('musicas', 'hit_sound.ogg')
+        self.__som_bandeira = os.path.join('musicas', 'som_bandeira.ogg')
 
         fonte.init()
         self.__fonte_titulo = fonte.SysFont('Arial', 80)
@@ -82,5 +84,9 @@ class Configuracoes(Singleton):
         return self.__musica_creditos
 
     @property
-    def som_hit(self):
-        return self.__som_hit
+    def som_bandeira(self):
+        return self.__som_bandeira
+    
+    @property
+    def som_opcoes(self):
+        return self.__som_opcoes
