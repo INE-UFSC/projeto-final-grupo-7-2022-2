@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="3">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="6">
  <tileset firstgid="1" source="../tsx/Tiles_Dungeon.tsx"/>
  <tileset firstgid="626" source="../tsx/Collision_Block.tsx"/>
  <group id="6" name="entities">
   <objectgroup id="8" name="entities">
    <object id="1" name="player" x="48.014" y="241.559">
+    <point/>
+   </object>
+   <object id="3" name="guerreiro" x="254.958" y="239.325">
+    <point/>
+   </object>
+   <object id="4" name="ladino" x="256.447" y="82.6287">
+    <point/>
+   </object>
+   <object id="5" name="arqueiro" x="79.6511" y="79.6511">
     <point/>
    </object>
   </objectgroup>
