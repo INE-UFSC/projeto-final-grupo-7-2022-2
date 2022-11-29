@@ -6,11 +6,11 @@ class Spritesheet():
     def __init__(self, sheet_name: str, scale = 1) -> None:
         # Carrega a sprite sheet como uma surface
         self.__scale = scale
-        sheet_surf = pg.image.load(os.path.join('sprites', sheet_name + '.png')).convert_alpha()
+        sheet_surf = pg.image.load(os.path.join('recursos', 'sprites', sheet_name + '.png')).convert_alpha()
         self.__sheet = pg.transform.scale(sheet_surf, (sheet_surf.get_width() * scale, sheet_surf.get_height() * scale))
 
         # Abre o arquivo json da spritesheet,carrega ele como um dicionário e armazena esse dicionário em self.__data
-        with open(os.path.join('sprites', sheet_name + '.json'), 'r') as f:                              
+        with open(os.path.join('recursos', 'sprites', sheet_name + '.json'), 'r') as f:                              
             self.__data = json.load(f)                                                                 
 
 

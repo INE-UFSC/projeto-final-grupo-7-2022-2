@@ -63,7 +63,8 @@ class Fase:
                     if collision_sprites:
                         for target_sprite in collision_sprites:
                             if target_sprite.tipo_sprite == 'inimigo':
-                                target_sprite.toma_dano()
+                                #Quantidade de dano provisória
+                                target_sprite.receber_dano(1)
 
 
     # Logica de controle de dano

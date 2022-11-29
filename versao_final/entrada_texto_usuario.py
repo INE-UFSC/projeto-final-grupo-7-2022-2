@@ -15,7 +15,7 @@ class EntradaTextoUsuario:
         self.__retangulo = pg.Rect(self.__pos[0], self.__pos[1], self.__largura, self.__altura)
 
         self.__texto_usuario = ''
-        self.__fonte_render = self.__configuracoes.fonte_titulo.render(self.__texto_usuario, True, (255, 255, 255))
+        self.__fonte_render = self.__configuracoes.fonte_digitar.render(self.__texto_usuario, True, (255, 255, 255))
         self.__fonte_ret = self.__fonte_render.get_rect()
         self.__fonte_ret.topleft = pos
         self.__cursor = pg.Rect(self.__fonte_ret.bottomright, (3, self.__fonte_ret.height - 8))
@@ -40,7 +40,7 @@ class EntradaTextoUsuario:
                     self.__texto_usuario = self.__texto_usuario[:-1]
                 elif evento.key == pg.K_RETURN or evento.key == pg.K_KP_ENTER or evento.key == pg.K_TAB:
                     self.__ativo = False
-                elif pg.font.Font.size(self.__configuracoes.fonte_titulo, self.__texto_usuario + evento.unicode)[0] < self.__largura - 5:
+                elif pg.font.Font.size(self.__configuracoes.fonte_digitar, self.__texto_usuario + evento.unicode)[0] < self.__largura - 5:
                     self.__texto_usuario += evento.unicode
 
         pos = pg.mouse.get_pos()
@@ -49,7 +49,7 @@ class EntradaTextoUsuario:
                 self.__ativo = True
         elif pg.mouse.get_pressed()[0] == 1 and self.__ativo:
             self.__ativo = False
-        self.__fonte_render = self.__configuracoes.fonte_titulo.render(self.__texto_usuario, True, (255, 255, 255))
+        self.__fonte_render = self.__configuracoes.fonte_digitar.render(self.__texto_usuario, True, (255, 255, 255))
 
     def desenhar(self, superficie):
         if self.__ativo:

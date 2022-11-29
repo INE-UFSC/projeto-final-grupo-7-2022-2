@@ -35,7 +35,7 @@ class MenuRegistro(Estado):
         
     def __evento_botao_registro_clicado(self):
         self.__clique_registro = pg.time.get_ticks()
-        if self.__entrada_usuario.texto_usuario:
+        if self.__entrada_usuario.texto_usuario.upper().isupper():
             self.maquina_de_estado.mover_para_estado('partida')
         else:
             self.__mostra_mensagem = True

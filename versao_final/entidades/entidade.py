@@ -1,17 +1,73 @@
-from abc import ABC
 import pygame as pg
+from abc import ABC, abstractmethod
 from math import sin
+from configuracoes import Configuracoes
 
 
-class Entidade(pg.sprite.Sprite):
-    def __init__(self) -> None:
+class Entidade(pg.sprite.Sprite, ABC):
+    def __init__(self, fase, pos) -> None:
         super().__init__()
-        self.velocidade = 0
-        self.sprite = None
-        self.direction = pg.math.Vector2()
+        self.__configuracoes = Configuracoes()
+        self.__fase = fase
+        self.__posicao = pos
+        self.__obstacle_sprites = fase.colisores
 
+        self.__status = None
+        self.__velocidade = None
+        self.__direction = pg.math.Vector2()
+        self.__vida = None
+
+        self.sprite = None
         self.frame_index = 0
         self.animation_speed = 0.15
+
+    @property
+    def configuracoes(self):
+        return self.__configuracoes
+
+    @property
+    def direction(self):
+        return self.__direction
+
+    @direction.setter
+    def direction(self, direction):
+        self.__direction = direction
+
+    @property
+    def fase(self):
+        return self.__fase
+
+    @property
+    def obstacle_sprites(self):
+        return self.__obstacle_sprites
+
+    @property
+    def posicao(self):
+        return self.__posicao
+
+    @property
+    def status(self):
+        return self.__status
+
+    @status.setter
+    def status(self, status):
+        self.__status = status
+
+    @property
+    def velocidade(self):
+        return self.__velocidade
+    
+    @velocidade.setter
+    def velocidade(self, velocidade):
+        self.__velocidade = velocidade
+
+    @property
+    def vida(self):
+        return self.__vida
+    
+    @vida.setter
+    def vida(self, vida):
+        self.__vida = vida
 
     def move(self, tempo_passado):
         if self.direction.magnitude() != 0:
@@ -52,15 +108,26 @@ class Entidade(pg.sprite.Sprite):
     def registrar_na_fase(self, fase):
         raise NotImplementedError("Registrar na fase não implementado")
 
-    @property
-    def tipo(self):
-        raise NotImplementedError("Tipo não implementado")
-
-    def atualizar(self, delta: float):
-        raise NotImplementedError("Atualizar não implementado")
+    def receber_dano(self, dano: int):
+        self.__vida -= dano
+        if self.__vida <= 0:
+            self.__kill()
 
     def desenhar(self):
-        raise NotImplementedError("Desenhar não implementado")
+        return (self,)
 
-    def receber_dano(self, dano: int):
-        raise NotImplementedError("Receber dano não implementado")
+    @abstractmethod
+    def animate(self):
+        pass
+
+    @abstractmethod
+    def atualizar(self, delta: float):
+        pass
+
+    @abstractmethod
+    def obter_status(self, jogador):
+        pass
+
+    @abstractmethod
+    def tipo(self):
+        pass

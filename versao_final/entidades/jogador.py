@@ -8,9 +8,7 @@ from .entidade import Entidade
 
 class Jogador(Entidade):
     def __init__(self, fase, pos) -> None:
-        super().__init__()
-
-        self.obstacle_sprites = fase.colisores
+        super().__init__(fase, pos)
 
         fase.registrar_evento(pg.KEYUP, self.evento_tecla_solta)
         fase.registrar_evento(pg.KEYDOWN, self.evento_tecla_apertada)
@@ -22,9 +20,6 @@ class Jogador(Entidade):
             pg.K_d: False,
             pg.K_SPACE: False,
         }
-
-        self.__fase = fase
-        self.__configuracoes = Configuracoes()
 
         # Imagem e hitbox
         self.__spritesheet = Spritesheet("skelet", 2)
@@ -55,7 +50,7 @@ class Jogador(Entidade):
         self.__tempo_do_ataque = None
 
         # Animação
-        self.__status = 'right'
+        self.status = 'right'
 
         # Armas
         self.__faca = Faca(self.fase)
@@ -120,52 +115,47 @@ class Jogador(Entidade):
     def tipo(self):
         return "jogador"
 
-    @property
-    def fase(self):
-        return self.__fase
-
     # Posição do mouse relativa ao jogador
     @property
     def pos_mouse(self):
-        return (pg.mouse.get_pos()[0] - self.__configuracoes.largura_tela // 2,
-                pg.mouse.get_pos()[1] - self.__configuracoes.altura_tela // 2)
+        return (pg.mouse.get_pos()[0] - self.configuracoes.largura_tela // 2,
+                pg.mouse.get_pos()[1] - self.configuracoes.altura_tela // 2)
 
     def image(self, sprite: str):
         return self.__spritesheet.get_sprite(sprite)
 
-    def status(self):
-
+    def obter_status(self):
         # Orientação do personagem com relação ao mouse
         if self.pos_mouse[0] > 0:
-            if 'right' not in self.__status:
-                self.__status = 'right'
+            if 'right' not in self.status:
+                self.status = 'right'
         else:
-            if 'left' not in self.__status:
-                self.__status = 'left'
+            if 'left' not in self.status:
+                self.status = 'left'
 
         # Animação de movimento
         if self.direction.x == 0 and self.direction.y == 0:
-            if not 'idle' in self.__status and not 'attack' in self.__status:
-                self.__status += '_idle'
+            if not 'idle' in self.status and not 'attack' in self.status:
+                self.status += '_idle'
         else:
-            if 'idle' in self.__status:
-                self.__status = self.__status.replace('_idle', '')
+            if 'idle' in self.status:
+                self.status = self.status.replace('_idle', '')
 
         # if self.__esta_atacando:
         #     self.direction.x = 0
         #     self.direction.y = 0
-        #     if not 'attack' in self.__status:
-        #         if 'idle' in self.__status:
-        #             self.__status = self.__status.replace('_idle', '_attack')
+        #     if not 'attack' in self.status:
+        #         if 'idle' in self.status:
+        #             self.status = self.status.replace('_idle', '_attack')
         #         else:
-        #             self.__status += '_attack'
+        #             self.status += '_attack'
         # else:
-        #     if 'attack' in self.__status:
-        #         self.__status = self.__status.replace('_attack', '')
+        #     if 'attack' in self.status:
+        #         self.status = self.status.replace('_attack', '')
 
     def dash(self):
         if self.__dashing and self.__active_dash:
-            self.__velocidade = 20
+            self.velocidade = 20
 
     def cooldowns(self):
         current_time = pg.time.get_ticks()
@@ -178,7 +168,7 @@ class Jogador(Entidade):
         if self.__esta_com_impulso:
             if current_time - self.__dash_time >= self.__dash_duration:
                 self.__dashing = False
-                self.__velocidade = 5
+                self.velocidade = 5
         if not self.__active_dash:
             if current_time - self.__dash_time >= self.__dash_cd:
                 self.__active_dash = True
@@ -189,7 +179,7 @@ class Jogador(Entidade):
                 self.vulneravel = True
 
     def animate(self):
-        animation = self.animations[self.__status]
+        animation = self.animations[self.status]
 
         self.frame_index += self.animation_speed
         if self.frame_index >= len(animation):
@@ -224,10 +214,7 @@ class Jogador(Entidade):
         self.calcula_impulso()
         self.move(tempo_passado)
         self.cooldowns()
-        self.status()
+        self.obter_status()
         self.animate()
         self.check_death()
         self.arma.mover(self.rect.center, self.pos_mouse)
-
-    def desenhar(self):
-        return (self,)

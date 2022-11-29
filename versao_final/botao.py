@@ -18,11 +18,11 @@ class Botao:
     def desenhar(self, superficie):
         superficie.blit(self.__imagens[self.__ativo], self.__pos)
         if self.__ativo == 1:
-            texto_desenho = pg.transform.rotate(self.__texto, -3)
-            self.__texto_rect.center = (self.__rect.centerx - 40, self.__rect.centery - 10)
+            texto_desenho = pg.transform.rotate(self.__texto, -2)
+            self.__texto_rect.midleft = (self.__rect.midleft[0]+ 32, self.__rect.midleft[1] - 8)
             superficie.blit(texto_desenho, self.__texto_rect)
         else:
-            self.__texto_rect.center = (self.__rect.centerx - 40, self.__rect.centery)
+            self.__texto_rect.midleft = (self.__rect.midleft[0]+ 30, self.__rect.midleft[1] - 5)
             superficie.blit(self.__texto, self.__texto_rect)
 
     def atualizar(self):

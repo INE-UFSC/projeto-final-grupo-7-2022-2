@@ -1,15 +1,7 @@
 import pygame as pg
 from pygame import font as fonte
+from singleton import Singleton
 import os
-
-
-class Singleton(object):
-    __instance = None
-
-    def __new__(cls, *args):
-        if cls.__instance is None:
-            cls.__instance = object.__new__(cls, *args)
-        return cls.__instance
 
 
 class Configuracoes(Singleton):
@@ -23,15 +15,15 @@ class Configuracoes(Singleton):
         self.__max_fps = 240
         self.__tps = 60
 
-        self.__musica_menu = os.path.join('musicas', '8_Bit_Nostalgia.ogg')
-        self.__musica_creditos = os.path.join('musicas','wind_sound.ogg')
-        self.__som_opcoes = os.path.join('musicas','som_grama.ogg')
-        #self.__som_hit = os.path.join('musicas', 'hit_sound.ogg')
-        self.__som_bandeira = os.path.join('musicas', 'som_bandeira.ogg')
+        self.__musica_menu = os.path.join('recursos', 'musicas', '8_Bit_Nostalgia.ogg')
+        self.__musica_creditos = os.path.join('recursos', 'musicas', 'wind_sound.ogg')
+        self.__som_opcoes = os.path.join('recursos', 'musicas', 'som_grama.ogg')
+        self.__som_bandeira = os.path.join('recursos', 'musicas', 'som_bandeira.ogg')
 
         fonte.init()
-        self.__fonte_titulo = fonte.SysFont('Arial', 80)
-        self.__fonte_botao = fonte.SysFont('Arial', 40)
+        self.__fonte_titulo = fonte.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 80)
+        self.__fonte_botao = fonte.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 55)
+        self.__fonte_digitar = fonte.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 82)
 
         self.__fases = ['test2']
 
@@ -46,6 +38,10 @@ class Configuracoes(Singleton):
     @property
     def fonte_botao(self):
         return self.__fonte_botao
+
+    @property
+    def fonte_digitar(self):
+        return self.__fonte_digitar
 
     @property
     def tps(self):

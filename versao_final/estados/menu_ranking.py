@@ -3,6 +3,7 @@ import pygame as pg
 from configuracoes import Configuracoes
 from estados.estado import Estado
 from botao import Botao
+from barra_deslocamento import BarraDeslocamento
 
 
 class MenuRanking(Estado):
@@ -18,15 +19,19 @@ class MenuRanking(Estado):
         self.__botao_voltar = Botao((1110, 645), (self.__botao_off, self.__botao_on), 'Voltar')
         self.__botao_voltar.on_click(self.__evento_botao_voltar_clicado)
         
+        self.__barra_deslocamento = BarraDeslocamento(3000)
         self.__imagens = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'pontuacao.png')), (self.__configuracoes.largura_tela, self.__configuracoes.altura_tela))
     
     def __evento_botao_voltar_clicado(self):
         self.maquina_de_estado.voltar()
     
     def desenhar(self):
-        self.__superficie.blit(self.__imagens, (0, 0))
+        self.__superficie.blit(self.__imagens, (0, self.__barra_deslocamento.eixo_y))
         self.__botao_voltar.desenhar(self.__superficie)
+        self.__barra_deslocamento.desenhar(self.__superficie)
+        self.__barra_deslocamento.altura = 2000
 
     def atualizar(self, eventos: list, delta_time: float):
         self.__botao_voltar.atualizar()
+        self.__barra_deslocamento.atualizar(eventos)
         
