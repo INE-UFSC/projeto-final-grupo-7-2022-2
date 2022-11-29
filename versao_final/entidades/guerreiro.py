@@ -5,8 +5,8 @@ from spritesheet import Spritesheet
 
 
 class Guerreiro(Entidade):
-    def __init__(self, fase, pos, groups, obstacle_sprites, dano_no_jogador):
-        super().__init__(groups)
+    def __init__(self, fase, pos):
+        super().__init__()
         self.__fase = fase
         self.__configuracoes = Configuracoes()
         self.__escala = self.configuracoes.tamanho_tile
@@ -16,8 +16,6 @@ class Guerreiro(Entidade):
         self.__raio_ataque = 20
         self.__raio_percepcao = 300
         self.__vida = 3
-
-        self.__dano_no_jogador = dano_no_jogador
 
         self.__pode_atacar = True
         self.__tempo_ataque = None
@@ -33,7 +31,7 @@ class Guerreiro(Entidade):
         # Movimento
         self.__rect = self.image.get_rect(topleft=pos)
         self.__hitbox = self.rect.inflate(0, -10)
-        self.__obstacle_sprites = obstacle_sprites
+        self.__obstacle_sprites = fase.colisores
 
     @property
     def tipo(self):
@@ -62,14 +60,6 @@ class Guerreiro(Entidade):
     @cor.setter
     def cor(self, cor):
         self.__cor = cor
-
-    @property
-    def dano_no_jogador(self):
-        return self.__dano_no_jogador
-
-    @dano_no_jogador.setter
-    def dano_no_jogador(self, dano_no_jogador):
-        self.__dano_no_jogador = dano_no_jogador
 
     @property
     def escala(self):

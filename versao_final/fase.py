@@ -19,7 +19,7 @@ class Fase:
 
         # Grupos de elementos da fase
         self.__camera               = Camera()
-        self.__colisores              = pg.sprite.Group()
+        self.__colisores            = pg.sprite.Group()
         self.__entidades            = pg.sprite.Group()
         self.attack_sprites         = pg.sprite.Group()
         self.__attackable_sprites   = pg.sprite.Group()
@@ -78,6 +78,8 @@ class Fase:
     def atualizar(self, tempo_passado):
         for entidade in self.__entidades.sprites():
             entidade.atualizar(tempo_passado)
+            if isinstance(entidade, Jogador):
+                self.__jogador = entidade
         self.player_attack_logic()
 
     def desenhar(self):
@@ -88,4 +90,8 @@ class Fase:
     @property
     def colisores(self):
         return self.__colisores
+
+    @property
+    def jogador(self):
+        return self.__jogador
         

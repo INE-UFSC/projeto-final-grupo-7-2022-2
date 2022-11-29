@@ -30,13 +30,6 @@ class FaseConstrutor():
             'entidades' : self.__gerar_entidades()
         }
 
-    @property
-    def data(self):
-        return self.__data
-
-    @property
-    def grupos(self):
-        return self.__grupos
 
     def __gerar_chao(self):
         floor_path = os.path.join('./View/mapas', self.__nome, 'floor.png')
@@ -89,10 +82,19 @@ class FaseConstrutor():
                     if entity.name == 'player':
                         entidades.append(Jogador(self.__fase, (entity.x * 4, entity.y *4)))
                     elif entity.name == 'ladino':
-                        pass
+                        entidades.append(Ladino(self.__fase, (entity.x * 4, entity.y *4)))
                     elif entity.name == 'guerreiro':
-                        pass
+                        entidades.append(Guerreiro(self.__fase, (entity.x * 4, entity.y *4)))
                     elif entity.name == 'arqueiro':
-                        pass
+                        entidades.append(Arqueiro(self.__fase, (entity.x * 4, entity.y *4)))
 
         return entidades
+
+    # Propriedades
+    @property
+    def data(self):
+        return self.__data
+
+    @property
+    def grupos(self):
+        return self.__grupos
