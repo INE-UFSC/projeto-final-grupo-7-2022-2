@@ -42,6 +42,10 @@ class Arma(ABC):
     def usar_arma(self) -> None:
         pass
 
+    @abstractmethod
+    def gerar_dict_do_estado(self) -> dict:
+        pass
+
     def _atualizar_posicao_e_direcao(self, posicao_do_mouse_relativa_ao_jogador: pg.Vector2) -> None:
         if posicao_do_mouse_relativa_ao_jogador.magnitude() > 0:
             self._direcao = posicao_do_mouse_relativa_ao_jogador.normalize()

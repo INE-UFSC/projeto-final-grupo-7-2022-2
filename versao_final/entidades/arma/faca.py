@@ -11,10 +11,14 @@ from superficie_posicionada import SuperficiePosicionada
 
 
 class Faca(Arma):
-    def __init__(self, jogador: 'Jogador'):
+    def __init__(self, jogador: 'Jogador', *args, **kwargs):
         super().__init__(jogador)
 
-        self.__chegou_no_30 = False
+        self.__chegou_no_30 = kwargs.get('chegou_no_30', False)
+
+        if 'distancia' in kwargs:
+            self._distancia = kwargs['distancia']
+
         self.__tipo_sprite = 'faca'
 
         self.__escala = (10, 10)
@@ -22,9 +26,19 @@ class Faca(Arma):
         self._imagem.fill('red')
         # self.rect = self.image.get_rect(center = (0,0))
 
+    @staticmethod
+    def apartir_do_dict(dados: dict, jogador: 'Jogador') -> 'Faca':
+        return Faca(jogador, **dados)
+
     @property
     def tipo(self) -> str:
         return 'faca'
+
+    def gerar_dict_do_estado(self) -> dict:
+        return {
+            'chegou_no_30': self.__chegou_no_30,
+            'distancia': self._distancia
+        }
 
     def usar_arma(self):
 

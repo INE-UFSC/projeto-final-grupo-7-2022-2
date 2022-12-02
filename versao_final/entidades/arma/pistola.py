@@ -13,9 +13,8 @@ from superficie_posicionada import SuperficiePosicionada
 
 
 class Pistola(Arma):
-    def __init__(self, jogador: 'Jogador') -> None:
+    def __init__(self, jogador: 'Jogador', *args, **kwargs) -> None:
         super().__init__(jogador)
-
         # Imagem
         self._imagem = pg.Surface((10, 10))
         self._imagem.fill('blue')
@@ -23,14 +22,23 @@ class Pistola(Arma):
 
         # Capacidade
         self.__regarga = 6
-        self.__balas_restantes = self.__regarga
+        self.__balas_restantes = kwargs.get('balas_restantes', self.__regarga)
         self.__tiros: List[Bala] = []
+
+    @staticmethod
+    def apartir_do_dict(dados: dict, jogador: 'Jogador') -> 'Pistola':
+        return Pistola(jogador, **dados)
 
     @property
     def tipo(self) -> str:
         return 'pistola'
 
-    def definir_fase(self, fase: 'Fase'): 
+    def gerar_dict_do_estado(self) -> dict:
+        return {
+            'balas_restantes': self.__balas_restantes,
+        }
+
+    def definir_fase(self, fase: 'Fase'):
         super().definir_fase(fase)
         self.__tiros = []
 

@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class Jogador(Entidade):
-    def __init__(self) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__()
 
         self.__teclas_usadas_estado = {
@@ -35,11 +35,10 @@ class Jogador(Entidade):
         # Movimento
         self._velocidade = 5
 
-        self.__vida = 300
+        self.__vida = kwargs.get('vida', 100)
         self.__vulneravel = True
         self.hurt_time = None
         self.duracao_invencibilidade = 300
-        self.morto = False
 
         # Dash
         self.__impulso_disponivel = True
@@ -53,17 +52,39 @@ class Jogador(Entidade):
         self.__attack_cd = 400
         self.__tempo_do_ataque = None
         # Animação
+        if 'armas' in kwargs:
+            self.__faca = Faca.apartir_do_dict(kwargs['armas']['faca'], self)
+            self.__pistola = Pistola.apartir_do_dict(kwargs['armas']['pistola'], self)
+        else:
+            self.__faca = Faca(self)
+            self.__pistola = Pistola(self)
 
-        self.__faca = Faca(self)
-        self.__pistola = Pistola(self)
+        if kwargs.get('arma', 'faca') == 'faca':
+            self.__arma = self.__faca
+        else:
+            self.__arma = self.__pistola
 
-        self.__arma = self.__faca
-        self.__faca.ativo = True
+        self.__arma.ativo = True
+
         self.__centro_da_tela = self.__calcular_centro_da_tela()
 
     def __calcular_centro_da_tela(self) -> pg.Vector2:
         largura, altura = pg.display.get_surface().get_size()
         return pg.Vector2(largura // 2, altura // 2)
+
+    @staticmethod
+    def apartir_do_dict(dados: dict) -> 'Jogador':
+        return Jogador(**dados)
+
+    def gerar_dict_do_estado(self) -> dict:
+        return {
+            'arma': self.__arma.tipo,
+            'vida': self.__vida,
+            'armas': {
+                'faca': self.__faca.gerar_dict_do_estado(),
+                'pistola': self.__pistola.gerar_dict_do_estado(),
+            }
+        }
 
     @property
     def __superficie_atual(self):
