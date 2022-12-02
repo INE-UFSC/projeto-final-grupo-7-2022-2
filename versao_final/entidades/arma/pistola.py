@@ -7,6 +7,7 @@ from .bala import Bala
 
 if TYPE_CHECKING:
     from entidades import Jogador
+    from fase import Fase
 
 from superficie_posicionada import SuperficiePosicionada
 
@@ -28,6 +29,10 @@ class Pistola(Arma):
     @property
     def tipo(self) -> str:
         return 'pistola'
+
+    def definir_fase(self, fase: 'Fase'): 
+        super().definir_fase(fase)
+        self.__tiros = []
 
     def usar_arma(self) -> None:
         if self.__balas_restantes > 0:
