@@ -3,10 +3,8 @@ from typing import Tuple
 import pygame as pg
 
 from configuracoes import Configuracoes
-from spritesheet import Spritesheet
 from superficie_posicionada import SuperficiePosicionada
 
-from .entidade import Entidade
 from .inimigo import Inimigo
 
 
@@ -25,11 +23,11 @@ class Guerreiro(Inimigo):
 
         # Configurações de gráfico - Ainda estão provisórias
         self.__cor = (255, 255, 0)
-        self.__image = pg.Surface((configuracoes.tamanho_tile, configuracoes.tamanho_tile))
-        self.__image.fill(self.__cor)
+        self.__superficie = pg.Surface((configuracoes.tamanho_tile, configuracoes.tamanho_tile))
+        self.__superficie.fill(self.__cor)
 
         # Movimento
-        self._rect = self.__image.get_rect()
+        self._rect = self.__superficie.get_rect()
         self._hitbox = self.rect.inflate(0, -10)
 
     @property
@@ -45,4 +43,4 @@ class Guerreiro(Inimigo):
         self._tempos_de_recarga()
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
-        return (SuperficiePosicionada(self.__image, self._rect.topleft),)
+        return (SuperficiePosicionada(self.__superficie, self._rect.topleft),)

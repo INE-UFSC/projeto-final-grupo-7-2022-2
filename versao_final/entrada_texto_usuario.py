@@ -1,5 +1,5 @@
 import time
-from typing import TYPE_CHECKING, List
+from typing import List
 
 import pygame as pg
 

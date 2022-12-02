@@ -4,6 +4,7 @@ import pygame as pg
 
 from callback_de_evento import CallbackDeEvento
 from configuracoes import Configuracoes
+from entidades import Jogador
 from estados.estado import Estado
 from fase import Fase
 
@@ -16,17 +17,20 @@ class Partida(Estado):
         super().__init__(maquina_de_estado)
         self.__fases = []
         self.__fase_atual_indice = 0
+
+        self.__jogador = Jogador()
+
         self.__callback_de_eventos = []
-        self.__id_indice = 0
+        self.__idenficador_de_evento_indice = 0
 
         self.__tela = pg.display.get_surface()
         self.__configuracoes = Configuracoes()
 
     def registrar_evento(self, tipo: int, callback: callable) -> int:
-        identificador = self.__id_indice
+        identificador = self.__idenficador_de_evento_indice
         callback_de_evento = CallbackDeEvento(identificador, tipo, callback)
         self.__callback_de_eventos.append(callback_de_evento)
-        self.__id_indice += 1
+        self.__idenficador_de_evento_indice += 1
         return identificador
 
     def remover_registro_de_evento(self, id: int):
@@ -38,8 +42,12 @@ class Partida(Estado):
     def registrar_fase(self, fase: 'Fase'):
         self.__fases.append(fase)
 
+    def jogo_perdido(self):
+        self._maquina_de_estado.mover_para_estado('fim_de_jogo')
+
     def terminar_fase(self):
         self.__fase_atual_indice += 1
+        self.__callback_de_eventos = []
         if self.__fase_atual_indice >= len(self.__fases):
             self._maquina_de_estado.mover_para_estado('fim_de_jogo')
 
@@ -56,4 +64,4 @@ class Partida(Estado):
 
     def iniciar(self):
         self.__fase_atual_indice = 0
-        self.__fases[self.__fase_atual_indice].iniciar()
+        self.__fases[self.__fase_atual_indice].iniciar(jogador=self.__jogador)

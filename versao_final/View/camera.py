@@ -2,41 +2,20 @@ from typing import List
 
 import pygame as pg
 
+from gerenciador_de_grupos import GerenciadorDeGrupos
 from superficie_posicionada import SuperficiePosicionada
 
 
 class Camera():
-    def __init__(self):
+    def __init__(self, gerenciador_de_grupos: GerenciadorDeGrupos):
         self.__tela = pg.display.get_surface()
+
+        self.__gerenciador_de_grupos = gerenciador_de_grupos
 
         centro_da_tela_x = self.__tela.get_width() // 2
         centro_da_tela_y = self.__tela.get_height() // 2
 
         self.__centro_da_tela = pg.Vector2(centro_da_tela_x, centro_da_tela_y)
-
-    @property
-    def chao(self) -> pg.Surface:
-        return self.__chao
-
-    @chao.setter
-    def chao(self, chao: pg.Surface):
-        self.__chao = chao
-
-    @property
-    def blocos(self) -> List[SuperficiePosicionada]:
-        return self.__blocos
-
-    @blocos.setter
-    def blocos(self, blocos: List[SuperficiePosicionada]):
-        self.__blocos = blocos
-
-    @property
-    def estruturas(self) -> List[SuperficiePosicionada]:
-        return self.__estruturas
-
-    @estruturas.setter
-    def estruturas(self, estruturas: List[SuperficiePosicionada]):
-        self.__estruturas = estruturas
 
     def __desenhar_lista_pelo_y(self, deslocamento: pg.Vector2, lista: List[SuperficiePosicionada]):
         lista.sort(key=lambda superficie: superficie.rect.centery)
@@ -48,11 +27,11 @@ class Camera():
         # o deslocamento que a posição dos sprites visíveis deve ter para simular uma câmera
         deslocamento = centro_do_desenho - self.__centro_da_tela
 
-        self.__tela.blit(self.__chao, -deslocamento)
+        self.__tela.blit(self.__gerenciador_de_grupos.chao, -deslocamento)
 
         # Ao invés de desenharmos os objetos numa posição fixa, nos os posicionamos de acordo com o centro.
         # Além disso, a ordem de desenho dos objetos na tela é crescente com relação a sua posição y
-        self.__desenhar_lista_pelo_y(deslocamento, self.__estruturas)
-        lista_de_superficies_posicionadas = self.__blocos.copy()
+        self.__desenhar_lista_pelo_y(deslocamento, self.__gerenciador_de_grupos.estruturas)
+        lista_de_superficies_posicionadas = self.__gerenciador_de_grupos.blocos.copy()
         lista_de_superficies_posicionadas.extend(superficie_posicionadas)
         self.__desenhar_lista_pelo_y(deslocamento, lista_de_superficies_posicionadas)

@@ -16,9 +16,9 @@ class Bala():
 
         # Imagem
         self.__escala = (8, 8)
-        self.__image = pg.Surface(self.__escala)
-        self.__image.fill((255, 255, 255))
-        self.__rect = self.__image.get_rect(center=posicao)
+        self.__superficie = pg.Surface(self.__escala)
+        self.__superficie.fill((255, 255, 255))
+        self.__rect = self.__superficie.get_rect(center=posicao)
 
         # Movimento
         self.__direcao = direcao
@@ -26,12 +26,13 @@ class Bala():
     def tipo(self) -> str:
         return 'bala'
 
-    def atualizar_posicao(self, tempo_passado: int) -> None:
+    def __atualizar_posicao(self, tempo_passado: int) -> None:
         # Move a bala baseado na direção e velocidade
         velocidade = 0.2
-        self.__rect.topleft = pg.Vector2(self.__rect.topleft) + self.__direcao * (velocidade * tempo_passado)
+        vetor = (pg.Vector2(self.__rect.topleft) + self.__direcao * (velocidade * tempo_passado))
+        self.__rect.topleft = vetor.x, vetor.y
 
-    def verificar_colisao(self) -> bool:
+    def __verificar_colisao(self) -> bool:
         dano = 5
         for alvo in self.__fase.entidades:
             if alvo.hitbox.colliderect(self.__rect):
@@ -45,7 +46,7 @@ class Bala():
         return False
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
-        return (SuperficiePosicionada(self.__image, self.__rect.topleft),)
+        return (SuperficiePosicionada(self.__superficie, self.__rect.topleft),)
 
     def atualizar(self, tempo_passado: int) -> bool:
         """
@@ -56,5 +57,5 @@ class Bala():
         Returns:
             Bool: Se a bala deve ser destruida
         """
-        self.atualizar_posicao(tempo_passado)
-        return self.verificar_colisao()
+        self.__atualizar_posicao(tempo_passado)
+        return self.__verificar_colisao()

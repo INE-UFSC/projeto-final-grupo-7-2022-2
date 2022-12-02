@@ -5,7 +5,7 @@ import pygame as pg
 import pytmx
 
 from configuracoes import Configuracoes
-from entidades import Arqueiro, Entidade, Guerreiro, Jogador, Ladino
+from entidades import Arqueiro, Entidade, Guerreiro, Ladino
 
 from View.tile import Tile
 
@@ -30,7 +30,7 @@ class GerenciadorDeGrupos():
         self.__gerar_entidades(dados_do_pytmx)
 
     @property
-    def chao(self) -> pg.Surface:
+    def chao(self) -> pg.surface.Surface:
         return self.__chao
 
     @property
@@ -98,7 +98,7 @@ class GerenciadorDeGrupos():
         self.__estruturas = estruturas
 
     def __gerar_entidades(self, dados: pytmx.TiledMap) -> None:
-        entidades = []
+        entidades: List[Entidade] = []
         for grupo in dados.objectgroups:
             if grupo.name == 'entities':
                 for entidade in grupo:

@@ -1,8 +1,6 @@
 import pygame as pg
-import os
 from configuracoes import Configuracoes
 from configuracoes import Singleton
-import time
 
 
 class ControladorDeMusica(Singleton):

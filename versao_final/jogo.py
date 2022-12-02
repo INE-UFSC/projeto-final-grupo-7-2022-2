@@ -36,8 +36,8 @@ class Jogo:
         for fase in self.__configuracoes.fases:
             partida.registrar_fase(Fase(partida, fase))
 
-        self.__maquina_de_estado.adicionar_estado("partida", partida)
         self.__maquina_de_estado.adicionar_estado("menu_principal", menu_principal)
+        self.__maquina_de_estado.adicionar_estado("partida", partida)
         self.__maquina_de_estado.adicionar_estado("menu_ranking", menu_ranking)
         self.__maquina_de_estado.adicionar_estado("menu_registro", menu_registro)
         self.__maquina_de_estado.adicionar_estado("menu_creditos", menu_creditos)

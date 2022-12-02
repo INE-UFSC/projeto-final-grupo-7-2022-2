@@ -1,8 +1,10 @@
+from typing import Callable
+
 import pygame
 
 
 class CallbackDeEvento():
-    def __init__(self, identificador: int, tipo_de_evento: int, callback: callable):
+    def __init__(self, identificador: int, tipo_de_evento: int, callback: Callable):
         self.__id = identificador
         self.__tipo_de_evento = tipo_de_evento
         self.__callback = callback

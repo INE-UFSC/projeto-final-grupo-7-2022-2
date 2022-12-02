@@ -47,7 +47,7 @@ class FimDeJogo(Estado):
 
     def atualizar(self, eventos: List[pg.event.Event], tempo_passado: int):
         for evento in eventos:
-            if evento.type == pg.MOUSEBUTTONDOWN:
+            if evento.type == pg.MOUSEBUTTONDOWN or evento.type == pg.MOUSEMOTION:
                 self.__botao_voltar.atualizar(evento)
                 self.__botao_ranking.atualizar(evento)
             elif evento.type == pg.KEYDOWN:

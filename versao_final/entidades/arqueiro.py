@@ -27,11 +27,11 @@ class Arqueiro(Inimigo):
 
         # Configurações de gráfico - Ainda estão provisórias
         self.__cor = (255, 0, 255)
-        self.__image = pg.Surface((configuracoes.tamanho_tile, configuracoes.tamanho_tile))
-        self.__image.fill(self.__cor)
+        self.__superficie = pg.Surface((configuracoes.tamanho_tile, configuracoes.tamanho_tile))
+        self.__superficie.fill(self.__cor)
 
         # Movimento
-        self._rect = self.__image.get_rect()
+        self._rect = self.__superficie.get_rect()
         self._hitbox = self.rect.inflate(0, -10)
 
     @property
@@ -42,7 +42,7 @@ class Arqueiro(Inimigo):
         if self._pode_atacar:
             vetor_diferenca = self._calcular_vetor_diferenca_jogador()
             if vetor_diferenca.magnitude() != 0:
-                flecha = Flecha(self._fase, self._rect.center, vetor_diferenca)
+                flecha = Flecha(self._fase, self._rect.center, vetor_diferenca.normalize())
                 self.__flechas.append(flecha)
                 self._pode_atacar = False
 
@@ -61,7 +61,7 @@ class Arqueiro(Inimigo):
         self.__atualizar_flechas(tempo_passado)
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
-        arqueiro_superficies = (SuperficiePosicionada(self.__image, self._rect.topleft),)
+        arqueiro_superficies = (SuperficiePosicionada(self.__superficie, self._rect.topleft),)
         for flecha in self.__flechas:
             arqueiro_superficies += flecha.desenhar()
 

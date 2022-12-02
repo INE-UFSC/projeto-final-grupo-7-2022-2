@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING, Tuple
 
 import pygame as pg
 
-from configuracoes import Configuracoes
 from spritesheet import Spritesheet
 from superficie_posicionada import SuperficiePosicionada
 
@@ -30,13 +29,13 @@ class Jogador(Entidade):
         self.__spritesheet = Spritesheet("skelet", 1)
         self.__animacoes = self.__spritesheet.get_animation_frames()
         self.__frame_indice = 0
-        self._rect = self.__imagem_atual.get_rect()
+        self._rect = self.__superficie_atual.get_rect()
         self._hitbox = self._rect.inflate(0, -8)
 
         # Movimento
         self.velocidade = 5
 
-        self.vida = 3
+        self.__vida = 300
         self.__vulneravel = True
         self.hurt_time = None
         self.duracao_invencibilidade = 300
@@ -67,7 +66,7 @@ class Jogador(Entidade):
         return pg.Vector2(largura // 2, altura // 2)
 
     @property
-    def __imagem_atual(self):
+    def __superficie_atual(self):
         return self.__animacoes[self.__status][int(self.__frame_indice)]
 
     @property
@@ -78,7 +77,7 @@ class Jogador(Entidade):
         super().registrar_na_fase(fase)
         fase.registrar_evento(pg.KEYUP, self.__evento_tecla_solta)
         fase.registrar_evento(pg.KEYDOWN, self.__evento_tecla_apertada)
-        fase.registrar_evento(pg.MOUSEBUTTONDOWN, self.evento_mouse)
+        fase.registrar_evento(pg.MOUSEBUTTONDOWN, self.__evento_mouse)
         self.__faca.definir_fase(fase)
         self.__pistola.definir_fase(fase)
 
@@ -124,7 +123,7 @@ class Jogador(Entidade):
         if evento.key == pg.K_r and self.__arma.tipo == 'pistola':
             self.__arma.recarregar()
 
-    def evento_mouse(self, evento):
+    def __evento_mouse(self, evento):
         if evento.button == 1:
             self.__atacar()
 
@@ -192,7 +191,7 @@ class Jogador(Entidade):
             if tempo_atual - self.hurt_time >= self.duracao_invencibilidade:
                 self.__vulneravel = True
 
-    def animar(self):
+    def __animar(self):
         animacao = self.__animacoes[self.__status]
 
         self.__frame_indice += self.velocidade_da_animacao
@@ -217,10 +216,13 @@ class Jogador(Entidade):
 
             self.__arma.usar_arma()
 
-    def check_death(self):
-        """ Todo """
-        if self.vida <= 0:
-            self.morto = True
+    def receber_dano(self, dano: int) -> None:
+        if self.__vulneravel:
+            self.__vulneravel = False
+            self.hurt_time = pg.time.get_ticks()
+            self.__vida -= dano
+            if self.__vida <= 0:
+                self._fase.matar_entidade(self)
 
     def atualizar(self, tempo_passado: int):
         posicao_do_mouse_relativa_ao_jogador = self.__calcular_posicao_do_mouse_relativa_ao_jogador()
@@ -229,13 +231,12 @@ class Jogador(Entidade):
         self._mover(tempo_passado)
         self.cooldowns()
         self.__calcular_tipo_de_animacao(posicao_do_mouse_relativa_ao_jogador)
-        self.animar()
-        self.check_death()
+        self.__animar()
         self.__faca.atualizar(posicao_do_mouse_relativa_ao_jogador, tempo_passado)
         self.__pistola.atualizar(posicao_do_mouse_relativa_ao_jogador, tempo_passado)
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
-        jogador_desenho = SuperficiePosicionada(self.__imagem_atual, self._rect.topleft)
+        jogador_desenho = SuperficiePosicionada(self.__superficie_atual, self._rect.topleft)
         faca_desenho = self.__faca.desenhar()
         arma_desenho = self.__pistola.desenhar()
         return (jogador_desenho,) + faca_desenho + arma_desenho

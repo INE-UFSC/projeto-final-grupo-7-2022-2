@@ -1,17 +1,11 @@
-from typing import TYPE_CHECKING, Tuple
+from typing import Tuple
 
 import pygame as pg
 
 from configuracoes import Configuracoes
-from spritesheet import Spritesheet
 from superficie_posicionada import SuperficiePosicionada
 
-from .entidade import Entidade
 from .inimigo import Inimigo
-from .jogador import Jogador
-
-if TYPE_CHECKING:
-    from fase import Fase
 
 
 class Ladino(Inimigo):
@@ -28,10 +22,10 @@ class Ladino(Inimigo):
 
         # Configurações de gráfico - Ainda estão provisórias
         self.__cor = (255, 0, 0)
-        self.__image = pg.Surface((configuracoes.tamanho_tile, configuracoes.tamanho_tile))
+        self.__superficie = pg.Surface((configuracoes.tamanho_tile, configuracoes.tamanho_tile))
 
         # Movimento
-        self._rect = self.__image.get_rect()
+        self._rect = self.__superficie.get_rect()
         self._hitbox = self.rect.inflate(0, -10)
 
     @property
@@ -39,7 +33,7 @@ class Ladino(Inimigo):
         return "ladino"
 
     def __animar(self) -> None:
-        self._rect = self.__image.get_rect(center=self.hitbox.center)
+        self._rect = self.__superficie.get_rect(center=self.hitbox.center)
 
     def atualizar(self, tempo_passado: int) -> None:
         super().atualizar(tempo_passado)
@@ -47,4 +41,4 @@ class Ladino(Inimigo):
         self._tempos_de_recarga()
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
-        return (SuperficiePosicionada(self.__image, self._rect.topleft),)
+        return (SuperficiePosicionada(self.__superficie, self._rect.topleft),)
