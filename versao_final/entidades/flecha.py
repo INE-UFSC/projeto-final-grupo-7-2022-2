@@ -16,7 +16,7 @@ class Flecha():
         self.__fase = fase
 
         # Imagem
-        self.__tamanho = (800, 8000)
+        self.__tamanho = (8, 8)
         self.__superficie = pg.Surface(self.__tamanho)
         self.__superficie.fill((255, 128, 0))
         self.__rect = self.__superficie.get_rect(center=posicao)
@@ -43,7 +43,7 @@ class Flecha():
         return False
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
-        return (SuperficiePosicionada(self.__superficie, self.__rect.topleft),)
+        return (SuperficiePosicionada(self.__superficie, pg.Vector2(self.__rect.topleft)),)
 
     def atualizar(self, tempo_passado: int) -> bool:
         self.__mover(tempo_passado)

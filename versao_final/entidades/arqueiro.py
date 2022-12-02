@@ -42,9 +42,9 @@ class Arqueiro(Inimigo):
         if self._pode_atacar:
             vetor_diferenca = self._calcular_vetor_diferenca_jogador()
             if vetor_diferenca.magnitude() != 0:
-                flecha = Flecha(self._fase, self._rect.center, vetor_diferenca.normalize())
+                flecha = Flecha(self._fase, self._rect.center, -vetor_diferenca.normalize())
                 self.__flechas.append(flecha)
-                self._pode_atacar = False
+                self._tempo_ataque = pg.time.get_ticks()
 
     def __atualizar_flechas(self, tempo_passado: int) -> None:
         flechas_que_ainda_nao_terminaram: List[Flecha] = []
@@ -56,7 +56,6 @@ class Arqueiro(Inimigo):
 
     def atualizar(self, tempo_passado: int) -> None:
         super().atualizar(tempo_passado)
-        self._tempos_de_recarga()
         self.__atirar()
         self.__atualizar_flechas(tempo_passado)
 

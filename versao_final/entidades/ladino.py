@@ -38,7 +38,6 @@ class Ladino(Inimigo):
     def atualizar(self, tempo_passado: int) -> None:
         super().atualizar(tempo_passado)
         self.__animar()
-        self._tempos_de_recarga()
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
         return (SuperficiePosicionada(self.__superficie, self._rect.topleft),)

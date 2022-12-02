@@ -19,10 +19,16 @@ class Inimigo(Entidade):
         self._raio_ataque: int = None
         self._raio_percepcao: int = None
 
-        self._pode_atacar: bool = True
         self._tempo_ataque: int | None = None
         self._tempo_de_recarga_ataque: int | None = None
         self._vida = 3
+
+    @property
+    def _pode_atacar(self) -> bool:
+        if self._tempo_ataque is None:
+            return True
+        tempo_atual = pg.time.get_ticks()
+        return tempo_atual - self._tempo_ataque >= self._tempo_de_recarga_ataque
 
     def _obter_status(self, vetor_diferenca_jogador: pg.Vector2) -> None:
         # Pega a distância do player e o inimigo
@@ -36,12 +42,6 @@ class Inimigo(Entidade):
         else:
             self.status = 'right_idle'
 
-    def _tempos_de_recarga(self):
-        tempo_atual = pg.time.get_ticks()
-        if not self._pode_atacar and self._tempo_ataque is not None:
-            if tempo_atual - self._tempo_ataque >= self._tempo_de_recarga_ataque:
-                self._pode_atacar = True
-
     def _calcular_vetor_diferenca_jogador(self) -> pg.Vector2:
         vetor_inimigo = pg.Vector2(self.rect.center)
         vetor_jogador = pg.Vector2(self._fase.jogador.rect.center)
@@ -50,9 +50,6 @@ class Inimigo(Entidade):
     def _acoes(self, vetor_diferenca_jogador: pg.Vector2) -> None:
         if self.status == 'attack':
             self.tempo_ataque = pg.time.get_ticks()
-            # ajeitar
-            # self.dano_no_jogador()
-            self.pode_atacar = False
         elif self.status == 'move':
             if vetor_diferenca_jogador.magnitude() != 0:
                 self._direcao = (-vetor_diferenca_jogador).normalize()
