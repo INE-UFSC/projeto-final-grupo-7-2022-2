@@ -42,7 +42,7 @@ class Arma(ABC):
     def usar_arma(self) -> None:
         pass
 
-    def atualizar_posicao_e_direcao(self, posicao_do_mouse_relativa_ao_jogador: pg.Vector2) -> None:
+    def _atualizar_posicao_e_direcao(self, posicao_do_mouse_relativa_ao_jogador: pg.Vector2) -> None:
         if posicao_do_mouse_relativa_ao_jogador.magnitude() > 0:
             self._direcao = posicao_do_mouse_relativa_ao_jogador.normalize()
             vetor_jogador = pg.Vector2(self._jogador.rect.center)
@@ -52,9 +52,9 @@ class Arma(ABC):
 
     def atualizar(self, posicao_do_mouse_relativa_ao_jogador: pg.Vector2, tempo_passado: int) -> None:
         if self.ativo:
-            self.atualizar_posicao_e_direcao(posicao_do_mouse_relativa_ao_jogador)
+            self._atualizar_posicao_e_direcao(posicao_do_mouse_relativa_ao_jogador)
 
-    def desenhar(self) -> tuple[SuperficiePosicionada, ...]:
+    def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
         if self.ativo:
             rect = self._imagem.get_rect(center=self._posicao)
             return (SuperficiePosicionada(self._imagem, rect.topleft),)

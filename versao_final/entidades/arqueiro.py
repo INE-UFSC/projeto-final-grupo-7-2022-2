@@ -16,7 +16,7 @@ class Arqueiro(Inimigo):
         super().__init__()
 
         # Informacoes Inimigo
-        self.velocidade = 0
+        self._velocidade = 0
         self._raio_ataque = 200
         self._raio_percepcao = 300
         self._vida = 1

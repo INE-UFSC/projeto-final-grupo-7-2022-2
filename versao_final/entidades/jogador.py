@@ -33,7 +33,7 @@ class Jogador(Entidade):
         self._hitbox = self._rect.inflate(0, -8)
 
         # Movimento
-        self.velocidade = 5
+        self._velocidade = 5
 
         self.__vida = 300
         self.__vulneravel = True
@@ -181,7 +181,7 @@ class Jogador(Entidade):
         if self.__esta_com_impulso:
             if current_time - self.__dash_time >= self.__dash_duration:
                 self.__dashing = False
-                self.velocidade = 5
+                self._velocidade = 5
         if not self.__active_dash:
             if current_time - self.__dash_time >= self.__dash_cd:
                 self.__active_dash = True
@@ -194,7 +194,7 @@ class Jogador(Entidade):
     def __animar(self):
         animacao = self.__animacoes[self.__status]
 
-        self.__frame_indice += self.velocidade_da_animacao
+        self.__frame_indice += self._velocidade_da_animacao
         if self.__frame_indice >= len(animacao):
             self.__frame_indice = 0
 

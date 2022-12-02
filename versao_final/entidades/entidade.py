@@ -13,11 +13,11 @@ if TYPE_CHECKING:
 class Entidade():
     def __init__(self) -> None:
         super().__init__()
-        self.velocidade = 0
+        self._velocidade = 0
         self._direcao = pg.Vector2()
 
         self.frame_index = 0
-        self.velocidade_da_animacao = 0.15
+        self._velocidade_da_animacao = 0.15
 
     @property
     def rect(self) -> pg.Rect:
@@ -40,9 +40,9 @@ class Entidade():
             self._direcao = self._direcao.normalize() * tempo_passado / 10
 
             # Realiza o movimento e checa a existência de colisões com a hitbox
-            self.hitbox.x += self._direcao.x * self.velocidade
+            self.hitbox.x += self._direcao.x * self._velocidade
             self._calcular_colisao('horizontal')
-            self.hitbox.y += self._direcao.y * self.velocidade
+            self.hitbox.y += self._direcao.y * self._velocidade
             self._calcular_colisao('vertical')
             self.rect.center = self.hitbox.center
 

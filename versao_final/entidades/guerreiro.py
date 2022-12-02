@@ -13,7 +13,7 @@ class Guerreiro(Inimigo):
         super().__init__()
 
         # Informacoes Inimigo
-        self.velocidade = 2
+        self._velocidade = 2
         self._raio_ataque = 20
         self._raio_percepcao = 300
         self._vida = 3

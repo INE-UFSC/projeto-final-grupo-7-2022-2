@@ -13,7 +13,7 @@ class Ladino(Inimigo):
         super().__init__()
 
         # Informacoes Inimigo
-        self.velocidade = 4
+        self._velocidade = 4
         self._raio_ataque = 25
         self._raio_percepcao = 150
 

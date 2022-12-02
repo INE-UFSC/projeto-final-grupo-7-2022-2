@@ -14,8 +14,8 @@ class Faca(Arma):
     def __init__(self, jogador: 'Jogador'):
         super().__init__(jogador)
 
-        self.chegou_no_30 = False
-        self.tipo_sprite = 'faca'
+        self.__chegou_no_30 = False
+        self.__tipo_sprite = 'faca'
 
         self.__escala = (10, 10)
         self._imagem = pg.Surface(self.__escala)
@@ -29,15 +29,12 @@ class Faca(Arma):
     def usar_arma(self):
 
         if self.ativo:
-            if not self.chegou_no_30:
+            if not self.__chegou_no_30:
                 self._distancia += 5
                 if self._distancia == 50:
-                    self.chegou_no_30 = True
+                    self.__chegou_no_30 = True
             else:
                 self._distancia -= 5
                 if self._distancia == 20:
                     self.ativo = False
-                    self.chegou_no_30 = False
-
-    def atualizar(self, posicao_do_mouse_relativa_ao_jogador: pg.Vector2, tempo_passado: int):
-        super().atualizar(posicao_do_mouse_relativa_ao_jogador, tempo_passado)
+                    self.__chegou_no_30 = False

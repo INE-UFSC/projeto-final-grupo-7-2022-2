@@ -4,7 +4,7 @@ import pygame as pg
 import pygame.time as pg_time
 
 from configuracoes import Configuracoes
-from estados import (FimDeJogo, MenuCreditos, MenuOpcoes, MenuPrincipal, MenuRanking, MenuRegistro, Partida)
+from estados import (FimDeJogo, MenuCreditos, MenuOpcoes, MenuPrincipal, MenuRanking, MenuPausa, MenuRegistro, Partida)
 from evento_tps import evento_TPS
 from fase import Fase
 from maquina_de_estado import MaquinaDeEstado
@@ -31,6 +31,7 @@ class Jogo:
         menu_registro = MenuRegistro(self.__maquina_de_estado)
         menu_creditos = MenuCreditos(self.__maquina_de_estado)
         menu_opcoes = MenuOpcoes(self.__maquina_de_estado)
+        menu_pausa = MenuPausa(self.__maquina_de_estado)
         fim_de_jogo = FimDeJogo(self.__maquina_de_estado)
 
         for fase in self.__configuracoes.fases:
@@ -43,6 +44,7 @@ class Jogo:
         self.__maquina_de_estado.adicionar_estado("menu_creditos", menu_creditos)
         self.__maquina_de_estado.adicionar_estado("menu_opcoes", menu_opcoes)
         self.__maquina_de_estado.adicionar_estado("fim_de_jogo", fim_de_jogo)
+        self.__maquina_de_estado.adicionar_estado("menu_pausa", menu_pausa)
 
         self.__maquina_de_estado.mover_para_estado("menu_principal")
 
