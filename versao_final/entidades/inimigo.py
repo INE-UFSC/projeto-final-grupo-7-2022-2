@@ -1,100 +1,70 @@
-import pygame as pg
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Tuple
+
+import pygame as pg
+
 from .entidade import Entidade
+from .jogador import Jogador
+
+if TYPE_CHECKING:
+    from fase import Fase
 
 
 class Inimigo(Entidade):
-    def __init__(self, fase, pos):
-        super().__init__(fase, pos)
-        self.__escala = self.configuracoes.tamanho_tile
+    def __init__(self):
+        super().__init__()
 
         self.status = 'right_idle'
-        self.__tipo_sprite = 'inimigo'
 
-        self.__raio_ataque = None
-        self.__raio_percepcao = None
+        self._raio_ataque: int = None
+        self._raio_percepcao: int = None
 
-        self.__pode_atacar = True
-        self.__tempo_ataque = None
-        self.__tempo_de_recarga_ataque = None
+        self._pode_atacar: bool = True
+        self._tempo_ataque: int | None = None
+        self._tempo_de_recarga_ataque: int | None = None
+        self._vida = 3
 
-    @property
-    def escala(self):
-        return self.__escala
-
-    @property
-    def pode_atacar(self):
-        return self.__pode_atacar
-
-    @pode_atacar.setter
-    def pode_atacar(self, pode_atacar):
-        self.__pode_atacar = pode_atacar
-
-    @property
-    def raio_ataque(self):
-        return self.__raio_ataque
-
-    @raio_ataque.setter
-    def raio_ataque(self, raio):
-        self.__raio_ataque = raio
-
-    @property
-    def raio_percepcao(self):
-        return self.__raio_percepcao
-
-    @raio_percepcao.setter
-    def raio_percepcao(self, raio_percepcao):
-        self.__raio_percepcao = raio_percepcao
-
-    @property
-    def tempo_ataque(self):
-        return self.__tempo_ataque
-
-    @tempo_ataque.setter
-    def tempo_ataque(self, tempo_ataque):
-        self.__tempo_ataque = tempo_ataque
-
-    @property
-    def tempo_de_recarga_ataque(self):
-        return self.__tempo_de_recarga_ataque
-
-    @tempo_de_recarga_ataque.setter
-    def tempo_de_recarga_ataque(self, tempo_de_recarga_ataque):
-        self.__tempo_de_recarga_ataque = tempo_de_recarga_ataque
-
-    @property
-    def tipo_sprite(self):
-        return self.__tipo_sprite
-
-    def obter_status(self, jogador):
+    def _obter_status(self, vetor_diferenca_jogador: pg.Vector2) -> None:
         # Pega a distância do player e o inimigo
-        distancia = self.pegar_distancia_direcao_jogador(jogador)[0]
+        distancia = vetor_diferenca_jogador.magnitude()
 
-        if distancia <= self.raio_ataque and self.pode_atacar:
+        if distancia <= self._raio_ataque and self._pode_atacar:
             if self.status != 'attack':
                 self.status = 'attack'
-        elif distancia <= self.raio_percepcao:
+        elif distancia <= self._raio_percepcao:
             self.status = 'move'
         else:
             self.status = 'right_idle'
 
-    def tempos_de_recarga(self):
+    def _tempos_de_recarga(self):
         tempo_atual = pg.time.get_ticks()
-        if not self.__pode_atacar:
-            if tempo_atual - self.__tempo_ataque >= self.__tempo_de_recarga_ataque:
-                self.__pode_atacar = True
+        if not self._pode_atacar and self._tempo_ataque is not None:
+            if tempo_atual - self._tempo_ataque >= self._tempo_de_recarga_ataque:
+                self._pode_atacar = True
 
-    @abstractmethod
-    def pegar_distancia_direcao_jogador(self, jogador):
-        pass
+    def _calcular_vetor_diferenca_jogador(self) -> pg.Vector2:
+        vetor_inimigo = pg.Vector2(self.rect.center)
+        vetor_jogador = pg.Vector2(self._fase.jogador.rect.center)
+        return vetor_inimigo - vetor_jogador
 
-    def acoes(self, player):
+    def _acoes(self, vetor_diferenca_jogador: pg.Vector2) -> None:
         if self.status == 'attack':
             self.tempo_ataque = pg.time.get_ticks()
             # ajeitar
             # self.dano_no_jogador()
             self.pode_atacar = False
         elif self.status == 'move':
-            self.direction = self.pegar_distancia_direcao_jogador(player)[1]
+            if vetor_diferenca_jogador.magnitude() != 0:
+                self._direcao = (-vetor_diferenca_jogador).normalize()
         else:
-            self.direction = pg.math.Vector2()
+            self._direcao = pg.Vector2()
+
+    def receber_dano(self, dano: int) -> None:
+        self._vida -= dano
+        self._fase.matar_entidade(self)
+
+    def atualizar(self, tempo_passado: int) -> None:
+        vetor_diferenca_jogador = self._calcular_vetor_diferenca_jogador()
+        self._obter_status(vetor_diferenca_jogador)
+        self._acoes(vetor_diferenca_jogador)
+        self._mover(tempo_passado)

@@ -1,30 +1,58 @@
+from typing import List
+
 import pygame as pg
 
+from superficie_posicionada import SuperficiePosicionada
 
-class Camera(pg.sprite.Group):
+
+class Camera():
     def __init__(self):
-        super().__init__()
-        self.__display_surface = pg.display.get_surface()
-        self.__half_width = self.__display_surface.get_size()[0] // 2
-        self.__half_height = self.__display_surface.get_size()[1] // 2
-        self.__offset = pg.math.Vector2()
+        self.__tela = pg.display.get_surface()
 
-    def desenhar(self, player):
-        # Offset é o deslocamento que a posição dos sprites visíveis deve ter para simular uma câmera
-        self.__offset.x = player.rect.centerx - self.__half_width
-        self.__offset.y = player.rect.centery - self.__half_height
+        centro_da_tela_x = self.__tela.get_width() // 2
+        centro_da_tela_y = self.__tela.get_height() // 2
 
-        # Ao invés de desenharmos os objetos numa posição fixa, nos os posicionamos de acordo com a posição do jogador.
-        # Essa posição sempre segue uma disntância fixa do jogador.
+        self.__centro_da_tela = pg.Vector2(centro_da_tela_x, centro_da_tela_y)
+
+    @property
+    def chao(self) -> pg.Surface:
+        return self.__chao
+
+    @chao.setter
+    def chao(self, chao: pg.Surface):
+        self.__chao = chao
+
+    @property
+    def blocos(self) -> List[SuperficiePosicionada]:
+        return self.__blocos
+
+    @blocos.setter
+    def blocos(self, blocos: List[SuperficiePosicionada]):
+        self.__blocos = blocos
+
+    @property
+    def estruturas(self) -> List[SuperficiePosicionada]:
+        return self.__estruturas
+
+    @estruturas.setter
+    def estruturas(self, estruturas: List[SuperficiePosicionada]):
+        self.__estruturas = estruturas
+
+    def __desenhar_lista_pelo_y(self, deslocamento: pg.Vector2, lista: List[SuperficiePosicionada]):
+        lista.sort(key=lambda superficie: superficie.rect.centery)
+        for superficie_posicionada in lista:
+            posicao = superficie_posicionada.posicao - deslocamento
+            self.__tela.blit(superficie_posicionada.superficie, posicao)
+
+    def desenhar(self, centro_do_desenho: pg.Vector2, superficie_posicionadas: List[SuperficiePosicionada]):
+        # o deslocamento que a posição dos sprites visíveis deve ter para simular uma câmera
+        deslocamento = centro_do_desenho - self.__centro_da_tela
+
+        self.__tela.blit(self.__chao, -deslocamento)
+
+        # Ao invés de desenharmos os objetos numa posição fixa, nos os posicionamos de acordo com o centro.
         # Além disso, a ordem de desenho dos objetos na tela é crescente com relação a sua posição y
-        sprite_para_desenhar = []
-        for sprite in self.sprites():
-            sprite_para_desenhar.extend(sprite.desenhar())
-
-        for sprite in sorted(sprite_para_desenhar, key=lambda sprite: sprite.rect.centery):
-            offset_pos = sprite.rect.topleft - self.__offset
-            self.__display_surface.blit(sprite.image, offset_pos)
-
-    def atualizar(self, tempo_passado):
-        for entidade in self.sprites():
-            entidade.atualizar(tempo_passado)
+        self.__desenhar_lista_pelo_y(deslocamento, self.__estruturas)
+        lista_de_superficies_posicionadas = self.__blocos.copy()
+        lista_de_superficies_posicionadas.extend(superficie_posicionadas)
+        self.__desenhar_lista_pelo_y(deslocamento, lista_de_superficies_posicionadas)

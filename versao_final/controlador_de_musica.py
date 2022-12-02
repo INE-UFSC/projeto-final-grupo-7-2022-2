@@ -5,7 +5,7 @@ from configuracoes import Singleton
 import time
 
 
-class Controlador_de_Musica(Singleton):
+class ControladorDeMusica(Singleton):
     def __init__(self) -> None:
         self.__configuracoes = Configuracoes()
         pg.mixer.init()
@@ -24,8 +24,8 @@ class Controlador_de_Musica(Singleton):
     def som_click(self):
         self.__som_click.play()
 
-    #------------ método incompleto
-    def tocar_som(self,som):
+    # ------------ método incompleto
+    def tocar_som(self, som):
         self.som.play()
 
     def mudar_volume_musica(self):
@@ -53,9 +53,9 @@ class Controlador_de_Musica(Singleton):
         pg.mixer.Sound.set_volume(self.__volume_som)
 
     def seletor_de_musica(self, rotulo):
-        
+
         path = None
-        
+
         if rotulo == "menu_principal":
             path = self.__configuracoes.musica_menu
         elif rotulo == "menu_creditos":
@@ -63,8 +63,8 @@ class Controlador_de_Musica(Singleton):
         elif rotulo == "menu_opcoes":
             path = self.__configuracoes.som_opcoes
         else:
-            #Provisório
+            # Provisório
             path = self.__configuracoes.musica_menu
-        
+
         self.parar_musica()
         self.iniciar_musica(path)

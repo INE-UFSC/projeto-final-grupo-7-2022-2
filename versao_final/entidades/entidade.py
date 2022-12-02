@@ -1,133 +1,85 @@
-import pygame as pg
-from abc import ABC, abstractmethod
+from abc import ABC
 from math import sin
-from configuracoes import Configuracoes
+from typing import TYPE_CHECKING, Tuple
+
+import pygame as pg
+
+from superficie_posicionada import SuperficiePosicionada
+
+if TYPE_CHECKING:
+    from fase import Fase
 
 
-class Entidade(pg.sprite.Sprite, ABC):
-    def __init__(self, fase, pos) -> None:
+class Entidade():
+    def __init__(self) -> None:
         super().__init__()
-        self.__configuracoes = Configuracoes()
-        self.__fase = fase
-        self.__posicao = pos
-        self.__obstacle_sprites = fase.colisores
+        self.velocidade = 0
+        self._direcao = pg.Vector2()
 
-        self.__status = None
-        self.__velocidade = None
-        self.__direction = pg.math.Vector2()
-        self.__vida = None
-
-        self.sprite = None
         self.frame_index = 0
-        self.animation_speed = 0.15
+        self.velocidade_da_animacao = 0.15
 
     @property
-    def configuracoes(self):
-        return self.__configuracoes
+    def rect(self) -> pg.Rect:
+        return self._rect
 
     @property
-    def direction(self):
-        return self.__direction
+    def hitbox(self):
+        return self._hitbox
 
-    @direction.setter
-    def direction(self, direction):
-        self.__direction = direction
+    def registrar_na_fase(self, fase: 'Fase'):
+        self._fase: 'Fase' = fase
 
-    @property
-    def fase(self):
-        return self.__fase
+    def definir_posicao(self, posicao: pg.Vector2) -> None:
+        self.hitbox.x = posicao.x
+        self.hitbox.y = posicao.y
+        self._rect.center = self.hitbox.center
 
-    @property
-    def obstacle_sprites(self):
-        return self.__obstacle_sprites
+    def _mover(self, tempo_passado: int):
+        if self._direcao.magnitude() != 0:
+            self._direcao = self._direcao.normalize() * tempo_passado / 10
 
-    @property
-    def posicao(self):
-        return self.__posicao
+            # Realiza o movimento e checa a existência de colisões com a hitbox
+            self.hitbox.x += self._direcao.x * self.velocidade
+            self._calcular_colisao('horizontal')
+            self.hitbox.y += self._direcao.y * self.velocidade
+            self._calcular_colisao('vertical')
+            self.rect.center = self.hitbox.center
 
-    @property
-    def status(self):
-        return self.__status
+    def _calcular_colisao(self, direcao: pg.Vector2):
+        if direcao == 'horizontal':
+            for colisor in self._fase.colisores:
+                if colisor.rect.colliderect(self.hitbox):
+                    if self._direcao.x > 0:
+                        self.hitbox.right = colisor.rect.left
+                    if self._direcao.x < 0:
+                        self.hitbox.left = colisor.rect.right
 
-    @status.setter
-    def status(self, status):
-        self.__status = status
-
-    @property
-    def velocidade(self):
-        return self.__velocidade
-    
-    @velocidade.setter
-    def velocidade(self, velocidade):
-        self.__velocidade = velocidade
-
-    @property
-    def vida(self):
-        return self.__vida
-    
-    @vida.setter
-    def vida(self, vida):
-        self.__vida = vida
-
-    def move(self, tempo_passado):
-        if self.direction.magnitude() != 0:
-            self.direction = self.direction.normalize() * tempo_passado / 10
-
-        # Realiza o movimento e checa a existência de colisões com a hitbox
-        self.hitbox.x += self.direction.x * self.velocidade
-        self.collision('horizontal')
-        self.hitbox.y += self.direction.y * self.velocidade
-        self.collision('vertical')
-        self.rect.center = self.hitbox.center
-
-    def collision(self, direction):
-        if direction == 'horizontal':
-            for sprite in self.obstacle_sprites:
-                if sprite.hitbox.colliderect(self.hitbox):
-                    if self.direction.x > 0:
-                        self.hitbox.right = sprite.hitbox.left
-                    if self.direction.x < 0:
-                        self.hitbox.left = sprite.hitbox.right
-
-        if direction == 'vertical':
-            for sprite in self.obstacle_sprites:
-                if sprite.hitbox.colliderect(self.hitbox):
-                    if self.direction.y > 0:
-                        self.hitbox.bottom = sprite.hitbox.top
-                    if self.direction.y < 0:
-                        self.hitbox.top = sprite.hitbox.bottom
+        if direcao == 'vertical':
+            for colisor in self._fase.colisores:
+                if colisor.rect.colliderect(self.hitbox):
+                    if self._direcao.y > 0:
+                        self.hitbox.bottom = colisor.rect.top
+                    if self._direcao.y < 0:
+                        self.hitbox.top = colisor.rect.bottom
 
     # Função usada para oscilar a visibilidade com base no seno
-    def wave_value(self):
+    def wave_value(self) -> float:
         value = sin(pg.time.get_ticks())
         if value >= 0:
             return 255
         else:
             return 0
 
-    def registrar_na_fase(self, fase):
-        raise NotImplementedError("Registrar na fase não implementado")
+    @property
+    def tipo(self) -> str:
+        raise NotImplementedError(f"Tipo não implementado no tipo {self.tipo}")
 
-    def receber_dano(self, dano: int):
-        self.__vida -= dano
-        if self.__vida <= 0:
-            self.__kill()
+    def atualizar(self, tempo_passado: int):
+        raise NotImplementedError(f"Atualizar não implementado no tipo {self.tipo}")
 
-    def desenhar(self):
-        return (self,)
+    def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
+        raise NotImplementedError(f"Desenhar não implementado no tipo {self.tipo}")
 
-    @abstractmethod
-    def animate(self):
-        pass
-
-    @abstractmethod
-    def atualizar(self, delta: float):
-        pass
-
-    @abstractmethod
-    def obter_status(self, jogador):
-        pass
-
-    @abstractmethod
-    def tipo(self):
-        pass
+    def receber_dano(self, dano: int) -> None:
+        raise NotImplementedError(f"Receber dano não implementado no tipo {self.tipo}")

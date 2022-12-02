@@ -1,59 +1,47 @@
-from estados import Partida
+from typing import TYPE_CHECKING, Tuple
+
 import pygame as pg
 
 from configuracoes import Configuracoes
-from View.fase_construtor import FaseConstrutor
+from entidades import Jogador, Entidade
+from superficie_posicionada import SuperficiePosicionada
 from View.camera import Camera
+from gerenciador_de_grupos import GerenciadorDeGrupos
 
-from entidades.jogador import Jogador
+if TYPE_CHECKING:
+    from estados import Partida
+
 
 class Fase:
-    def __init__(self, partida: Partida, nome: str):
+    def __init__(self, partida: 'Partida', nome: str):
 
         self.__configuracoes = Configuracoes()
 
         self.__partida = partida
         self.__nome = nome
-        
-        self.display_surface = pg.display.get_surface()
+        self.__jogador = Jogador()
 
-        # Grupos de elementos da fase
-        self.__camera               = Camera()
-        self.__colisores            = pg.sprite.Group()
-        self.__entidades            = pg.sprite.Group()
-        self.attack_sprites         = pg.sprite.Group()
-        self.__attackable_sprites   = pg.sprite.Group()
-        self.__inimigos             = pg.sprite.Group()
-        self.__ameacas              = pg.sprite.Group()
+        self.__tela = pg.display.get_surface()
 
-        self.__fase_construtor = FaseConstrutor(self, nome)
-        self.gerar_fase()
+        self.__gerenciador_de_grupos = GerenciadorDeGrupos(self, nome)
+        self.__camera = Camera()
+        self.__camera.chao = self.__gerenciador_de_grupos.chao
+        self.__camera.estruturas = self.__gerenciador_de_grupos.estruturas
+        self.__camera.blocos = self.__gerenciador_de_grupos.blocos
 
+    @property
+    def jogador(self) -> Jogador:
+        return self.__jogador
 
-    def registrar_evento(self, tipo, callback: callable):
+    def iniciar(self):
+        for entidade in self.entidades:
+            entidade.registrar_na_fase(fase=self)
+
+    def registrar_evento(self, tipo: int, callback: callable) -> int:
         return self.__partida.registrar_evento(tipo, callback)
 
     def terminar_fase(self):
         self.__partida.terminar_fase()
-
-    # Inclusão de todos os elementos da fase em seus grupos
-    def gerar_fase(self):
-        self.__fase_construtor.grupos['chao'].add(self.__camera)
-        
-        for bloco in self.__fase_construtor.grupos['blocos']:
-            bloco.add(self.__camera)
-
-        for colisor in self.__fase_construtor.grupos['colisores']:
-            colisor.add(self.__colisores)
-
-        # for estrutura in self.__mapa.fase_grupos['estruturas']:
-        #     estrutura.add(self.__camera)
-
-        for entidade in self.__fase_construtor.grupos['entidades']:
-            entidade.add(self.__camera, self.__entidades)
-            if isinstance(entidade, Jogador):
-                self.__jogador = entidade
-
 
     def player_attack_logic(self):
         if self.attack_sprites:
@@ -63,36 +51,38 @@ class Fase:
                     if collision_sprites:
                         for target_sprite in collision_sprites:
                             if target_sprite.tipo_sprite == 'inimigo':
-                                #Quantidade de dano provisória
-                                target_sprite.receber_dano(1)
-
+                                target_sprite.receber_dano()
 
     # Logica de controle de dano
+
     def dano_no_jogador(self):
-        if self.__jogador.vulneravel:
+        if self.__jogador.__vulneravel:
             self.__jogador.vida -= 1
-            self.__jogador.vulneravel = False
+            self.__jogador.__vulneravel = False
             # Define o momento que o jogador sofreu o dano
             self.__jogador.hurt_time = pg.time.get_ticks()
 
-
-    def atualizar(self, tempo_passado):
-        for entidade in self.__entidades.sprites():
+    def atualizar(self, tempo_passado: int):
+        for entidade in self.entidades:
             entidade.atualizar(tempo_passado)
-            if isinstance(entidade, Jogador):
-                self.__jogador = entidade
-        self.player_attack_logic()
+        # self.player_attack_logic()
 
-    def desenhar(self):
-        self.display_surface.fill('black')
-        self.__camera.desenhar(self.__jogador)
+    def desenhar(self) -> None:
+        centro_do_desenho = pg.Vector2(self.__jogador.rect.center)
+        superficies_para_desenho = []
 
-    
+        for entidade in self.entidades:
+            superficies_para_desenho.extend(entidade.desenhar())
+
+        self.__camera.desenhar(centro_do_desenho, superficies_para_desenho)
+
+    def matar_entidade(self, entidade: Entidade) -> None:
+        self.__gerenciador_de_grupos.matar_entidade(entidade)
+
     @property
     def colisores(self):
-        return self.__colisores
+        return self.__gerenciador_de_grupos.colisores
 
     @property
-    def jogador(self):
-        return self.__jogador
-        
+    def entidades(self):
+        return self.__gerenciador_de_grupos.entidades

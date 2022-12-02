@@ -1,18 +1,13 @@
 import sys
+
 import pygame as pg
 import pygame.time as pg_time
-from configuracoes import Configuracoes
-from evento_tps import evento_TPS
 
-from maquina_de_estado import MaquinaDeEstado
-from estados.partida import Partida
-from estados.menu_principal import MenuPrincipal
-from estados.menu_creditos import MenuCreditos
-from estados.menu_opcoes import MenuOpcoes
-from estados.fim_de_jogo import FimDeJogo
-from estados.menu_ranking import MenuRanking
-from estados.menu_registro import MenuRegistro
+from configuracoes import Configuracoes
+from estados import (FimDeJogo, MenuCreditos, MenuOpcoes, MenuPrincipal, MenuRanking, MenuRegistro, Partida)
+from evento_tps import evento_TPS
 from fase import Fase
+from maquina_de_estado import MaquinaDeEstado
 
 
 class Jogo:
@@ -31,21 +26,21 @@ class Jogo:
 
     def iniciar(self):
         partida = Partida(self.__maquina_de_estado)
-        menu_principal = MenuPrincipal(self.__maquina_de_estado, self.__tela)
-        menu_ranking = MenuRanking(self.__maquina_de_estado, self.__tela)
-        menu_registro = MenuRegistro(self.__maquina_de_estado, self.__tela)
-        menu_creditos = MenuCreditos(self.__maquina_de_estado, self.__tela)
-        menu_opcoes = MenuOpcoes(self.__maquina_de_estado, self.__tela)
-        fim_de_jogo = FimDeJogo(self.__maquina_de_estado, self.__tela)
+        menu_principal = MenuPrincipal(self.__maquina_de_estado)
+        menu_ranking = MenuRanking(self.__maquina_de_estado)
+        menu_registro = MenuRegistro(self.__maquina_de_estado)
+        menu_creditos = MenuCreditos(self.__maquina_de_estado)
+        menu_opcoes = MenuOpcoes(self.__maquina_de_estado)
+        fim_de_jogo = FimDeJogo(self.__maquina_de_estado)
 
-        for fase in self.__configuracoes.fases: 
+        for fase in self.__configuracoes.fases:
             partida.registrar_fase(Fase(partida, fase))
 
         self.__maquina_de_estado.adicionar_estado("partida", partida)
         self.__maquina_de_estado.adicionar_estado("menu_principal", menu_principal)
         self.__maquina_de_estado.adicionar_estado("menu_ranking", menu_ranking)
         self.__maquina_de_estado.adicionar_estado("menu_registro", menu_registro)
-        self.__maquina_de_estado.adicionar_estado("menu_creditos",menu_creditos)
+        self.__maquina_de_estado.adicionar_estado("menu_creditos", menu_creditos)
         self.__maquina_de_estado.adicionar_estado("menu_opcoes", menu_opcoes)
         self.__maquina_de_estado.adicionar_estado("fim_de_jogo", fim_de_jogo)
 

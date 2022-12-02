@@ -1,74 +1,60 @@
+from typing import Tuple, TYPE_CHECKING
+
 import pygame as pg
 
+from superficie_posicionada import SuperficiePosicionada
 
-class Bala(pg.sprite.Sprite):
-    def __init__(self, fase, pos_inicial, direcao) -> None:
+if TYPE_CHECKING:
+    from fase import Fase
+
+
+class Bala():
+    def __init__(self, fase: 'Fase', posicao: pg.Vector2, direcao: pg.Vector2) -> None:
         super().__init__()
 
-        self.tipo_sprite = 'bala'
         self.__fase = fase
 
         # Imagem
         self.__escala = (8, 8)
         self.__image = pg.Surface(self.__escala)
         self.__image.fill((255, 255, 255))
-        self.__rect = self.__image.get_rect(center = pos_inicial)
+        self.__rect = self.__image.get_rect(center=posicao)
 
         # Movimento
         self.__direcao = direcao
-        self.__velocidade = 50
 
-        # Dano
-        self.__alvos = self.__fase.attackable_sprites
-        self.__parede = self.__fase.grupo_de_obstaculos
-        self.__dano = 1
-
-        # Ativo
-        self.__ativo = True
-
-    def tipo(self):
+    def tipo(self) -> str:
         return 'bala'
 
-    @property
-    def ativo(self):
-        return self.__ativo
-
-    @ativo.setter
-    def ativo(self, ativo):
-        self.__ativo = ativo
-
-    @property
-    def rect(self):
-        return self.__rect
-
-    @property
-    def image(self):
-        return self.__image
-
-    def move(self):
-        # Transforma o comprimento do vetor em 1
-        self.__direcao = self.__direcao.normalize()
-
+    def atualizar_posicao(self, tempo_passado: int) -> None:
         # Move a bala baseado na direção e velocidade
-        self.__rect.x += self.__direcao.x * self.__velocidade
-        self.__rect.y += self.__direcao.y * self.__velocidade
+        velocidade = 0.2
+        self.__rect.topleft = pg.Vector2(self.__rect.topleft) + self.__direcao * (velocidade * tempo_passado)
 
-    def colisao(self):
-        for alvo in self.__alvos:
+    def verificar_colisao(self) -> bool:
+        dano = 5
+        for alvo in self.__fase.entidades:
             if alvo.hitbox.colliderect(self.__rect):
-                self.kill()
-                self.__ativo = False
-                alvo.toma_dano()
-        
-        for parede in self.__parede:
-            if parede.hitbox.colliderect(self.__rect):
-                self.__ativo = False
-                self.kill()
+                if alvo.tipo != 'jogador':
+                    alvo.receber_dano(dano)
+                    print(f"Alvo {alvo.tipo} recebeu {dano} de dano da bala")
+                    return True
+        for colisor in self.__fase.colisores:
+            if colisor.rect.colliderect(self.__rect):
+                return True
+        return False
 
+    def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
+        return (SuperficiePosicionada(self.__image, self.__rect.topleft),)
 
-    def desenhar(self):
-        return (self,)
+    def atualizar(self, tempo_passado: int) -> bool:
+        """
 
-    def atualizar(self, tempo):
-        self.move()
-        self.colisao()
+        Args:
+            tempo_passado (int): tempo passado desde o última atualização
+
+        Returns:
+            Bool: Se a bala deve ser destruida
+        """
+        self.atualizar_posicao(tempo_passado)
+        return self.verificar_colisao()

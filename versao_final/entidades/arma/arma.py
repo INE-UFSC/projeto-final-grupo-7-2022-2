@@ -1,99 +1,61 @@
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Tuple
+
 import pygame as pg
 
-class Arma(ABC, pg.sprite.Sprite):
-    def __init__(self, fase):
+from superficie_posicionada import SuperficiePosicionada
+
+if TYPE_CHECKING:
+    from entidades import Jogador
+    from fase import Fase
+
+
+class Arma(ABC):
+    def __init__(self, jogador: 'Jogador'):
         super().__init__()
-        
-        self.__fase = fase
+
+        self._jogador = jogador
         self.__tipo = None
         self.__ativo = False
 
-        # Imagem
-        # self.__spritesheet = spritesheet
-        self.__image = pg.Surface((10,10))
-        self.__rect = self.__image.get_rect(center = (1000000, 1000000))
+        self._direcao = None
+        self._distancia = 20
 
-        # Posicionamento
-        self.__posicao = None
-        self.__vetor = None
-        self.__direcao = None
-        self.__distancia = 20
-    
+        self._posicao = pg.Vector2(0, 0)
+
+    def definir_fase(self, fase: 'Fase'):
+        self._fase = fase
 
     @property
-    def fase(self):
-        return self.__fase
-
-    @fase.setter
-    def fase(self, fase):
-        self.__fase = fase
+    def tipo(self) -> str:
+        raise NotImplementedError('O método tipo() deve ser implementado')
 
     @property
-    def tipo(self):
-        return self.__tipo
-
-    @tipo.setter
-    def tipo(self, tipo):
-        self.__tipo = tipo
-
-    @property
-    def ativo(self):
+    def ativo(self) -> bool:
         return self.__ativo
 
     @ativo.setter
-    def ativo(self, ativo):
+    def ativo(self, ativo: bool):
         self.__ativo = ativo
 
-    @property	
-    def posicao(self) -> tuple:
-        return self.__posicao
-
-    @property
-    def direcao(self) -> tuple:
-        return self.__direcao
-
-    @property
-    def vetor(self):
-        return self.__vetor
-
-    @property
-    def distancia(self):
-        return self.__distancia
-
-    @distancia.setter
-    def distancia(self, distancia):
-        self.__distancia = distancia
-
-    @property
-    def image(self):
-        return self.__image
-
-    @image.setter
-    def image(self, image):
-        self.__image = image
-
-    @property
-    def rect(self):
-        return self.__rect
-
-    @rect.setter
-    def rect(self, rect):
-        self.__rect = rect
-
-
     @abstractmethod
-    def usar_arma(self):
+    def usar_arma(self) -> None:
         pass
 
-    def mover(self, posicao_jogador: tuple, posicao_mouse: tuple):
-        # Direção da arma e ajuste de posição com relação ao jogador
-        self.__vetor = pg.math.Vector2(posicao_mouse).normalize() * self.__distancia
+    def atualizar_posicao_e_direcao(self, posicao_do_mouse_relativa_ao_jogador: pg.Vector2) -> None:
+        if posicao_do_mouse_relativa_ao_jogador.magnitude() > 0:
+            self._direcao = posicao_do_mouse_relativa_ao_jogador.normalize()
+            vetor_jogador = pg.Vector2(self._jogador.rect.center)
+            # Posição da arma
+            vetor_posicao_da_arma = (vetor_jogador + (self._direcao * self._distancia))
+            self._posicao = (vetor_posicao_da_arma.x, vetor_posicao_da_arma.y)
 
-        # Posição da arma
-        self.__posicao = (posicao_jogador[0] + self.__vetor.x, posicao_jogador[1] + self.__vetor.y)
-        self.rect.x = self.posicao[0]
-        self.rect.y = self.posicao[1]
+    def atualizar(self, posicao_do_mouse_relativa_ao_jogador: pg.Vector2, tempo_passado: int) -> None:
+        if self.ativo:
+            self.atualizar_posicao_e_direcao(posicao_do_mouse_relativa_ao_jogador)
 
-    def desenhar(self):
-        return (self,)
+    def desenhar(self) -> tuple[SuperficiePosicionada, ...]:
+        if self.ativo:
+            rect = self._imagem.get_rect(center=self._posicao)
+            return (SuperficiePosicionada(self._imagem, rect.topleft),)
+        return tuple()

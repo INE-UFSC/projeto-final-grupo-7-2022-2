@@ -1,68 +1,50 @@
+from typing import TYPE_CHECKING, Tuple
+
 import pygame as pg
-from .entidade import Entidade
-from .inimigo import Inimigo
+
 from configuracoes import Configuracoes
 from spritesheet import Spritesheet
+from superficie_posicionada import SuperficiePosicionada
+
+from .entidade import Entidade
+from .inimigo import Inimigo
+from .jogador import Jogador
+
+if TYPE_CHECKING:
+    from fase import Fase
 
 
 class Ladino(Inimigo):
-    def __init__(self, fase, pos):
-        super().__init__(fase, pos)
+    def __init__(self):
+        super().__init__()
 
         # Informacoes Inimigo
         self.velocidade = 4
-        self.raio_ataque = 25
-        self.raio_percepcao = 150
+        self._raio_ataque = 25
+        self._raio_percepcao = 150
 
-        self.tempo_de_recarga_ataque = 10 * self.configuracoes.tps
+        configuracoes = Configuracoes()
+        self._tempo_de_recarga_ataque = 10 * configuracoes.tps
 
         # Configurações de gráfico - Ainda estão provisórias
         self.__cor = (255, 0, 0)
-        self.__image = pg.Surface((self.escala, self.escala))
-        self.__image.fill(self.__cor)
+        self.__image = pg.Surface((configuracoes.tamanho_tile, configuracoes.tamanho_tile))
 
         # Movimento
-        self.__rect = self.image.get_rect(topleft=pos)
-        self.__hitbox = self.rect.inflate(0, -10)
+        self._rect = self.__image.get_rect()
+        self._hitbox = self.rect.inflate(0, -10)
 
     @property
-    def tipo(self):
+    def tipo(self) -> str:
         return "ladino"
 
-    @property
-    def hitbox(self):
-        return self.__hitbox
+    def __animar(self) -> None:
+        self._rect = self.__image.get_rect(center=self.hitbox.center)
 
-    @property
-    def image(self):
-        return self.__image
+    def atualizar(self, tempo_passado: int) -> None:
+        super().atualizar(tempo_passado)
+        self.__animar()
+        self._tempos_de_recarga()
 
-    @property
-    def rect(self):
-        return self.__rect
-
-    @rect.setter
-    def rect(self, rect):
-        self.__rect = rect
-
-    # Calcula a distância e a direção que o jogador está
-    def pegar_distancia_direcao_jogador(self, jogador):
-        vetor_inimigo = pg.math.Vector2(self.rect.center)
-        vetor_jogador = pg.math.Vector2(jogador.rect.center)
-        distancia = (vetor_jogador - vetor_inimigo).magnitude()
-
-        if distancia > 0:
-            direcao = (vetor_jogador - vetor_inimigo).normalize()
-        else:
-            direcao = pg.math.Vector2()
-        return (distancia, direcao)
-
-    def animate(self):
-        self.rect = self.image.get_rect(center=self.hitbox.center)
-
-    def atualizar(self, tempo_passado):
-        self.move(tempo_passado)
-        self.obter_status(self.fase.jogador)
-        self.acoes(self.fase.jogador)
-        self.animate()
-        self.tempos_de_recarga()
+    def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
+        return (SuperficiePosicionada(self.__image, self._rect.topleft),)

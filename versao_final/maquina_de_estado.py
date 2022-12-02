@@ -1,55 +1,56 @@
+from typing import List
 import pygame as pg
-from controlador_de_music import Controlador_de_Musica
+from controlador_de_musica import ControladorDeMusica
+
+from estados import Estado
 
 
 class MaquinaDeEstado:
     def __init__(self):
         self.__estados = {}
-        self.__estado_pilha = []
-        self.__estado_atual: Estado | None = None
-        self.__estado_inicial: Estado | None = None
-        self.__musica_control = Controlador_de_Musica()
-
-        self.__cooldown = 300
-        self.__ultimo_chamado = 0
+        self.__estado_pilha: List[str] = []
+        self.__estado_atual_rotulo: str | None = None
+        self.__estado_inicial_rotulo: str | None = None
+        self.__controlador_de_musica = ControladorDeMusica()
 
     @property
-    def estado_inicial(self):
-        return self.__estado_inicial
+    def estado_inicial(self) -> Estado:
+        return self.__estados[self.__estado_inicial]
 
     @property
-    def estado_atual(self):
-        return self.__estado_atual
+    def estado_atual(self) -> Estado:
+        return self.__estados[self.__estado_atual_rotulo]
 
     @estado_inicial.setter
-    def estado_inicial(self, estado_inicial):
-        self.__estado_inicial = estado_inicial
+    def estado_inicial(self, estado_inicial_rotulo: str):
+        self.__estado_inicial_rotulo = estado_inicial_rotulo
 
-    def adicionar_estado(self, rotulo: str, estado: 'Estado'):
+    def adicionar_estado(self, rotulo: str, estado: Estado):
         self.__estados[rotulo] = estado
-        if len(self.__estados) == 1 and self.__estado_inicial is None:
-            self.__estado_inicial = rotulo
+        if len(self.__estados) == 1 and self.__estado_inicial_rotulo is None:
+            self.__estado_inicial_rotulo = rotulo
+        if self.__estado_atual_rotulo is None:
+            self.__estado_atual_rotulo = rotulo
 
-    def mover_para_estado(self, rotulo: str):
-        atual = pg.time.get_ticks()
-        if (self.__ultimo_chamado + self.__cooldown <= atual and len(self.__estado_pilha) > 0) or (len(self.__estado_pilha) == 0):
-            self.__ultimo_chamado = pg.time.get_ticks()
-            self.__estado_pilha.append(self.__estado_atual)
-            self.__estado_atual = self.__estados[rotulo]
-            self.__musica_control.seletor_de_musica(rotulo)
+    def mover_para_estado(self, rotulo: str) -> None:
+        if (rotulo != self.__estado_atual_rotulo):
+            self.__estado_pilha.append(self.__estado_atual_rotulo)
+            self.__estado_atual_rotulo = rotulo
+            self.__controlador_de_musica.seletor_de_musica(rotulo)
+            self.estado_atual.iniciar()
 
     def voltar_para_inicio(self):
-        self.__estado_atual = self.__estado_inicial
+        self.__estado_atual_rotulo = self.__estado_inicial_rotulo
         self.__estado_pilha = []
-        self.__musica_control.seletor_de_musica("menu_principal")
-        
+        self.__controlador_de_musica.seletor_de_musica()
+
     def voltar(self):
-        ultimo_estado = self.__estado_pilha.pop()
-        if ultimo_estado is not None:
-            self.__estado_atual = ultimo_estado
-        else: 
-            self.__musica_control.parar_musica()
+        ultimo_estado_rotulo = self.__estado_pilha.pop()
+        if ultimo_estado_rotulo is not None:
+            self.__estado_atual_rotulo = ultimo_estado_rotulo
+        else:
+            self.__controlador_de_musica.parar_musica()
             self.voltar_para_inicio()
-    
+
     def iniciar(self):
-        pass
+        self.estado_atual.iniciar()

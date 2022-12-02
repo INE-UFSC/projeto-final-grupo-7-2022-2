@@ -2,8 +2,8 @@ import pygame
 
 
 class CallbackDeEvento():
-    def __init__(self, id: int, tipo_de_evento: int, callback: callable):
-        self.__id = id
+    def __init__(self, identificador: int, tipo_de_evento: int, callback: callable):
+        self.__id = identificador
         self.__tipo_de_evento = tipo_de_evento
         self.__callback = callback
 
@@ -14,7 +14,6 @@ class CallbackDeEvento():
     @property
     def tipo(self):
         return self.__tipo_de_evento
-    
-    
+
     def disparar(self, evento: pygame.event.Event):
         self.__callback(evento)

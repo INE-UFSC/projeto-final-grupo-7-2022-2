@@ -1,5 +1,4 @@
 import pygame as pg
-from pygame import font as fonte
 from singleton import Singleton
 import os
 
@@ -11,7 +10,7 @@ class Configuracoes(Singleton):
 
         self.__volume_musica = None
 
-        self.__tamanho_tile = 64
+        self.__tamanho_tile = 16
         self.__max_fps = 240
         self.__tps = 60
 
@@ -20,10 +19,10 @@ class Configuracoes(Singleton):
         self.__som_opcoes = os.path.join('recursos', 'musicas', 'som_grama.ogg')
         self.__som_bandeira = os.path.join('recursos', 'musicas', 'som_bandeira.ogg')
 
-        fonte.init()
-        self.__fonte_titulo = fonte.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 80)
-        self.__fonte_botao = fonte.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 55)
-        self.__fonte_digitar = fonte.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 82)
+        pg.font.init()
+        self.__fonte_titulo = pg.font.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 80)
+        self.__fonte_botao = pg.font.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 55)
+        self.__fonte_digitar = pg.font.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 82)
 
         self.__fases = ['test2']
 
@@ -82,7 +81,7 @@ class Configuracoes(Singleton):
     @property
     def som_bandeira(self):
         return self.__som_bandeira
-    
+
     @property
     def som_opcoes(self):
         return self.__som_opcoes

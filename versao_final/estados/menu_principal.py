@@ -1,65 +1,79 @@
-from os import path
-import pygame as pg
 import sys
-from configuracoes import Configuracoes
-from estados.estado import Estado
+from os import path
+from typing import TYPE_CHECKING, List
+
+import pygame as pg
+
 from botao import Botao
-from controlador_de_music import Controlador_de_Musica
+from configuracoes import Configuracoes
+from controlador_de_musica import ControladorDeMusica
+
+from .estado import Estado
+
+if TYPE_CHECKING:
+    from maquina_de_estado import MaquinaDeEstado
+
 
 class MenuPrincipal(Estado):
-    def __init__(self, maquina_de_estado, tela):
+    def __init__(self, maquina_de_estado: 'MaquinaDeEstado'):
         super().__init__(maquina_de_estado)
         self.__configuracoes = Configuracoes()
-        self.__musica_control = Controlador_de_Musica()
-        self.__tela = tela
-        self.__superficie = pg.display.get_surface()
+        self.__controle_de_musica = ControladorDeMusica()
+        self.__tela = pg.display.get_surface()
 
-        self.__imagens = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'menu_principal.png')), (self.__configuracoes.largura_tela, self.__configuracoes.altura_tela))
+        self.__imagens = pg.transform.scale(
+            pg.image.load(
+                path.join(
+                    'recursos',
+                    'imagens',
+                    'menu_principal.png')),
+            (self.__configuracoes.largura_tela,
+             self.__configuracoes.altura_tela))
         self.__titulo = self.__configuracoes.fonte_titulo.render('Super Lamparina Arfante', True, (0, 0, 0))
         self.__titulo_rect = self.__titulo.get_rect()
         self.__botao_off = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_off.png'))
         self.__botao_on = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_on.png'))
 
         self.__botao_jogar = Botao((75, 150), (self.__botao_off, self.__botao_on), 'Jogar')
-        self.__botao_jogar.on_click(self.__evento_botao_jogar_clicado)
+        self.__botao_jogar.no_clique(self.__evento_botao_jogar_clicado)
         self.__botao_opcoes = Botao((75, 290), (self.__botao_off, self.__botao_on), 'Opções')
-        self.__botao_opcoes.on_click(self.__evento_botao_opcoes_clicado)
+        self.__botao_opcoes.no_clique(self.__evento_botao_opcoes_clicado)
         self.__botao_creditos = Botao((75, 430), (self.__botao_off, self.__botao_on), 'Créditos')
-        self.__botao_creditos.on_click(self.__evento_botao_creditos_clicado)
+        self.__botao_creditos.no_clique(self.__evento_botao_creditos_clicado)
         self.__botao_sair = Botao((75, 570), (self.__botao_off, self.__botao_on), 'Sair')
-        self.__botao_sair.on_click(self.__evento_botao_sair_clicado)
+        self.__botao_sair.no_clique(self.__evento_botao_sair_clicado)
 
-
-        self.__musica_control.parar_musica()
-        self.__musica_control.iniciar_musica(self.__configuracoes.musica_menu)
-        self.__musica_control.mudar_volume_musica()
-
+        self.__controle_de_musica.parar_musica()
+        self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_menu)
+        self.__controle_de_musica.mudar_volume_musica()
 
     def desenhar(self):
         self.__titulo_rect.center = (self.__configuracoes.largura_tela // 2, self.__configuracoes.altura_tela // 10)
-        self.__superficie.blit(self.__imagens, (0, 0))
-        self.__superficie.blit(self.__titulo, self.__titulo_rect)
-        self.__botao_jogar.desenhar(self.__superficie)
-        self.__botao_opcoes.desenhar(self.__superficie)
-        self.__botao_creditos.desenhar(self.__superficie)
-        self.__botao_sair.desenhar(self.__superficie)
+        self.__tela.blit(self.__imagens, (0, 0))
+        self.__tela.blit(self.__titulo, self.__titulo_rect)
+        self.__botao_jogar.desenhar()
+        self.__botao_opcoes.desenhar()
+        self.__botao_creditos.desenhar()
+        self.__botao_sair.desenhar()
 
     def __evento_botao_jogar_clicado(self):
-        self.maquina_de_estado.mover_para_estado('menu_registro')
-    
+        self._maquina_de_estado.mover_para_estado('menu_registro')
+
     def __evento_botao_opcoes_clicado(self):
-        self.maquina_de_estado.mover_para_estado('menu_opcoes')
-        
+        self._maquina_de_estado.mover_para_estado('menu_opcoes')
+
     def __evento_botao_creditos_clicado(self):
-        self.maquina_de_estado.mover_para_estado('menu_creditos')
-        self.__musica_control.som_click()
-        
+        self._maquina_de_estado.mover_para_estado('menu_creditos')
+        self.__controle_de_musica.som_click()
+
     def __evento_botao_sair_clicado(self):
         pg.quit()
         sys.exit()
 
-    def atualizar(self, eventos: list, delta_time: float):
-        self.__botao_jogar.atualizar()
-        self.__botao_creditos.atualizar()
-        self.__botao_opcoes.atualizar()
-        self.__botao_sair.atualizar()
+    def atualizar(self, eventos: List[pg.event.Event], tempo_passado: int):
+        for evento in eventos:
+            if evento.type == pg.MOUSEBUTTONDOWN or evento.type == pg.MOUSEMOTION:
+                self.__botao_jogar.atualizar(evento)
+                self.__botao_creditos.atualizar(evento)
+                self.__botao_opcoes.atualizar(evento)
+                self.__botao_sair.atualizar(evento)

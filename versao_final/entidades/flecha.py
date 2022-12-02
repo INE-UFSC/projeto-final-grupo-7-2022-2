@@ -1,74 +1,51 @@
+from typing import Tuple, TYPE_CHECKING
+
 import pygame as pg
 
+from superficie_posicionada import SuperficiePosicionada
 
-class Flecha(pg.sprite.Sprite):
-    def __init__(self, fase, groups, pos_inicial, direcao, dano_no_jogador) -> None:
-        super().__init__(groups)
+if TYPE_CHECKING:
+    from fase import Fase
 
-        self.tipo_sprite = 'flecha'
+
+class Flecha():
+    def __init__(self, fase: 'Fase', posicao: pg.Vector2, direcao: pg.Vector2) -> None:
+
+        super().__init__()
+
         self.__fase = fase
 
         # Imagem
-        self.__escala = (8, 8)
-        self.__image = pg.Surface(self.__escala)
-        self.__image.fill((255, 255, 255))
-        self.__rect = self.__image.get_rect(center = pos_inicial)
+        self.__tamanho = (8, 8)
+        self.__image = pg.Surface(self.__tamanho)
+        self.__image.fill((255, 128, 0))
+        self.__rect = self.__image.get_rect(center=posicao)
 
         # Movimento
         self.__direcao = direcao
-        self.__velocidade = 15
 
-        # Dano
-        self.__alvo = self.__fase.jogador
-        self.__parede = self.__fase.grupo_de_obstaculos
-        self.__dano = 1
-        self.__dano_no_jogador = dano_no_jogador
-
-        # Ativo
-        self.__ativo = True
-
-    def tipo(self):
-        return 'flecha'
-
-    @property
-    def ativo(self):
-        return self.__ativo
-
-    @ativo.setter
-    def ativo(self, ativo):
-        self.__ativo = ativo
-
-    @property
-    def rect(self):
-        return self.__rect
-
-    @property
-    def image(self):
-        return self.__image
-
-    def move(self):
+    def __mover(self, tempo_passado: int) -> None:
         # Transforma o comprimento do vetor em 1
-        self.__direcao = self.__direcao.normalize()
 
+        velocidade = 0.5
         # Move a bala baseado na direção e velocidade
-        self.__rect.x += self.__direcao.x * self.__velocidade
-        self.__rect.y += self.__direcao.y * self.__velocidade
+        self.__rect.center += self.__direcao * (velocidade * tempo_passado)
 
-    def colisao(self):
-        if self.__alvo.hitbox.colliderect(self.__rect):
-            self.kill()
-            self.__ativo = False
-            self.__dano_no_jogador()
-        
-        for parede in self.__parede:
-            if parede.hitbox.colliderect(self.__rect):
-                self.__ativo = False
-                self.kill()
+    def __verificar_colisao(self) -> bool:
 
+        if self.__fase.jogador.hitbox.colliderect(self.__rect):
+            self.__fase.jogador.receber_dano(10)
+            return True
 
-    def desenhar(self):
-        return (self,)
+        for colisor in self.__fase.colisores:
+            if colisor.rect.colliderect(self.__rect):
+                return True
 
-    def atualizar(self, tempo):
-        self.move()
-        self.colisao()
+        return False
+
+    def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
+        return (SuperficiePosicionada(self.__image, self.__rect.topleft),)
+
+    def atualizar(self, tempo_passado: int) -> bool:
+        self.__mover(tempo_passado)
+        return self.__verificar_colisao()

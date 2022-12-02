@@ -1,18 +1,22 @@
+from typing import TYPE_CHECKING, Tuple
+
 import pygame as pg
+
 from configuracoes import Configuracoes
-from entidades.arma.faca import Faca
-from entidades.arma.pistola import Pistola
 from spritesheet import Spritesheet
+from superficie_posicionada import SuperficiePosicionada
+
+from .arma import Faca, Pistola
 from .entidade import Entidade
+
+if TYPE_CHECKING:
+    from fase import Fase
 
 
 class Jogador(Entidade):
-    def __init__(self, fase, pos) -> None:
-        super().__init__(fase, pos)
+    def __init__(self) -> None:
+        super().__init__()
 
-        fase.registrar_evento(pg.KEYUP, self.evento_tecla_solta)
-        fase.registrar_evento(pg.KEYDOWN, self.evento_tecla_apertada)
-        fase.registrar_evento(pg.MOUSEBUTTONDOWN, self.evento_mouse)
         self.__teclas_usadas_estado = {
             pg.K_w: False,
             pg.K_a: False,
@@ -22,17 +26,18 @@ class Jogador(Entidade):
         }
 
         # Imagem e hitbox
-        self.__spritesheet = Spritesheet("skelet", 2)
-        self.image = self.image('idle_0.png')
-        self.animations = self.__spritesheet.animation_frames
-        self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(0, -8)
-        
+        self.__status = 'right'
+        self.__spritesheet = Spritesheet("skelet", 1)
+        self.__animacoes = self.__spritesheet.get_animation_frames()
+        self.__frame_indice = 0
+        self._rect = self.__imagem_atual.get_rect()
+        self._hitbox = self._rect.inflate(0, -8)
+
         # Movimento
         self.velocidade = 5
 
         self.vida = 3
-        self.vulneravel = True
+        self.__vulneravel = True
         self.hurt_time = None
         self.duracao_invencibilidade = 300
         self.morto = False
@@ -48,123 +53,132 @@ class Jogador(Entidade):
         self.__esta_atacando = False
         self.__attack_cd = 400
         self.__tempo_do_ataque = None
-
         # Animação
-        self.status = 'right'
 
-        # Armas
-        self.__faca = Faca(self.fase)
-        
-        self.__pistola = Pistola(self.fase)
-       
-        self.arma = self.__faca
+        self.__faca = Faca(self)
+        self.__pistola = Pistola(self)
 
+        self.__arma = self.__faca
+        self.__faca.ativo = True
+        self.__centro_da_tela = self.__calcular_centro_da_tela()
 
-    def calcular_direcao(self):
+    def __calcular_centro_da_tela(self) -> pg.Vector2:
+        largura, altura = pg.display.get_surface().get_size()
+        return pg.Vector2(largura // 2, altura // 2)
+
+    @property
+    def __imagem_atual(self):
+        return self.__animacoes[self.__status][int(self.__frame_indice)]
+
+    @property
+    def rect(self):
+        return self._rect
+
+    def registrar_na_fase(self, fase: 'Fase') -> None:
+        super().registrar_na_fase(fase)
+        fase.registrar_evento(pg.KEYUP, self.__evento_tecla_solta)
+        fase.registrar_evento(pg.KEYDOWN, self.__evento_tecla_apertada)
+        fase.registrar_evento(pg.MOUSEBUTTONDOWN, self.evento_mouse)
+        self.__faca.definir_fase(fase)
+        self.__pistola.definir_fase(fase)
+
+    def __calcular_direcao(self):
 
         if self.__teclas_usadas_estado[pg.K_w] == self.__teclas_usadas_estado[pg.K_s]:
-            self.direction.y = 0
+            self._direcao.y = 0
         elif self.__teclas_usadas_estado[pg.K_w]:
-            self.direction.y = -1
+            self._direcao.y = -1
         elif self.__teclas_usadas_estado[pg.K_s]:
-            self.direction.y = 1
+            self._direcao.y = 1
 
         if self.__teclas_usadas_estado[pg.K_a] == self.__teclas_usadas_estado[pg.K_d]:
-            self.direction.x = 0
+            self._direcao.x = 0
         elif self.__teclas_usadas_estado[pg.K_a]:
-            self.direction.x = -1
+            self._direcao.x = -1
         elif self.__teclas_usadas_estado[pg.K_d]:
-            self.direction.x = 1
+            self._direcao.x = 1
 
-    def trocar_arma(self): 
-        if self.arma == self.__faca:
-            self.arma = self.__pistola
-            self.__faca.kill()
-            self.__pistola.add([self.fase.grupo_de_entidade])
+    def __trocar_arma(self):
+        self.__arma.ativo = False
+        if self.__arma == self.__faca:
+            self.__arma = self.__pistola
         else:
-            self.arma = self.__faca
-            self.__pistola.kill()
-            self.__faca.add([self.fase.grupo_de_entidade,
-                            self.fase.attack_sprites])
+            self.__arma = self.__faca
+        self.__arma.ativo = True
 
-    def calcula_impulso(self):
+    def __calcula_impulso(self):
         if self.__teclas_usadas_estado[pg.K_SPACE] and not self.__esta_com_impulso:
             self.__esta_com_impulso = False
             self.__tempo_do_impulso = pg.time.get_ticks()
 
-    def evento_tecla_solta(self, evento):
+    def __evento_tecla_solta(self, evento):
         # Entradas de movimentação:
         if evento.key in self.__teclas_usadas_estado:
             self.__teclas_usadas_estado[evento.key] = False
-    
 
-    def evento_tecla_apertada(self, evento):
+    def __evento_tecla_apertada(self, evento):
         if evento.key in self.__teclas_usadas_estado:
             self.__teclas_usadas_estado[evento.key] = True
         if evento.key == pg.K_LSHIFT:
-            self.trocar_arma()
-        if evento.key == pg.K_r:
-            self.arma.recarregar()
+            self.__trocar_arma()
+        if evento.key == pg.K_r and self.__arma.tipo == 'pistola':
+            self.__arma.recarregar()
 
     def evento_mouse(self, evento):
         if evento.button == 1:
-            self.atacar()
-
+            self.__atacar()
 
     @property
     def tipo(self):
         return "jogador"
 
     # Posição do mouse relativa ao jogador
-    @property
-    def pos_mouse(self):
-        return (pg.mouse.get_pos()[0] - self.configuracoes.largura_tela // 2,
-                pg.mouse.get_pos()[1] - self.configuracoes.altura_tela // 2)
 
-    def image(self, sprite: str):
-        return self.__spritesheet.get_sprite(sprite)
+    def __calcular_posicao_do_mouse_relativa_ao_jogador(self) -> pg.Vector2:
+        return pg.Vector2(pg.mouse.get_pos()) - self.__centro_da_tela
 
-    def obter_status(self):
+    def __calcular_tipo_de_animacao(self, posicao_do_mouse_relativa_ao_jogador: pg.Vector2) -> str:
+
         # Orientação do personagem com relação ao mouse
-        if self.pos_mouse[0] > 0:
-            if 'right' not in self.status:
-                self.status = 'right'
+        if posicao_do_mouse_relativa_ao_jogador.x > 0:
+            if 'right' not in self.__status:
+                self.__status = 'right'
         else:
-            if 'left' not in self.status:
-                self.status = 'left'
+            if 'left' not in self.__status:
+                self.__status = 'left'
 
         # Animação de movimento
-        if self.direction.x == 0 and self.direction.y == 0:
-            if not 'idle' in self.status and not 'attack' in self.status:
-                self.status += '_idle'
+        if self._direcao.x == 0 and self._direcao.y == 0:
+            if 'idle' not in self.__status and 'attack' not in self.__status:
+                self.__status += '_idle'
         else:
-            if 'idle' in self.status:
-                self.status = self.status.replace('_idle', '')
+            if 'idle' in self.__status:
+                self.__status = self.__status.replace('_idle', '')
 
         # if self.__esta_atacando:
-        #     self.direction.x = 0
-        #     self.direction.y = 0
-        #     if not 'attack' in self.status:
-        #         if 'idle' in self.status:
-        #             self.status = self.status.replace('_idle', '_attack')
+        #     self._direcao.x = 0
+        #     self._direcao.y = 0
+        #     if not 'attack' in self.__status:
+        #         if 'idle' in self.__status:
+        #             self.__status = self.__status.replace('_idle', '_attack')
         #         else:
-        #             self.status += '_attack'
+        #             self.__status += '_attack'
         # else:
-        #     if 'attack' in self.status:
-        #         self.status = self.status.replace('_attack', '')
+        #     if 'attack' in self.__status:
+        #         self.__status = self.__status.replace('_attack', '')
 
     def dash(self):
         if self.__dashing and self.__active_dash:
-            self.velocidade = 20
+            self.__velocidade = 20
 
     def cooldowns(self):
-        current_time = pg.time.get_ticks()
+        tempo_atual = pg.time.get_ticks()
         # Controla o tempo de recarga dos ataques:
         if self.__esta_atacando:
-            if current_time - self.__tempo_do_ataque >= self.__attack_cd:
+            if tempo_atual - self.__tempo_do_ataque >= self.__attack_cd:
                 self.__esta_atacando = False
 
-        """ 
+        """
         if self.__esta_com_impulso:
             if current_time - self.__dash_time >= self.__dash_duration:
                 self.__dashing = False
@@ -174,47 +188,54 @@ class Jogador(Entidade):
                 self.__active_dash = True
         """
 
-        if not self.vulneravel:
-            if current_time - self.hurt_time >= self.duracao_invencibilidade:
-                self.vulneravel = True
+        if not self.__vulneravel:
+            if tempo_atual - self.hurt_time >= self.duracao_invencibilidade:
+                self.__vulneravel = True
 
-    def animate(self):
-        animation = self.animations[self.status]
+    def animar(self):
+        animacao = self.__animacoes[self.__status]
 
-        self.frame_index += self.animation_speed
-        if self.frame_index >= len(animation):
-            self.frame_index = 0
+        self.__frame_indice += self.velocidade_da_animacao
+        if self.__frame_indice >= len(animacao):
+            self.__frame_indice = 0
 
-        self.image = animation[int(self.frame_index)]
+        self.image = animacao[int(self.__frame_indice)]
 
         # Oscila a visibilidade quando é atacado
-        if not self.vulneravel:
-            alpha = self.wave_value()
-            self.image.set_alpha(alpha)
+        if not self.__vulneravel:
+            alfa = self.wave_value()
+            self.image.set_alpha(alfa)
         else:
             self.image.set_alpha(255)
 
-    def atacar(self):
+    def __atacar(self) -> None:
         if not self.__esta_atacando:
             self.__esta_atacando = True
 
             self.__tempo_do_ataque = pg.time.get_ticks()
-            self.arma.ativo = True
+            self.__arma.ativo = True
 
-            self.arma.usar_arma()
+            self.__arma.usar_arma()
 
     def check_death(self):
+        """ Todo """
         if self.vida <= 0:
             self.morto = True
-            self.kill()
-            self.arma.kill()
 
-    def atualizar(self, tempo_passado):
-        self.calcular_direcao()
-        self.calcula_impulso()
-        self.move(tempo_passado)
+    def atualizar(self, tempo_passado: int):
+        posicao_do_mouse_relativa_ao_jogador = self.__calcular_posicao_do_mouse_relativa_ao_jogador()
+        self.__calcular_direcao()
+        self.__calcula_impulso()
+        self._mover(tempo_passado)
         self.cooldowns()
-        self.obter_status()
-        self.animate()
+        self.__calcular_tipo_de_animacao(posicao_do_mouse_relativa_ao_jogador)
+        self.animar()
         self.check_death()
-        self.arma.mover(self.rect.center, self.pos_mouse)
+        self.__faca.atualizar(posicao_do_mouse_relativa_ao_jogador, tempo_passado)
+        self.__pistola.atualizar(posicao_do_mouse_relativa_ao_jogador, tempo_passado)
+
+    def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
+        jogador_desenho = SuperficiePosicionada(self.__imagem_atual, self._rect.topleft)
+        faca_desenho = self.__faca.desenhar()
+        arma_desenho = self.__pistola.desenhar()
+        return (jogador_desenho,) + faca_desenho + arma_desenho
