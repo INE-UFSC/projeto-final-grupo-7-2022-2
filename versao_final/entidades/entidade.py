@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Tuple
 import pygame as pg
 
 from superficie_posicionada import SuperficiePosicionada
+from configuracoes import Configuracoes
 
 if TYPE_CHECKING:
     from fase import Fase
@@ -13,6 +14,7 @@ if TYPE_CHECKING:
 class Entidade():
     def __init__(self) -> None:
         super().__init__()
+        self.__configuracoes = Configuracoes()
         self._velocidade = 0
         self._direcao = pg.Vector2()
 
@@ -37,12 +39,14 @@ class Entidade():
 
     def _mover(self, tempo_passado: int):
         if self._direcao.magnitude() != 0:
-            self._direcao = self._direcao.normalize() * tempo_passado / 10
+            escala = (self.__configuracoes.tamanho_tile *
+                      tempo_passado * self._velocidade / 100)
+            self._direcao = self._direcao.normalize() * escala
 
             # Realiza o movimento e checa a existência de colisões com a hitbox
-            self.hitbox.x += self._direcao.x * self._velocidade
+            self.hitbox.x += self._direcao.x
             self._calcular_colisao('horizontal')
-            self.hitbox.y += self._direcao.y * self._velocidade
+            self.hitbox.y += self._direcao.y
             self._calcular_colisao('vertical')
             self.rect.center = self.hitbox.center
 
