@@ -15,5 +15,5 @@ class Estado(ABC):
         pass
 
     @abstractmethod
-    def atualizar(self, eventos: List[pg.event.Event], tempo_passado: float):
+    def atualizar(self, eventos: List[pg.event.Event], tempo_passado: int):
         pass

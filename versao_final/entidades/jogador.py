@@ -33,25 +33,19 @@ class Jogador(Entidade):
         self._hitbox = self._rect.inflate(0, -8)
 
         # Movimento
-        self._velocidade = 5
+        self._velocidade = 4
 
         self.__vida = kwargs.get('vida', 100)
-        self.__vulneravel = True
-        self.hurt_time = None
-        self.duracao_invencibilidade = 300
 
-        # Dash
+        # Flags para cooldown
+        self.__vulneravel = True
+        self.__pode_atacar = True
         self.__impulso_disponivel = True
         self.__esta_com_impulso = False
+
         self.__duracao_do_impulso = 100
         self.__duracao_de_recarga_do_impulso = 1000
-        self.__tempo_do_impulso = None
 
-        # Ataque
-        self.__esta_atacando = False
-        self.__attack_cd = 400
-        self.__tempo_do_ataque = None
-        # Animação
         if 'armas' in kwargs:
             self.__faca = Faca.apartir_do_dict(kwargs['armas']['faca'], self)
             self.__pistola = Pistola.apartir_do_dict(kwargs['armas']['pistola'], self)
@@ -67,6 +61,10 @@ class Jogador(Entidade):
         self.__arma.ativo = True
 
         self.__centro_da_tela = self.__calcular_centro_da_tela()
+
+    @property
+    def tipo(self):
+        return "jogador"
 
     def __calcular_centro_da_tela(self) -> pg.Vector2:
         largura, altura = pg.display.get_surface().get_size()
@@ -103,19 +101,23 @@ class Jogador(Entidade):
         self.__pistola.definir_fase(fase)
 
     def __calcular_direcao(self):
-
-        if self.__teclas_usadas_estado[pg.K_w] == self.__teclas_usadas_estado[pg.K_s]:
+        if self.__esta_com_impulso:
+            return
+        w = self.__teclas_usadas_estado[pg.K_w]
+        a = self.__teclas_usadas_estado[pg.K_a]
+        s = self.__teclas_usadas_estado[pg.K_s]
+        d = self.__teclas_usadas_estado[pg.K_d]
+        if w == s:
             self._direcao.y = 0
-        elif self.__teclas_usadas_estado[pg.K_w]:
+        elif w:
             self._direcao.y = -1
-        elif self.__teclas_usadas_estado[pg.K_s]:
+        elif s:
             self._direcao.y = 1
-
-        if self.__teclas_usadas_estado[pg.K_a] == self.__teclas_usadas_estado[pg.K_d]:
+        if a == d:
             self._direcao.x = 0
-        elif self.__teclas_usadas_estado[pg.K_a]:
+        elif a:
             self._direcao.x = -1
-        elif self.__teclas_usadas_estado[pg.K_d]:
+        elif d:
             self._direcao.x = 1
 
     def __trocar_arma(self):
@@ -126,10 +128,23 @@ class Jogador(Entidade):
             self.__arma = self.__faca
         self.__arma.ativo = True
 
-    def __calcula_impulso(self):
-        if self.__teclas_usadas_estado[pg.K_SPACE] and not self.__esta_com_impulso:
-            self.__esta_com_impulso = False
-            self.__tempo_do_impulso = pg.time.get_ticks()
+    def __desativar_impulso(self):
+        self.__esta_com_impulso = False
+        self._velocidade = 5
+
+    def __recarregar_impulso(self):
+        self.__impulso_disponivel = True
+
+    def __verficar_impulso(self):
+        espaco = self.__teclas_usadas_estado[pg.K_SPACE]
+        if espaco and self.__impulso_disponivel and self._direcao.magnitude() != 0:
+            self.__impulso_disponivel = False
+            self.__esta_com_impulso = True
+            self._velocidade = 10
+            duracao_da_recarga = self.__duracao_de_recarga_do_impulso
+            self._fase.esperar_certo_tempo(duracao_da_recarga, self.__recarregar_impulso)
+            duracao = self.__duracao_do_impulso
+            self._fase.esperar_certo_tempo(duracao, self.__desativar_impulso)
 
     def __evento_tecla_solta(self, evento):
         # Entradas de movimentação:
@@ -147,10 +162,6 @@ class Jogador(Entidade):
     def __evento_mouse(self, evento):
         if evento.button == 1:
             self.__atacar()
-
-    @property
-    def tipo(self):
-        return "jogador"
 
     # Posição do mouse relativa ao jogador
 
@@ -175,7 +186,7 @@ class Jogador(Entidade):
             if 'idle' in self.__status:
                 self.__status = self.__status.replace('_idle', '')
 
-        # if self.__esta_atacando:
+        # if self.__pode_atacar:
         #     self._direcao.x = 0
         #     self._direcao.y = 0
         #     if not 'attack' in self.__status:
@@ -191,27 +202,6 @@ class Jogador(Entidade):
         if self.__dashing and self.__active_dash:
             self.__velocidade = 20
 
-    def cooldowns(self):
-        tempo_atual = pg.time.get_ticks()
-        # Controla o tempo de recarga dos ataques:
-        if self.__esta_atacando:
-            if tempo_atual - self.__tempo_do_ataque >= self.__attack_cd:
-                self.__esta_atacando = False
-
-        """
-        if self.__esta_com_impulso:
-            if current_time - self.__dash_time >= self.__dash_duration:
-                self.__dashing = False
-                self._velocidade = 5
-        if not self.__active_dash:
-            if current_time - self.__dash_time >= self.__dash_cd:
-                self.__active_dash = True
-        """
-
-        if not self.__vulneravel:
-            if tempo_atual - self.hurt_time >= self.duracao_invencibilidade:
-                self.__vulneravel = True
-
     def __animar(self):
         animacao = self.__animacoes[self.__status]
 
@@ -223,38 +213,50 @@ class Jogador(Entidade):
 
         # Oscila a visibilidade quando é atacado
         if not self.__vulneravel:
-            alfa = self.wave_value()
+            alfa = self._wave_value()
             self.image.set_alpha(alfa)
         else:
             self.image.set_alpha(255)
 
+    def __ativar_ataque(self):
+        self.__pode_atacar = True
+
     def __atacar(self) -> None:
-        if not self.__esta_atacando:
-            self.__esta_atacando = True
-
-            self.__tempo_do_ataque = pg.time.get_ticks()
-            self.__arma.ativo = True
-
+        if self.__pode_atacar:
+            self.__pode_atacar = False
             self.__arma.usar_arma()
+            tempo_de_ataque = 400
+            self._fase.esperar_certo_tempo(
+                tempo_de_ataque,
+                self.__ativar_ataque
+            )
+
+    def __desativar_invulnerabilidade(self):
+        self.__vulneravel = True
 
     def receber_dano(self, dano: int) -> None:
         if self.__vulneravel:
+            duracao_invulnerabilidade = 300
             self.__vulneravel = False
-            self.hurt_time = pg.time.get_ticks()
             self.__vida -= dano
             if self.__vida <= 0:
                 self._fase.matar_entidade(self)
+            else:
+                self._fase.esperar_certo_tempo(
+                    duracao_invulnerabilidade,
+                    self.__desativar_invulnerabilidade
+                )
 
     def atualizar(self, tempo_passado: int):
         posicao_do_mouse_relativa_ao_jogador = self.__calcular_posicao_do_mouse_relativa_ao_jogador()
         self.__calcular_direcao()
-        self.__calcula_impulso()
+        self.__verficar_impulso()
         self._mover(tempo_passado)
-        self.cooldowns()
         self.__calcular_tipo_de_animacao(posicao_do_mouse_relativa_ao_jogador)
         self.__animar()
         self.__faca.atualizar(posicao_do_mouse_relativa_ao_jogador, tempo_passado)
         self.__pistola.atualizar(posicao_do_mouse_relativa_ao_jogador, tempo_passado)
+
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
         jogador_desenho = SuperficiePosicionada(self.__superficie_atual, self._rect.topleft)

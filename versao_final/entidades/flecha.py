@@ -1,4 +1,4 @@
-from typing import Tuple, TYPE_CHECKING
+from typing import List, Tuple, TYPE_CHECKING
 
 import pygame as pg
 
@@ -20,31 +20,44 @@ class Flecha():
         self.__superficie = pg.Surface(self.__tamanho)
         self.__superficie.fill((255, 128, 0))
         self.__rect = self.__superficie.get_rect(center=posicao)
-
+        self.__posicao = pg.Vector2(self.__rect.center)
         # Movimento
         self.__direcao = direcao
 
-    def __mover(self, tempo_passado: int) -> None:
+    def __atualizar_posicao(self, tempo_passado: int) -> pg.Vector2:
         # Transforma o comprimento do vetor em 1
         velocidade = 0.5
         # Move a bala baseado na direção e velocidade
-        self.__rect.center += self.__direcao * (velocidade * tempo_passado)
+        return self.__posicao + self.__direcao * (velocidade * tempo_passado)
 
-    def __verificar_colisao(self) -> bool:
+    def __verificar_colisao(self, nova_posicao: pg.Vector2) -> bool:
+        linha = (self.__posicao, nova_posicao)
 
-        if self.__fase.jogador.hitbox.colliderect(self.__rect):
-            self.__fase.jogador.receber_dano(10)
-            return True
+        objetos_colididos: List[Tuple[Tuple[int, int], 'Jogador' | None]] = []
+        dano = 10
+        jogador = self.__fase.jogador
+        if alvo_posicao_colisao := jogador.hitbox.clipline(linha):
+            objetos_colididos.append((alvo_posicao_colisao[0], jogador))
 
         for colisor in self.__fase.colisores:
-            if colisor.rect.colliderect(self.__rect):
-                return True
+            if alvo_posicao_colisao := colisor.rect.clipline(linha):
+                objetos_colididos.append((alvo_posicao_colisao[0], None))
 
+        objetos_colididos.sort(key=lambda x: self.__posicao.distance_to(x[0]))
+        if len(objetos_colididos) > 0:
+            alvo_posicao_colisao, alvo = objetos_colididos[0]
+            if alvo is not None:
+                alvo.receber_dano(dano)
+            return True
         return False
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
         return (SuperficiePosicionada(self.__superficie, pg.Vector2(self.__rect.topleft)),)
 
     def atualizar(self, tempo_passado: int) -> bool:
-        self.__mover(tempo_passado)
-        return self.__verificar_colisao()
+        nova_posicao = self.__atualizar_posicao(tempo_passado)
+        colidiu = self.__verificar_colisao(nova_posicao)
+        self.__posicao = nova_posicao
+        self.__rect.center = nova_posicao
+        
+        return colidiu

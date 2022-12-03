@@ -1,11 +1,11 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 import pygame as pg
 
 from configuracoes import Configuracoes
-from entidades import Jogador, Entidade
-from View.camera import Camera
+from entidades import Entidade, Jogador
 from gerenciador_de_grupos import GerenciadorDeGrupos
+from View.camera import Camera
 
 if TYPE_CHECKING:
     from estados import Partida
@@ -32,7 +32,13 @@ class Fase:
         for entidade in self.entidades:
             entidade.registrar_na_fase(fase=self)
 
-    def registrar_evento(self, tipo: int, callback: callable) -> int:
+    def esperar_certo_tempo(self, tempo: int, callback: Callable) -> int:
+        return self.__partida.esperar_certo_tempo(tempo, callback)
+
+    def cancelar_esperar_certo_tempo(self, identificador: int) -> None:
+        self.__partida.cancelar_esperar_certo_tempo(identificador)
+
+    def registrar_evento(self, tipo: int, callback: Callable) -> int:
         return self.__partida.registrar_evento(tipo, callback)
 
     def terminar_fase(self):
