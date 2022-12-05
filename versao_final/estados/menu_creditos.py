@@ -19,11 +19,14 @@ class MenuCreditos(Estado):
         self.__configuracoes = Configuracoes()
         self.__musica_control = ControladorDeMusica()
         self.__tela = pg.display.get_surface()
+
         self.__nuvens_x = random.randrange(0, self.__configuracoes.largura_tela - 300, 10)
         self.__nuvens_y = self.__configuracoes.altura_tela
         self.__altura = 300
-        self.__velocidade = random.randrange(1, 5, 1)
+
+        self.__velocidade = random.randrange(2, 4, 1)
         self.__incremento = 100
+
         self.__last = pg.time.get_ticks()
         self.__cooldowm = random.randrange(0, 6000, 1000)
 
@@ -50,6 +53,7 @@ class MenuCreditos(Estado):
                         'menu_creditos_nomes.png')),
                 (self.__configuracoes.largura_tela,
                  self.__configuracoes.altura_tela))]
+
         self.__nuvens = [
             pg.image.load(
                 path.join(
@@ -62,29 +66,32 @@ class MenuCreditos(Estado):
                                     'recursos', 'imagens', 'Nuvem4.png')), pg.image.load(
                                         path.join(
                                             'recursos', 'imagens', 'Nuvem5.png'))]
+
         self.__nuvem_text = ['Nuvem1.png', 'Nuvem2.png', 'Nuvem3.png', 'Nuvem4.png', 'Nuvem5.png']
+        self.__nuvem_atual = random.randrange(0, 4, 1)
+        self.__nuvem_desenho = self.__nuvens[self.__nuvem_atual]
 
         self.__musica_control.parar_musica()
         self.__musica_control.iniciar_musica(self.__configuracoes.musica_creditos)
-        self.__nuvem_atual = random.randrange(0, 4, 1)
 
     def __mover_nuvem(self):
-        if self.__nuvens_y > -300 and self.__nuvens_x < self.__configuracoes.largura_tela:
+        if self.__nuvens_y > - self.__nuvem_desenho.get_height() and self.__nuvens_x < self.__configuracoes.largura_tela:
+            self.__incremento += self.__velocidade / 2
             self.__nuvens_y -= self.__velocidade
-            self.__incremento += 2
-            self.__nuvens[self.__nuvem_atual] = pg.transform.scale(
-                self.__nuvens[self.__nuvem_atual], (self.__altura + self.__incremento, self.__altura))
+            self.__nuvem_desenho = pg.transform.scale(
+                self.__nuvens[self.__nuvem_atual], (self.__altura + self.__incremento * 0.5, self.__altura + self.__incremento * 0.3))
 
         else:
+            self.__incremento = 0
+            self.__nuvem_atual = random.randrange(0, 4, 1)
             self.__nuvens_y = self.__configuracoes.altura_tela
+            self.__nuvens_x = random.randrange(0, self.__configuracoes.largura_tela - 300, 10)
             self.__nuvens[self.__nuvem_atual] = pg.image.load(
                 path.join('recursos', 'imagens', self.__nuvem_text[self.__nuvem_atual]))
-            self.__nuvens_x = random.randrange(0, self.__configuracoes.largura_tela - 300, 10)
-            self.__velocidade = 6
-            self.__incremento = 0
+
+            self.__velocidade = random.randrange(2, 4, 1)
             self.__cooldowm = random.randrange(0, 6000, 1000)
             self.__last = pg.time.get_ticks()
-            self.__nuvem_atual = random.randrange(0, 4, 1)
 
     def __gerar_nuvem(self):
         now = pg.time.get_ticks()
@@ -97,7 +104,7 @@ class MenuCreditos(Estado):
 
     def desenhar(self):
         self.__tela.blit(self.__imagens[0], (0, 0))
-        self.__tela.blit(self.__nuvens[self.__nuvem_atual], (self.__nuvens_x, self.__nuvens_y))
+        self.__tela.blit(self.__nuvem_desenho, (self.__nuvens_x, self.__nuvens_y))
         self.__tela.blit(self.__imagens[1], (0, 0))
         self.__botao_voltar.desenhar()
 
