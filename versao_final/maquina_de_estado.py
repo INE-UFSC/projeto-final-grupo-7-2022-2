@@ -36,6 +36,8 @@ class MaquinaDeEstado:
             self.__estado_pilha.append(self.__estado_atual_rotulo)
             self.__estado_atual_rotulo = rotulo
             self.estado_atual.iniciar()
+            self.__controlador_de_musica.parar_musica()
+            self.__controlador_de_musica.seletor_de_musica(rotulo)
 
     def voltar_para_inicio(self) -> None:
         self.__estado_atual_rotulo = self.__estado_inicial_rotulo
@@ -49,6 +51,8 @@ class MaquinaDeEstado:
         else:
             self.__controlador_de_musica.parar_musica()
             self.voltar_para_inicio()
+            self.__controlador_de_musica.seletor_de_musica("menu_principal")
+
 
     def iniciar(self) -> None:
         self.estado_atual.iniciar()

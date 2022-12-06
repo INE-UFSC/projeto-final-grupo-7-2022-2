@@ -30,8 +30,8 @@ class MenuCreditos(Estado):
         self.__last = pg.time.get_ticks()
         self.__cooldowm = random.randrange(0, 6000, 1000)
 
-        self.__botao_off = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_off.png'))
-        self.__botao_on = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_on.png'))
+        self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_nuvem_off.png')),(self.__configuracoes.tamanho_botoes))
+        self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_nuvem_on.png')),(self.__configuracoes.tamanho_botoes))
 
         self.__botao_voltar = Botao((1080, 600), (self.__botao_off, self.__botao_on), 'Voltar')
         self.__botao_voltar.no_clique(self.__evento_botao_voltar_clicado)

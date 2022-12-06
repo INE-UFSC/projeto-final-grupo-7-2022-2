@@ -6,4 +6,5 @@ from .menu_pausa import MenuPausa
 from .menu_principal import MenuPrincipal
 from .menu_ranking import MenuRanking
 from .menu_registro import MenuRegistro
+from .menu_vitoria import MenuVitoria
 from .partida import Partida

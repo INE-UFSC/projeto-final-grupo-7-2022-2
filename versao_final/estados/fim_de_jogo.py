@@ -17,8 +17,8 @@ class FimDeJogo(Estado):
         self.__configuracoes = Configuracoes()
         self.__tela = pg.display.get_surface()
 
-        self.__botao_off = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_off.png'))
-        self.__botao_on = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_on.png'))
+        self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_off.png')), (225, 65))
+        self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_off.png')), (225, 65))
 
         self.__botao_voltar = Botao((430, 500), (self.__botao_off, self.__botao_on), 'Voltar')
         self.__botao_voltar.no_clique(self.__evento_botao_iniciar_clicado)
@@ -34,8 +34,18 @@ class FimDeJogo(Estado):
             (self.__configuracoes.largura_tela,
              self.__configuracoes.altura_tela))
 
+        self.__filtro = pg.transform.scale(
+            pg.image.load(
+                path.join(
+                    'recursos',
+                    'imagens',
+                    'filtro.png')),
+            (self.__configuracoes.largura_tela,
+             self.__configuracoes.altura_tela))
+
     def desenhar(self):
         self.__tela.blit(self.__imagens, (0, 0))
+        self.__tela.blit(self.__filtro, (0,0))
         self.__botao_voltar.desenhar()
         self.__botao_ranking.desenhar()
 
