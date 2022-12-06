@@ -15,15 +15,15 @@ class MenuRegistro(Estado):
         super().__init__(maquina_de_estado)
         self.__configuracoes = Configuracoes()
         self.__tela = pg.display.get_surface()
-        imagem_botao_off = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_off.png'))
-        imagem_botao_on = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_on.png'))
+        imagem_botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_pedra_off.png')),(self.__configuracoes.tamanho_botoes))
+        imagem_botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_pedra_on.png')),(self.__configuracoes.tamanho_botoes))
 
-        self.__botao_voltar = Botao((10, 350), (imagem_botao_off, imagem_botao_on), 'Voltar')
+        self.__botao_voltar = Botao((5, 300), (imagem_botao_off, imagem_botao_on), 'Voltar')
         self.__botao_voltar.no_clique(self.__evento_botao_voltar_clicado)
-        self.__botao_registro = Botao((1050, 330), (imagem_botao_off, imagem_botao_on), 'Iniciar')
+        self.__botao_registro = Botao((1085, 300), (imagem_botao_off, imagem_botao_on), 'Iniciar')
         self.__botao_registro.no_clique(self.__evento_botao_registro_clicado)
 
-        posicao_entrade_usuario = pg.Vector2(370, 370)
+        posicao_entrade_usuario = pg.Vector2(370, 320)
         self.__entrada_usuario = EntradaTextoUsuario(posicao_entrade_usuario, largura=550, altura=100)
 
         self.__imagens = pg.transform.scale(
@@ -31,7 +31,7 @@ class MenuRegistro(Estado):
                 path.join(
                     'recursos',
                     'imagens',
-                    'registro.png')),
+                    'menu_cadastro.png')),
             (self.__configuracoes.largura_tela,
              self.__configuracoes.altura_tela))
 

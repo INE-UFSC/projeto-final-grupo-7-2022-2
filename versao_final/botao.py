@@ -39,3 +39,27 @@ class Botao:
 
     def no_clique(self, callback: Callable) -> None:
         self.__on_click_callback = callback
+
+    @property
+    def imagens(self):
+        return self.__imagens
+
+    @imagens.setter
+    def imagens(self, imagens):
+        self.__imagens = imagens
+
+    @property
+    def ativo(self):
+        return self.__ativo
+
+    @ativo.setter
+    def ativo(self, ativo):
+        self.__ativo = ativo
+
+    @property
+    def rect(self):
+        return self.__rect
+
+    @property
+    def on_click_callback(self):
+        return self.__on_click_callback

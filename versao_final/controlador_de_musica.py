@@ -9,7 +9,27 @@ class ControladorDeMusica(Singleton):
         pg.mixer.init()
         self.__som_click = pg.mixer.Sound(self.__configuracoes.som_bandeira)
         self.__volume_musica = 0.5
-        self.__volume_som = 1
+        self.__volume_som = 0.5
+
+    def volume_musica(self):
+        if self.__volume_musica == 0.75:
+            return 2
+        elif self.__volume_musica == 0.5:
+            return 1
+        elif self.__volume_musica == 0.10:
+            return 0
+        else:
+            return 3
+
+    def volume_som(self):
+        if self.__volume_som == 0.75:
+            return 2
+        elif self.__volume_som == 0.5:
+            return 1
+        elif self.__volume_som == 0.0:
+            return 0
+        else:
+            return 3
 
     def iniciar_musica(self, path):
         pg.mixer.music.load(path)
@@ -27,28 +47,32 @@ class ControladorDeMusica(Singleton):
         self.som.play()
 
     def mudar_volume_musica(self):
-        if self.__volume_musica == 1:
+        if self.__volume_musica == 1.0:
             self.__volume_musica = 0.75
         elif self.__volume_musica == 0.75:
             self.__volume_musica = 0.5
         elif self.__volume_musica == 0.5:
             self.__volume_musica = 0.10
         elif self.__volume_musica == 0.10:
-            self.__volume_musica = 0
+            self.__volume_musica = 0.0
         else:
-            self.__volume_musica = 1
+            self.__volume_musica = 1.0
 
         pg.mixer.music.set_volume(self.__volume_musica)
 
     def mudar_volume_som(self):
-        if self.__volume_som == 1:
+        if self.__volume_som == 1.0:
+            self.__volume_som = 0.75
+        elif self.__volume_som == 0.75:
             self.__volume_som = 0.5
         elif self.__volume_som == 0.5:
-            self.__volume_som = 0
+            self.__volume_som = 0.10
+        elif self.__volume_som == 0.10:
+            self.__volume_som = 0.0
         else:
-            self.__volume_som = 1
+            self.__volume_som = 1.0
 
-        pg.mixer.Sound.set_volume(self.__volume_som)
+        pg.mixer.Sound.set_volume(self.__som_click, self.__volume_som)
 
     def seletor_de_musica(self, rotulo):
 

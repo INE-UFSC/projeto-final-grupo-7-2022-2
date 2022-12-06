@@ -7,6 +7,7 @@ class Configuracoes(Singleton):
     def __init__(self):
         self.__largura_tela = 1280
         self.__altura_tela = 720
+        self.__tamanho_botoes = (180, 130)
 
         self.__volume_musica = None
 
@@ -85,3 +86,7 @@ class Configuracoes(Singleton):
     @property
     def som_opcoes(self):
         return self.__som_opcoes
+
+    @property
+    def tamanho_botoes(self):
+        return self.__tamanho_botoes
