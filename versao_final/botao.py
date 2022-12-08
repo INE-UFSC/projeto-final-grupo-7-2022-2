@@ -22,12 +22,10 @@ class Botao:
     def desenhar(self) -> None:
         self.__tela.blit(self.__imagens[self.__ativo], self.__posicao)
         if self.__ativo == 1:
-            texto_desenho = pg.transform.rotate(self.__texto, -2)
-            self.__texto_rect.midleft = (self.__rect.midleft[0] + 32, self.__rect.midleft[1] - 8)
-            self.__tela.blit(texto_desenho, self.__texto_rect)
+            self.__texto_rect.center = (self.__rect.centerx + 2, self.__rect.centery + 2)
         else:
-            self.__texto_rect.midleft = (self.__rect.midleft[0] + 30, self.__rect.midleft[1] - 5)
-            self.__tela.blit(self.__texto, self.__texto_rect)
+            self.__texto_rect.center = self.__rect.center
+        self.__tela.blit(self.__texto, self.__texto_rect)
 
     def atualizar(self, evento: pg.event.Event) -> None:
         self.__ativo = 0
@@ -60,6 +58,22 @@ class Botao:
     def rect(self):
         return self.__rect
 
+    @property
+    def posicao(self):
+        return self.__posicao
+
+    @property
+    def tela(self):
+        return self.__tela
+
+    @property
+    def texto(self):
+        return self.__texto
+
+    @property
+    def texto_rect(self):
+        return self.__texto_rect
+    
     @property
     def on_click_callback(self):
         return self.__on_click_callback

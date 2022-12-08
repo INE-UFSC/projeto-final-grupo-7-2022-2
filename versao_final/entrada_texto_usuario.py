@@ -21,8 +21,8 @@ class EntradaTextoUsuario:
         self.__cursor = pg.Rect(self.__rect.bottomright, (3, self.__fonte_rect.height - 8))
 
         self.__ativo = False
-        self.__cor_ativa = pg.Color(33, 38, 43)
-        self.__cor_passiva = pg.Color(99, 118, 137)
+        self.__cor_ativa = pg.Color(24, 27, 31)
+        self.__cor_passiva = pg.Color(33, 38, 43)
         self.__cor_atual = self.__cor_passiva
 
     @property
@@ -59,8 +59,7 @@ class EntradaTextoUsuario:
         else:
             self.__cor_atual = self.__cor_passiva
 
-        pg.draw.rect(self.__tela, self.__cor_atual, self.__rect)
-        pg.draw.rect(self.__tela, (255, 255, 255), self.__rect, 2, 5)
+        pg.draw.rect(self.__tela, self.__cor_atual, self.__rect, border_radius=5)
         if time.time() % 1 > 0.5 and self.__ativo:
             pg.draw.rect(self.__tela, (255, 255, 255), self.__cursor)
 

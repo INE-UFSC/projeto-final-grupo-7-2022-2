@@ -66,6 +66,10 @@ class Jogador(Entidade):
     def tipo(self):
         return "jogador"
 
+    @property
+    def vida(self):
+        return self.__vida
+
     def __calcular_centro_da_tela(self) -> pg.Vector2:
         largura, altura = pg.display.get_surface().get_size()
         return pg.Vector2(largura // 2, altura // 2)

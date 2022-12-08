@@ -23,8 +23,8 @@ class MenuOpcoes(Estado):
         self.__nivel_musica = self.__musica_control.volume_musica()
         self.__nivel_som = self.__musica_control.volume_som()
 
-        self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_folha_off.png')),(self.__configuracoes.tamanho_botoes))
-        self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_folha_on.png')),(self.__configuracoes.tamanho_botoes))
+        self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_folha_off.png')),(self.__configuracoes.tamanho_botoes[0] + 25, self.__configuracoes.tamanho_botoes[1]))
+        self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_folha_on.png')),(self.__configuracoes.tamanho_botoes[0] + 25, self.__configuracoes.tamanho_botoes[1]))
 
         self.__volume_musica = [pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'volume_musica_0.png')),(self.__tamanho_botao_volume)),
                                 pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'volume_musica_1.png')),(self.__tamanho_botao_volume)),

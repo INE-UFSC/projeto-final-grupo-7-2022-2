@@ -18,12 +18,12 @@ class MenuVitoria(Estado):
         self.__tela = pg.display.get_surface()
 
         self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_off.png')), (225, 65))
-        self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_off.png')), (225, 65))
+        self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_on.png')), (225, 65))
 
-        self.__botao_sair = Botao((430, 500), (self.__botao_off, self.__botao_on), 'sair')
+        self.__botao_sair = Botao((400, 500), (self.__botao_off, self.__botao_on), 'Sair')
         self.__botao_sair.no_clique(self.__evento_botao_iniciar_clicado)
 
-        self.__botao_avancar = Botao((670, 500), (self.__botao_off, self.__botao_on), 'Avançar')
+        self.__botao_avancar = Botao((650, 500), (self.__botao_off, self.__botao_on), 'Avançar')
         self.__botao_avancar.no_clique(None)
 
         self.__imagens = pg.transform.scale(
@@ -46,7 +46,7 @@ class MenuVitoria(Estado):
 
     def desenhar(self):
         self.__tela.blit(self.__imagens, (0, 0))
-        self.__tela.blit(self.__filtro, (0,0))
+        self.__tela.blit(self.__filtro, (-22,0))
         self.__botao_sair.desenhar()
         self.__botao_avancar.desenhar()
 

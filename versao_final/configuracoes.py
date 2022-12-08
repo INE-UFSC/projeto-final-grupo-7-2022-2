@@ -21,7 +21,7 @@ class Configuracoes(Singleton):
         self.__som_bandeira = os.path.join('recursos', 'musicas', 'som_bandeira.ogg')
 
         pg.font.init()
-        self.__fonte_titulo = pg.font.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 80)
+        self.__fonte_titulo = pg.font.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 100)
         self.__fonte_botao = pg.font.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 55)
         self.__fonte_digitar = pg.font.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 82)
 

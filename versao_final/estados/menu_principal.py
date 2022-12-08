@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, List
 
 import pygame as pg
 
-from botao import Botao
+from botao_texto_rotacionado import BotaoTextoRotacionado
 from configuracoes import Configuracoes
 from controlador_de_musica import ControladorDeMusica
 
@@ -29,18 +29,18 @@ class MenuPrincipal(Estado):
                     'menu_principal.png')),
             (self.__configuracoes.largura_tela,
              self.__configuracoes.altura_tela))
-        self.__titulo = self.__configuracoes.fonte_titulo.render('Super Lamparina Arfante', True, (0, 0, 0))
+        self.__titulo = self.__configuracoes.fonte_titulo.render('Super Lamparina Arfante', True, (255, 255, 255))
         self.__titulo_rect = self.__titulo.get_rect()
         self.__botao_off = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_off.png'))
         self.__botao_on = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_on.png'))
 
-        self.__botao_jogar = Botao((75, 150), (self.__botao_off, self.__botao_on), 'Jogar')
+        self.__botao_jogar = BotaoTextoRotacionado((75, 150), (self.__botao_off, self.__botao_on), 'Jogar')
         self.__botao_jogar.no_clique(self.__evento_botao_jogar_clicado)
-        self.__botao_opcoes = Botao((75, 290), (self.__botao_off, self.__botao_on), 'Opções')
+        self.__botao_opcoes = BotaoTextoRotacionado((75, 290), (self.__botao_off, self.__botao_on), 'Opções')
         self.__botao_opcoes.no_clique(self.__evento_botao_opcoes_clicado)
-        self.__botao_creditos = Botao((75, 430), (self.__botao_off, self.__botao_on), 'Créditos')
+        self.__botao_creditos = BotaoTextoRotacionado((75, 430), (self.__botao_off, self.__botao_on), 'Créditos')
         self.__botao_creditos.no_clique(self.__evento_botao_creditos_clicado)
-        self.__botao_sair = Botao((75, 570), (self.__botao_off, self.__botao_on), 'Sair')
+        self.__botao_sair = BotaoTextoRotacionado((75, 570), (self.__botao_off, self.__botao_on), 'Sair')
         self.__botao_sair.no_clique(self.__evento_botao_sair_clicado)
 
         self.__controle_de_musica.parar_musica()

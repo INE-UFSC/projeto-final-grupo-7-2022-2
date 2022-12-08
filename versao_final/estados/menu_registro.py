@@ -40,12 +40,11 @@ class MenuRegistro(Estado):
         self.__duracao_mensagem = 2000
 
     def __evento_botao_voltar_clicado(self):
-        self.__entrada_usuario.texto_usuario = ''
         self._maquina_de_estado.mover_para_estado('menu_principal')
 
     def __evento_botao_registro_clicado(self):
         self.__clique_registro = pg.time.get_ticks()
-        if self.__entrada_usuario.texto_usuario:
+        if self.__entrada_usuario.texto_usuario.upper().isupper():
             self._maquina_de_estado.mover_para_estado('partida')
         else:
             self.__mostra_mensagem = True
@@ -62,6 +61,12 @@ class MenuRegistro(Estado):
 
     def desenhar(self) -> None:
         self.__tela.blit(self.__imagens, (0, 0))
+
+        texto_tela = self.__configuracoes.fonte_botao.render('Digite o seu nome:', True, (255, 255, 255))
+        texto = texto_tela.get_rect()
+        texto.midleft = (380, 285)
+        self.__tela.blit(texto_tela, texto)
+
         self.__botao_voltar.desenhar()
         self.__botao_registro.desenhar()
         self.__entrada_usuario.desenhar()
@@ -75,3 +80,6 @@ class MenuRegistro(Estado):
                 self.__botao_voltar.atualizar(evento)
                 self.__botao_registro.atualizar(evento)
         self.__entrada_usuario.atualizar(eventos)
+
+    def iniciar(self):
+        self.__entrada_usuario.texto_usuario = ''

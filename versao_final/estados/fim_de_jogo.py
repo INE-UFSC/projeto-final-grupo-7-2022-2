@@ -17,13 +17,13 @@ class FimDeJogo(Estado):
         self.__configuracoes = Configuracoes()
         self.__tela = pg.display.get_surface()
 
-        self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_off.png')), (225, 65))
-        self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_off.png')), (225, 65))
+        self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_off.png')), (225, 75))
+        self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_on.png')), (225, 75))
 
-        self.__botao_voltar = Botao((430, 500), (self.__botao_off, self.__botao_on), 'Voltar')
+        self.__botao_voltar = Botao((400, 500), (self.__botao_off, self.__botao_on), 'Voltar')
         self.__botao_voltar.no_clique(self.__evento_botao_iniciar_clicado)
 
-        self.__botao_ranking = Botao((670, 500), (self.__botao_off, self.__botao_on), 'Ranking')
+        self.__botao_ranking = Botao((650, 500), (self.__botao_off, self.__botao_on), 'Ranking')
         self.__botao_ranking.no_clique(self.__evento_botao_ranking_clicado)
         self.__imagens = pg.transform.scale(
             pg.image.load(
@@ -45,7 +45,19 @@ class FimDeJogo(Estado):
 
     def desenhar(self):
         self.__tela.blit(self.__imagens, (0, 0))
-        self.__tela.blit(self.__filtro, (0,0))
+        self.__tela.blit(self.__filtro, (-22,0))
+
+        texto_tela = self.__configuracoes.fonte_botao.render('Você Perdeu!', True, (255, 255, 255))
+        texto = texto_tela.get_rect()
+        texto.center = (self.__configuracoes.largura_tela // 2, self.__configuracoes.altura_tela // 3)
+        self.__tela.blit(texto_tela, texto)
+
+        # Sua pontuação foi - A ser terminado
+        texto_tela2 = self.__configuracoes.fonte_botao.render('Sua pontuação foi: ???', True, (255, 255, 255))
+        texto2 = texto_tela2.get_rect()
+        texto2.center = (self.__configuracoes.largura_tela // 2, self.__configuracoes.altura_tela // 2)
+        self.__tela.blit(texto_tela2, texto2)
+
         self.__botao_voltar.desenhar()
         self.__botao_ranking.desenhar()
 
