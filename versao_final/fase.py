@@ -2,12 +2,12 @@ from typing import TYPE_CHECKING, Callable
 
 import pygame as pg
 import os
-import time
 
 from configuracoes import Configuracoes
 from entidades import Entidade, Jogador
 from gerenciador_de_grupos import GerenciadorDeGrupos
 from View.camera import Camera
+from tempo import Tempo
 
 if TYPE_CHECKING:
     from estados import Partida
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 class Fase:
     def __init__(self, partida: 'Partida', nome: str):
-
+        self.__tempo = Tempo()
         self.__configuracoes = Configuracoes()
 
         self.__partida = partida
@@ -35,7 +35,7 @@ class Fase:
         self.__camera = Camera(self.__gerenciador_de_grupos)
         for entidade in self.entidades:
             entidade.registrar_na_fase(fase=self)
-        self.__tempo_inicial = time.time()
+        self.__tempo.iniciar()
 
     def esperar_certo_tempo(self, tempo: int, callback: Callable) -> int:
         return self.__partida.esperar_certo_tempo(tempo, callback)
@@ -52,6 +52,7 @@ class Fase:
     def atualizar(self, tempo_passado: int):
         for entidade in self.entidades:
             entidade.atualizar(tempo_passado)
+        self.__tempo.retomar()
 
     def desenhar(self) -> None:
         centro_do_desenho = pg.Vector2(self.__jogador.rect.center)
@@ -96,10 +97,7 @@ class Fase:
             self.__tela.blit(bala, (i * tamanho * 0.75, self.__configuracoes.altura_tela - 100))
 
     def desenhar_barra_tempo(self):
-        tempo_maximo = int(self.__tempo_inicial + self.__tempo_maximo + 1)
-        tempo_atual = time.time()
-        tempo_restante = int(tempo_maximo - tempo_atual)
-
+        tempo_restante = self.__tempo.temporizador(self.__tempo_maximo)
         barra = pg.Rect(self.__configuracoes.largura_tela - tempo_restante * 2 - 50, 100, tempo_restante * 2, 30)
         # A ser concuído: Efeitos colaterais no jogador
         if tempo_restante < 1/3 * self.__tempo_maximo:
@@ -108,8 +106,8 @@ class Fase:
             pg.draw.rect(self.__tela, (0, 255, 0), barra)
 
     def desenhar_tempo(self):
-        tempo_atual = time.time()
-        self.__tempo_passado = int(tempo_atual - self.__tempo_inicial)
+        self.__tempo_passado = int(self.__tempo.ver_tempo())
+
         minutos = self.__tempo_passado // 60
         segundos = self.__tempo_passado % 60
     
@@ -117,6 +115,9 @@ class Fase:
     
         texto = self.__configuracoes.fonte_digitar.render(tempo_string, True, (255, 255, 255))
         self.__tela.blit(texto, (self.__configuracoes.largura_tela - texto.get_width() - 50, 0))
+
+    def pausar_tempo(self):
+        self.__tempo.pausar()
 
     @property
     def colisores(self):

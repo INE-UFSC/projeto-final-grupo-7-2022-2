@@ -88,6 +88,7 @@ class Partida(Estado):
         for evento in eventos:
             if evento.type == pg.KEYDOWN and evento.key == pg.K_ESCAPE:
                 self._maquina_de_estado.mover_para_estado('menu_pausa')
+                self.__fases[self.__fase_atual_indice].pausar_tempo()
             else:
                 for callback_de_evento in self.__callback_de_eventos:
                     if evento.type == callback_de_evento.tipo:
