@@ -26,7 +26,7 @@ class Jogador(Entidade):
 
         # Imagem e hitbox
         self.__status = 'right'
-        self.__spritesheet = Spritesheet("skelet", 1)
+        self.__spritesheet = Spritesheet("lamparina", 1)
         self.__animacoes = self.__spritesheet.get_animation_frames()
         self.__frame_indice = 0
         self._rect = self.__superficie_atual.get_rect()
@@ -61,6 +61,14 @@ class Jogador(Entidade):
         self.__arma.ativo = True
 
         self.__centro_da_tela = self.__calcular_centro_da_tela()
+
+    @property
+    def velocidade(self):
+        return self._velocidade
+
+    @velocidade.setter
+    def velocidade(self, velocidade):
+        self._velocidade = velocidade
 
     @property
     def tipo(self):

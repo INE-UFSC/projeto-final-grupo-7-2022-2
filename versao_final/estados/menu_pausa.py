@@ -20,8 +20,8 @@ class MenuPausa(Estado):
         self.__musica_control = ControladorDeMusica()
         self.__tela = pg.display.get_surface()
 
-        botao_superficie_off = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_off.png'))
-        botao_superficie_on = pg.image.load(path.join('recursos', 'imagens', 'botao_bandeira_on.png'))
+        botao_superficie_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_off.png')),(self.__configuracoes.tamanho_botoes))
+        botao_superficie_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_on.png')),(self.__configuracoes.tamanho_botoes))
 
         self.__botao_voltar = Botao((1080, 600), (botao_superficie_off, botao_superficie_on), 'Voltar')
         self.__botao_voltar.no_clique(self.__voltar_para_jogo)
