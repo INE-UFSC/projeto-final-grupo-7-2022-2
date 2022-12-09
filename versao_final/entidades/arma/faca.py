@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 import pygame as pg
 
 from configuracoes import Configuracoes
+from controlador_de_musica import ControladorDeMusica
+
 
 from .arma import Arma
 
@@ -18,6 +20,7 @@ class Faca(Arma):
         super().__init__(jogador)
 
         self.__configuracoes = Configuracoes()
+        self.__controle_de_musica = ControladorDeMusica()
         self.__tamanho = pg.Vector2(16, 3) * self.__configuracoes.tamanho_tile * 0.04
         self._imagem = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'peixeira.png')), self.__tamanho)
         self._esta_em_ataque = False
@@ -43,6 +46,7 @@ class Faca(Arma):
     def usar_arma(self):
         if not self._esta_em_ataque:
             self._esta_em_ataque = True
+            self.__controle_de_musica.som_ataque("faca")
 
     def atualizar(self, posicao_do_mouse_relativa_ao_jogador, tempo_passado):
         if self.ativo:

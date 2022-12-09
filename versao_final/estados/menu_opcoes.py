@@ -61,7 +61,7 @@ class MenuOpcoes(Estado):
 
     def __evento_botao_voltar_clicado(self):
         self._maquina_de_estado.voltar()
-        #self.__musica_control.som_click()
+        self.__musica_control.som_botao("folha")
 
     def __evento_botao_volume_musica_clicado(self):
         self.__musica_control.mudar_volume_musica()

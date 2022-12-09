@@ -24,6 +24,12 @@ class Configuracoes(Singleton):
         self.__musica_jogo = os.path.join('recursos', 'musicas', 'jogo.mp3')
 
         self.__som_bandeira = os.path.join('recursos', 'musicas', 'som_bandeira.ogg')
+        self.__som_folha = os.path.join('recursos', 'musicas', 'folha.ogg')
+        self.__som_tijolo = os.path.join('recursos', 'musicas', 'tijolo.ogg')
+
+        self.__som_tiro = os.path.join('recursos', 'musicas', 'tiro.ogg')
+        self.__som_flecha = os.path.join('recursos', 'musicas', 'flecha.ogg')
+        self.__som_faca = os.path.join('recursos', 'musicas', 'faca.ogg')
 
         pg.font.init()
         self.__fonte_titulo = pg.font.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 100)
@@ -87,6 +93,26 @@ class Configuracoes(Singleton):
     @property
     def som_bandeira(self):
         return self.__som_bandeira
+
+    @property
+    def som_folha(self):
+        return self.__som_folha
+
+    @property
+    def som_tijolo(self):
+        return self.__som_tijolo
+
+    @property
+    def som_tiro(self):
+        return self.__som_tiro
+
+    @property
+    def som_flecha(self):
+        return self.__som_flecha
+
+    @property
+    def som_faca(self):
+        return self.__som_faca
 
     @property
     def musica_opcoes(self):

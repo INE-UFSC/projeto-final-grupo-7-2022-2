@@ -50,7 +50,7 @@ class MenuVitoria(Estado):
 
     def iniciar(self):
         self.__controle_de_musica.parar_musica()
-        self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_registro)
+        self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_opcoes)
 
     def desenhar(self):
         self.__tela.blit(self.__imagens, (0, 0))

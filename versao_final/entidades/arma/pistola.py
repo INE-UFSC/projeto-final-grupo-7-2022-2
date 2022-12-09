@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, List, Tuple
 import pygame as pg
 
 from configuracoes import Configuracoes
+from controlador_de_musica import ControladorDeMusica
+
 
 from .arma import Arma
 from .bala import Bala
@@ -19,6 +21,7 @@ class Pistola(Arma):
     def __init__(self, jogador: 'Jogador', *args, **kwargs) -> None:
         super().__init__(jogador)
         self.__configuracoes = Configuracoes()
+        self.__controle_de_musica = ControladorDeMusica()
         tamanho = pg.Vector2(16, 8) * self.__configuracoes.tamanho_tile * 0.05
         self._imagem = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'pistola.png')), tamanho)
         # Capacidade
@@ -52,6 +55,7 @@ class Pistola(Arma):
             self.__balas_restantes -= 1
             bala = Bala(self._fase, self._posicao, self._direcao)
             self.__tiros.append(bala)
+            self.__controle_de_musica.som_ataque("pistola")
 
     def recarregar(self) -> None:
         self.__balas_restantes = self.__regarga

@@ -70,9 +70,11 @@ class FimDeJogo(Estado):
 
     def __evento_botao_iniciar_clicado(self):
         self._maquina_de_estado.voltar_para_inicio()
+        self.__controle_de_musica.som_botao("")
 
     def __evento_botao_ranking_clicado(self):
         self._maquina_de_estado.mover_para_estado('menu_ranking')
+        self.__controle_de_musica.som_botao("")
 
     def atualizar(self, eventos: List[pg.event.Event], tempo_passado: int):
         for evento in eventos:

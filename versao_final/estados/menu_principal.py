@@ -60,13 +60,15 @@ class MenuPrincipal(Estado):
 
     def __evento_botao_jogar_clicado(self):
         self._maquina_de_estado.mover_para_estado('menu_registro')
+        self.__controle_de_musica.som_botao("bandeira")
 
     def __evento_botao_opcoes_clicado(self):
         self._maquina_de_estado.mover_para_estado('menu_opcoes')
+        self.__controle_de_musica.som_botao("bandeira")
 
     def __evento_botao_creditos_clicado(self):
         self._maquina_de_estado.mover_para_estado('menu_creditos')
-        self.__controle_de_musica.som_click()
+        self.__controle_de_musica.som_botao("bandeira")
 
     def __evento_botao_sair_clicado(self):
         pg.quit()

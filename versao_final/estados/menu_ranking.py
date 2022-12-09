@@ -50,6 +50,7 @@ class MenuRanking(Estado):
 
     def __evento_botao_voltar_clicado(self):
         self._maquina_de_estado.voltar()
+        self.__controle_de_musica.som_botao("nuvem")
 
     def desenhar(self):
         self.__tela.blit(self.__imagens, (0, 0))

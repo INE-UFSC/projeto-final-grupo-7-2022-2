@@ -5,6 +5,7 @@ import pygame as pg
 from configuracoes import Configuracoes
 from spritesheet import Spritesheet
 from superficie_posicionada import SuperficiePosicionada
+from controlador_de_musica import ControladorDeMusica
 
 from .entidade import Entidade
 from .flecha import Flecha
@@ -20,6 +21,7 @@ class Arqueiro(Inimigo):
 
         # Informacoes Inimigo
         self.__configuracoes = Configuracoes()
+        self.__controle_de_musica = ControladorDeMusica()
 
         self._velocidade = 0.5
         self._raio_ataque = 4
@@ -93,6 +95,7 @@ class Arqueiro(Inimigo):
                 self.__flechas.append(flecha)
                 self._pode_atacar = False
                 self._fase.esperar_certo_tempo(self.__tempo_de_recarga_ataque, self._ativar_ataque)
+                self.__controle_de_musica.som_ataque("flecha")
 
     def __atualizar_flechas(self, tempo_passado: int) -> None:
         flechas_que_ainda_nao_terminaram: List[Flecha] = []
