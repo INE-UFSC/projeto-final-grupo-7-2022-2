@@ -1,8 +1,8 @@
 from typing import List, Tuple, TYPE_CHECKING
 
-from os import path
 import pygame as pg
 
+from os import path
 from superficie_posicionada import SuperficiePosicionada
 
 if TYPE_CHECKING:
@@ -19,12 +19,12 @@ class Flecha():
         # Imagem
         self.__tamanho = (8, 5)
         self.__superficie = pg.Surface(self.__tamanho)
-        #self.__superficie.fill((255, 128, 0))
-        self.__sprite = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'flecha.png')), self.__tamanho)
         self.__rect = self.__superficie.get_rect(center=posicao)
         self.__posicao = pg.Vector2(self.__rect.center)
         # Movimento
         self.__direcao = direcao
+        self.__imagem = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'flecha.png')),(16, 3))
+
 
     def __atualizar_posicao(self, tempo_passado: int) -> pg.Vector2:
         # Transforma o comprimento do vetor em 1
@@ -54,7 +54,7 @@ class Flecha():
         return False
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
-        return (SuperficiePosicionada(self.__sprite, pg.Vector2(self.__rect.topleft)),)
+        return (SuperficiePosicionada(self.__imagem, pg.Vector2(self.__rect.topleft)),)
 
     def atualizar(self, tempo_passado: int) -> bool:
         nova_posicao = self.__atualizar_posicao(tempo_passado)

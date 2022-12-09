@@ -27,12 +27,9 @@ class MenuPausa(Estado):
         self.__botao_voltar = Botao((1080, 600), (botao_superficie_off, botao_superficie_on), 'Voltar')
         self.__botao_voltar.no_clique(self.__voltar_para_jogo)
 
+    def iniciar(self):
         self.__controle_de_musica.parar_musica()
         self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_creditos)
-        self.__controle_de_musica.mudar_volume_musica()
-
-
-    def iniciar(self):
         self.__jogo_copia = self.__tela.copy()
         self.__jogo_copia.set_alpha(200)
 

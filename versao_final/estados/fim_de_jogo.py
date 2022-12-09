@@ -46,9 +46,9 @@ class FimDeJogo(Estado):
             (self.__configuracoes.largura_tela,
              self.__configuracoes.altura_tela))
 
+    def iniciar(self):
         self.__controle_de_musica.parar_musica()
         self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_fim)
-        self.__controle_de_musica.mudar_volume_musica()
 
     def desenhar(self):
         self.__tela.blit(self.__imagens, (0, 0))

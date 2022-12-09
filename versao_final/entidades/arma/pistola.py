@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, List, Tuple
 
 import pygame as pg
 
+from os import path
 from .arma import Arma
 from .bala import Bala
 
@@ -16,8 +17,8 @@ class Pistola(Arma):
     def __init__(self, jogador: 'Jogador', *args, **kwargs) -> None:
         super().__init__(jogador)
         # Imagem
-        self._imagem = pg.Surface((10, 10))
-        self._imagem.fill('blue')
+        self._imagem = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'pistola.png')),(16, 8))
+        #._imagem.fill('blue')
         # self.rect = self.image.get_rect(center = (0, 0))
 
         # Capacidade

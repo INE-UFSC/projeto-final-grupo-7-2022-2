@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, List, Callable
 
 import pygame as pg
 
+from controlador_de_musica import ControladorDeMusica
 from callback_de_evento import CallbackDeEvento
 from configuracoes import Configuracoes
 from entidades import Jogador
@@ -18,6 +19,7 @@ class Partida(Estado):
         self.__fases = []
         self.__fase_atual_indice = 0
         self.__tem_jogo = False
+        self.__musica_control = ControladorDeMusica()
         self.__jogador = Jogador()
         self.__marcador_de_tempo_para_eventos = 0
         self.__callback_de_eventos = []
@@ -99,3 +101,5 @@ class Partida(Estado):
             self.__fase_atual_indice = 0
             self.__fases[self.__fase_atual_indice].iniciar(jogador=self.__jogador)
             self.__tem_jogo = True
+        self.__musica_control.parar_musica()
+        self.__musica_control.iniciar_musica(self.__configuracoes.musica_jogo) 

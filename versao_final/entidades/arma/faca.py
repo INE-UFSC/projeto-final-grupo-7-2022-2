@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
+from os import path
 from .arma import Arma
 
 if TYPE_CHECKING:
@@ -22,8 +23,8 @@ class Faca(Arma):
         self.__tipo_sprite = 'faca'
 
         self.__escala = (10, 10)
-        self._imagem = pg.Surface(self.__escala)
-        self._imagem.fill('red')
+        self._imagem = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'peixeira.png')),(16, 3))
+        #self._imagem.fill('red')
         # self.rect = self.image.get_rect(center = (0,0))
 
     @staticmethod

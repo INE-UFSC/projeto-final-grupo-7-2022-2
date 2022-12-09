@@ -43,12 +43,9 @@ class MenuRegistro(Estado):
         self.__mostra_mensagem = False
         self.__duracao_mensagem = 2000
 
-        self.__controle_de_musica.parar_musica()
-        self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_registro)
-        self.__controle_de_musica.mudar_volume_musica()
 
     def __evento_botao_voltar_clicado(self):
-        self._maquina_de_estado.mover_para_estado('menu_principal')
+        self._maquina_de_estado.voltar()
 
     def __evento_botao_registro_clicado(self):
         self.__clique_registro = pg.time.get_ticks()
@@ -91,3 +88,5 @@ class MenuRegistro(Estado):
 
     def iniciar(self):
         self.__entrada_usuario.texto_usuario = ''
+        self.__controle_de_musica.parar_musica()
+        self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_registro)

@@ -44,9 +44,9 @@ class MenuRanking(Estado):
             (self.__configuracoes.largura_tela,
              self.__configuracoes.altura_tela))
 
+    def iniciar(self):
         self.__controle_de_musica.parar_musica()
         self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_ranking)
-        self.__controle_de_musica.mudar_volume_musica()
 
     def __evento_botao_voltar_clicado(self):
         self._maquina_de_estado.voltar()

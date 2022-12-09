@@ -48,7 +48,7 @@ class Jogo:
         self.__maquina_de_estado.adicionar_estado("menu_pausa", menu_pausa)
         self.__maquina_de_estado.adicionar_estado("menu_vitoria", menu_vitoria)
 
-        self.__maquina_de_estado.mover_para_estado("menu_principal")
+        self.__maquina_de_estado.iniciar()
 
         eventos = []
         while True:

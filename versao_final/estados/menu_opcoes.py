@@ -20,8 +20,8 @@ class MenuOpcoes(Estado):
         self.__musica_control = ControladorDeMusica()
         self.__tela = pg.display.get_surface()
         self.__tamanho_botao_volume = (600, 200)
-        self.__nivel_musica = self.__musica_control.volume_musica()
-        self.__nivel_som = self.__musica_control.volume_som()
+        self.__nivel_musica = self.__musica_control.volume_musica
+        self.__nivel_som = self.__musica_control.volume_som
 
         self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_folha_off.png')),(self.__configuracoes.tamanho_botoes[0] + 25, self.__configuracoes.tamanho_botoes[1]))
         self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_folha_on.png')),(self.__configuracoes.tamanho_botoes[0] + 25, self.__configuracoes.tamanho_botoes[1]))
@@ -38,9 +38,11 @@ class MenuOpcoes(Estado):
 
         self.__botao_volume_musica = BotaoVolume((75, 100),self.__volume_musica)
         self.__botao_volume_musica.no_clique(self.__evento_botao_volume_musica_clicado)
+        self.__botao_volume_musica.volume = self.__nivel_musica
 
         self.__botao_volume_som = BotaoVolume((75, 350),self.__volume_som)
         self.__botao_volume_som.no_clique(self.__evento_botao_volume_som_clicado)
+        self.__botao_volume_som.volume = self.__nivel_som
 
         self.__botao_voltar = Botao((1080, 580), (self.__botao_off, self.__botao_on), 'Voltar')
         self.__botao_voltar.no_clique(self.__evento_botao_voltar_clicado)
@@ -53,7 +55,9 @@ class MenuOpcoes(Estado):
             (self.__configuracoes.largura_tela,
              self.__configuracoes.altura_tela))
 
-        
+    def iniciar(self):
+        self.__musica_control.parar_musica()
+        self.__musica_control.iniciar_musica(self.__configuracoes.musica_opcoes)        
 
     def __evento_botao_voltar_clicado(self):
         self._maquina_de_estado.voltar()

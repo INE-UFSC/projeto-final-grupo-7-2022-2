@@ -71,9 +71,9 @@ class MenuCreditos(Estado):
         self.__nuvem_atual = random.randrange(0, 4, 1)
         self.__nuvem_desenho = self.__nuvens[self.__nuvem_atual]
 
+    def iniciar(self):
         self.__controle_de_musica.parar_musica()
         self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_creditos)
-        self.__controle_de_musica.mudar_volume_musica()
 
     def __mover_nuvem(self):
         if self.__nuvens_y > - self.__nuvem_desenho.get_height() and self.__nuvens_x < self.__configuracoes.largura_tela:
