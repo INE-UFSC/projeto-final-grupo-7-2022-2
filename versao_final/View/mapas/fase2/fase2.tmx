@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="64" tileheight="64" infinite="0" nextlayerid="4" nextobjectid="2">
  <tileset firstgid="1" source="../tsx/Tiles_Dungeon.tsx"/>
- <layer id="1" name="chao" width="20" height="20" visible="0">
+ <layer id="1" name="chao" width="20" height="20">
   <data encoding="csv">
 31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,
 31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,
@@ -25,7 +25,7 @@
 31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31
 </data>
  </layer>
- <layer id="2" name="camada_superior" width="20" height="20" visible="0">
+ <layer id="2" name="camada_superior" width="20" height="20">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

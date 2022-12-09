@@ -12,21 +12,35 @@
     "fileStates": {
         "fase1/fase1.tmx": {
             "expandedGroupLayers": [
+                11,
+                12,
+                13,
+                14,
                 5
             ],
+            "expandedObjectLayers": [
+                9,
+                12
+            ],
             "scale": 0.6954296875,
-            "selectedLayer": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 768.5895635567039,
-                "y": 322.82199629275965
+                "x": 607.538055383924,
+                "y": 621.9176543279223
             }
         },
         "fase2/fase2.tmx": {
+            "expandedGroupLayers": [
+                4
+            ],
+            "expandedObjectLayers": [
+                3
+            ],
             "scale": 0.6954296875,
-            "selectedLayer": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 721.1368870415098,
-                "y": 629.1074537999214
+                "x": 603.2241757007247,
+                "y": 627.6694939055216
             }
         },
         "test2/test2.tmx": {
@@ -62,8 +76,8 @@
     ],
     "project": "super_lamparina.tiled-project",
     "recentFiles": [
-        "test2/test2.tmx",
         "tsx/Tiles_Dungeon.tsx",
+        "test2/test2.tmx",
         "fase1/fase1.tmx",
         "tsx/Collision_Block.tsx"
     ],
