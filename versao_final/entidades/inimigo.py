@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Tuple
-from configuracoes import Configuracoes
 
 import pygame as pg
+
+from utilidades import Configuracoes
 
 from .entidade import Entidade
 from .jogador import Jogador

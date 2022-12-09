@@ -1,8 +1,10 @@
 from typing import List
+
 import pygame as pg
-from controlador_de_musica import ControladorDeMusica
 
 from estados import Estado
+
+from .controlador_de_musica import ControladorDeMusica
 
 
 class MaquinaDeEstado:

@@ -1,6 +1,7 @@
 import pygame as pg
-from configuracoes import Configuracoes
-from configuracoes import Singleton
+
+from .configuracoes import Configuracoes
+from .singleton import Singleton
 
 
 class ControladorDeMusica(Singleton):

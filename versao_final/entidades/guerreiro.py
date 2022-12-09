@@ -2,9 +2,8 @@ from typing import Tuple
 
 import pygame as pg
 
-from configuracoes import Configuracoes
-from spritesheet import Spritesheet
-from superficie_posicionada import SuperficiePosicionada
+from utilidades import Configuracoes
+from visualizacao import Spritesheet, SuperficiePosicionada
 
 from .inimigo import Inimigo
 

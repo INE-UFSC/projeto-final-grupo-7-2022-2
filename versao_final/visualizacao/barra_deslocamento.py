@@ -1,6 +1,6 @@
 import pygame as pg
 from os import path
-from configuracoes import Configuracoes
+from utilidades import Configuracoes
 
 
 class BarraDeslocamento:

@@ -1,6 +1,8 @@
-import pygame as pg
-from botao import Botao
 from typing import Callable, Tuple
+
+import pygame as pg
+
+from .botao import Botao
 
 
 class BotaoVolume(Botao):

@@ -4,9 +4,8 @@ from typing import TYPE_CHECKING, List
 
 import pygame as pg
 
-from botao_texto_rotacionado import BotaoTextoRotacionado
-from configuracoes import Configuracoes
-from controlador_de_musica import ControladorDeMusica
+from visualizacao import BotaoTextoRotacionado
+from utilidades import Configuracoes, ControladorDeMusica
 
 from .estado import Estado
 
@@ -43,11 +42,9 @@ class MenuPrincipal(Estado):
         self.__botao_sair = BotaoTextoRotacionado((75, 570), (self.__botao_off, self.__botao_on), 'Sair')
         self.__botao_sair.no_clique(self.__evento_botao_sair_clicado)
 
-
     def iniciar(self):
         self.__controle_de_musica.parar_musica()
         self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_menu)
-
 
     def desenhar(self):
         self.__titulo_rect.center = (self.__configuracoes.largura_tela // 2, self.__configuracoes.altura_tela // 10)

@@ -3,11 +3,10 @@ from typing import TYPE_CHECKING, List
 
 import pygame as pg
 
-from botao import Botao
-from configuracoes import Configuracoes
-from estados.estado import Estado
-from controlador_de_musica import ControladorDeMusica
+from utilidades import Configuracoes, ControladorDeMusica
+from visualizacao import Botao
 
+from .estado import Estado
 
 if TYPE_CHECKING:
     from maquina_de_estado import MaquinaDeEstado
@@ -19,7 +18,6 @@ class MenuVitoria(Estado):
         self.__configuracoes = Configuracoes()
         self.__tela = pg.display.get_surface()
         self.__controle_de_musica = ControladorDeMusica()
-
 
         self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_off.png')), (225, 65))
         self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_on.png')), (225, 65))
@@ -54,13 +52,12 @@ class MenuVitoria(Estado):
 
     def desenhar(self):
         self.__tela.blit(self.__imagens, (0, 0))
-        self.__tela.blit(self.__filtro, (-22,0))
+        self.__tela.blit(self.__filtro, (-22, 0))
         self.__botao_sair.desenhar()
         self.__botao_avancar.desenhar()
 
     def __evento_botao_iniciar_clicado(self):
         self._maquina_de_estado.voltar_para_inicio()
-
 
     def atualizar(self, eventos: List[pg.event.Event], tempo_passado: int):
         for evento in eventos:

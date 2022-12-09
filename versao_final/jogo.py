@@ -3,11 +3,12 @@ import sys
 import pygame as pg
 import pygame.time as pg_time
 
-from configuracoes import Configuracoes
-from estados import (FimDeJogo, MenuCreditos, MenuOpcoes, MenuPrincipal, MenuRanking, MenuPausa, MenuRegistro, MenuVitoria, Partida)
-from evento_tps import evento_TPS
+from estados import (FimDeJogo, MenuCreditos, MenuOpcoes, MenuPausa,
+                     MenuPrincipal, MenuRanking, MenuRegistro, MenuVitoria,
+                     Partida)
+from eventos import evento_TPS
 from fase import Fase
-from maquina_de_estado import MaquinaDeEstado
+from utilidades import Configuracoes, MaquinaDeEstado
 
 
 class Jogo:

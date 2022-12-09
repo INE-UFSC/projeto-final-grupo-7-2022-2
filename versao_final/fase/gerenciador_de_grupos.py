@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING, List
 import pygame as pg
 import pytmx
 
-from configuracoes import Configuracoes
+from utilidades import Configuracoes
 from entidades import Arqueiro, Entidade, Guerreiro, Ladino, BombaDeAsma
 
-from View.tile import Tile
+from visualizacao import Tile
 
 if TYPE_CHECKING:
     from fase import Fase
@@ -21,7 +21,7 @@ class GerenciadorDeGrupos():
         self.__nome = nome
 
         # Carrega o arquivo .tmx
-        tmx_path = os.path.join('./View/mapas', self.__nome, self.__nome + '.tmx')
+        tmx_path = os.path.join('./visualizacao/mapas', self.__nome, self.__nome + '.tmx')
         dados_do_pytmx = pytmx.load_pygame(tmx_path, pixelalpha=True)
         self.__gerar_camada_inferior(dados_do_pytmx)
         self.__gerar_camada_intermediaria(dados_do_pytmx)

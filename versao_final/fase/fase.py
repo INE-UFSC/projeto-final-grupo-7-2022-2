@@ -1,15 +1,15 @@
+import os
 from typing import TYPE_CHECKING, Callable
 
 import pygame as pg
-import os
 
-from configuracoes import Configuracoes
-from entidades import Entidade, Jogador, Inimigo, Guerreiro, Inimigo, Guerreiro
-from gerenciador_de_grupos import GerenciadorDeGrupos
-from View.camera import Camera
-from tempo import Tempo
-from View.transicao import Transicao
-from View.transicao import Transicao
+from entidades import Entidade, Guerreiro, Inimigo, Jogador
+from utilidades import Configuracoes
+from visualizacao import Transicao
+
+from .camera import Camera
+from .gerenciador_de_grupos import GerenciadorDeGrupos
+from .tempo import Tempo
 
 if TYPE_CHECKING:
     from estados import Partida
@@ -79,7 +79,7 @@ class Fase:
         self.__tela.blit(self.__camera.desenhar(centro_do_desenho, superficies_para_desenho), (0, 0))
         self.__desenhar_hud()
         return self.__tela
-    
+
     def __desenhar_hud(self):
         self.__desenhar_vidas_restantes()
         self.__desenhar_balas()
@@ -95,7 +95,7 @@ class Fase:
         tamanho = 100
         coracao = pg.transform.scale(pg.image.load(os.path.join('recursos', 'sprites', 'coracao.png')), (tamanho, tamanho))
         meio_coracao = pg.transform.scale(pg.image.load(os.path.join('recursos', 'sprites', 'meio_coracao.png')), (tamanho, tamanho))
-        
+
         # A ser concluído: Decidir quantos corações serão usados e esquema de dano
         vida_atual = self.__jogador.vida // 10
 
@@ -129,9 +129,9 @@ class Fase:
 
         minutos = self.__tempo_passado // 60
         segundos = self.__tempo_passado % 60
-    
+
         tempo_string = "{0:02}:{1:02}".format(minutos, segundos)
-    
+
         texto = self.__configuracoes.fonte_digitar.render(tempo_string, True, (255, 255, 255))
         self.__tela.blit(texto, (self.__configuracoes.largura_tela - texto.get_width() - 50, 0))
 

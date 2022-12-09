@@ -1,6 +1,8 @@
-import pygame as pg
-from singleton import Singleton
 import os
+
+import pygame as pg
+
+from .singleton import Singleton
 
 
 class Configuracoes(Singleton):

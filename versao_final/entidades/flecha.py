@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, List, Tuple
 
 import pygame as pg
 
-from configuracoes import Configuracoes
-from superficie_posicionada import SuperficiePosicionada
+from utilidades import Configuracoes
+from visualizacao import SuperficiePosicionada
 
 if TYPE_CHECKING:
     from fase import Fase

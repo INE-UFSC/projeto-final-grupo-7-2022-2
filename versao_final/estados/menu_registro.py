@@ -1,12 +1,12 @@
 from os import path
-import pygame as pg
-from configuracoes import Configuracoes
-from estados.estado import Estado
-from botao import Botao
-from entrada_texto_usuario import EntradaTextoUsuario
 from typing import TYPE_CHECKING, List
-from controlador_de_musica import ControladorDeMusica
 
+import pygame as pg
+
+from utilidades import Configuracoes, ControladorDeMusica
+from visualizacao import Botao, EntradaTextoUsuario
+
+from .estado import Estado
 
 if TYPE_CHECKING:
     from maquina_de_estado import MaquinaDeEstado

@@ -1,7 +1,10 @@
-import pygame as pg
 import os
-from configuracoes import Configuracoes
-from superficie_posicionada import SuperficiePosicionada
+
+import pygame as pg
+
+from utilidades import Configuracoes
+
+from .superficie_posicionada import SuperficiePosicionada
 
 
 class Tile(SuperficiePosicionada):

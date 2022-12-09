@@ -73,7 +73,7 @@ class Botao:
     @property
     def texto_rect(self):
         return self.__texto_rect
-    
+
     @property
     def on_click_callback(self):
         return self.__on_click_callback

@@ -1,14 +1,13 @@
-from typing import TYPE_CHECKING, List, Callable
+from typing import TYPE_CHECKING, Callable, List
 
 import pygame as pg
 
-from controlador_de_musica import ControladorDeMusica
-from callback_de_evento import CallbackDeEvento
-from configuracoes import Configuracoes
 from entidades import Jogador
-from estados.estado import Estado
 from fase import Fase
-from View.transicao import Transicao
+from utilidades import CallbackDeEvento, Configuracoes, ControladorDeMusica
+from visualizacao import Transicao
+
+from .estado import Estado
 
 if TYPE_CHECKING:
     from maquina_de_estado import MaquinaDeEstado
@@ -87,21 +86,20 @@ class Partida(Estado):
                 self.__tela.blit(self.__transicao.desenhar(), (0, 0))
 
     def atualizar(self, eventos: List[pg.event.Event], tempo_passado: int):
-        if self.__fase_ativa:    
+        if self.__fase_ativa:
             self.__atualizar_fase(eventos, tempo_passado)
             if not self.__transicao.terminou:
-                self.__transicao.atualizar(tempo_passado)   
+                self.__transicao.atualizar(tempo_passado)
         else:
             self.__transicao.atualizar(tempo_passado)
             if self.__transicao.iniciou:
                 self.__fase_atual_indice += 1
                 self.__fase_ativa = True
                 if self.__fase_atual_indice >= len(self.__fases):
-                        self._maquina_de_estado.mover_para_estado('fim_de_jogo')
-                        self.__tem_jogo = False
+                    self._maquina_de_estado.mover_para_estado('fim_de_jogo')
+                    self.__tem_jogo = False
                 else:
                     self.iniciar_fase()
-            
 
     def __atualizar_fase(self, eventos: List[pg.event.Event], tempo_passado: int):
         self.__fases[self.__fase_atual_indice].atualizar(tempo_passado)
@@ -131,4 +129,4 @@ class Partida(Estado):
             self.__fases[self.__fase_atual_indice].iniciar(jogador=self.__jogador)
             self.__tem_jogo = True
         self.__musica_control.parar_musica()
-        self.__musica_control.iniciar_musica(self.__configuracoes.musica_jogo) 
+        self.__musica_control.iniciar_musica(self.__configuracoes.musica_jogo)

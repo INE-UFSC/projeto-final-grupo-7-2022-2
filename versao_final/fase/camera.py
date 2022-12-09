@@ -2,8 +2,9 @@ from typing import List
 
 import pygame as pg
 
-from gerenciador_de_grupos import GerenciadorDeGrupos
-from superficie_posicionada import SuperficiePosicionada
+from visualizacao import SuperficiePosicionada
+
+from .gerenciador_de_grupos import GerenciadorDeGrupos
 
 
 class Camera():

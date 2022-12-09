@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING, List
 
 import pygame as pg
 
-from botao import Botao
-from configuracoes import Configuracoes
-from controlador_de_musica import ControladorDeMusica
-from estados.estado import Estado
+from utilidades import Configuracoes, ControladorDeMusica
+from visualizacao import Botao
+
+from .estado import Estado
 
 if TYPE_CHECKING:
     from maquina_de_estado import MaquinaDeEstado
@@ -30,8 +30,8 @@ class MenuCreditos(Estado):
         self.__last = pg.time.get_ticks()
         self.__cooldowm = random.randrange(0, 6000, 1000)
 
-        self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_nuvem_off.png')),(self.__configuracoes.tamanho_botoes))
-        self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_nuvem_on.png')),(self.__configuracoes.tamanho_botoes))
+        self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_nuvem_off.png')), (self.__configuracoes.tamanho_botoes))
+        self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_nuvem_on.png')), (self.__configuracoes.tamanho_botoes))
 
         self.__botao_voltar = Botao((1080, 600), (self.__botao_off, self.__botao_on), 'Voltar')
         self.__botao_voltar.no_clique(self.__evento_botao_voltar_clicado)

@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, Tuple
 
 import pygame as pg
 
-from superficie_posicionada import SuperficiePosicionada
-from configuracoes import Configuracoes
+from visualizacao import SuperficiePosicionada
+from utilidades import Configuracoes
 
 if TYPE_CHECKING:
     from entidades import Jogador

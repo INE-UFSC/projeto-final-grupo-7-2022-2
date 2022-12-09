@@ -1,11 +1,9 @@
-from typing import TYPE_CHECKING, Tuple, List
+from typing import TYPE_CHECKING, List, Tuple
 
 import pygame as pg
 
-from configuracoes import Configuracoes
-from spritesheet import Spritesheet
-from superficie_posicionada import SuperficiePosicionada
-from controlador_de_musica import ControladorDeMusica
+from utilidades import Configuracoes, ControladorDeMusica
+from visualizacao import Spritesheet, SuperficiePosicionada
 
 from .entidade import Entidade
 from .flecha import Flecha

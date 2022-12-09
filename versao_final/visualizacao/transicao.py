@@ -1,5 +1,6 @@
 import pygame as pg
-from configuracoes import Configuracoes
+
+from utilidades import Configuracoes
 
 
 class Transicao:
@@ -22,7 +23,7 @@ class Transicao:
             self.__terminar(tempo_passado)
 
     def __iniciar(self, tempo_passado):
-        
+
         self.__alfa += tempo_passado // 2
         self.__mascara.set_alpha(self.__alfa)
 
@@ -31,7 +32,7 @@ class Transicao:
             self.__iniciou = True
 
     def __terminar(self, tempo_passado):
-        
+
         self.__alfa -= tempo_passado // 2
         self.__mascara.set_alpha(self.__alfa)
 
@@ -51,7 +52,7 @@ class Transicao:
     @property
     def iniciou(self):
         return self.__iniciou
-    
+
     @property
     def terminou(self):
         return self.__terminou

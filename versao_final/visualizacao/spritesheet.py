@@ -1,7 +1,9 @@
-import pygame as pg
-import os
 import json
-from configuracoes import Configuracoes
+import os
+
+import pygame as pg
+
+from utilidades import Configuracoes
 
 
 class Spritesheet():

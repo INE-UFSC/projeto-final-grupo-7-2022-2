@@ -4,11 +4,10 @@ from typing import TYPE_CHECKING, List
 
 import pygame as pg
 
-from botao import Botao
-from configuracoes import Configuracoes
-from controlador_de_musica import ControladorDeMusica
-from estados.estado import Estado
-from controlador_de_musica import ControladorDeMusica
+from utilidades import Configuracoes, ControladorDeMusica
+from visualizacao import Botao
+
+from .estado import Estado
 
 if TYPE_CHECKING:
     from maquina_de_estado import MaquinaDeEstado

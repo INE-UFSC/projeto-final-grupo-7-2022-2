@@ -3,7 +3,7 @@ from typing import List
 
 import pygame as pg
 
-from configuracoes import Configuracoes
+from utilidades import Configuracoes
 
 
 class EntradaTextoUsuario:

@@ -3,16 +3,14 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from configuracoes import Configuracoes
-from controlador_de_musica import ControladorDeMusica
-
+from utilidades import Configuracoes, ControladorDeMusica
+from visualizacao import SuperficiePosicionada
 
 from .arma import Arma
 
 if TYPE_CHECKING:
     from entidades import Jogador
 
-from superficie_posicionada import SuperficiePosicionada
 
 
 class Faca(Arma):

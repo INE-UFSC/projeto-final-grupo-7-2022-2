@@ -1,7 +1,9 @@
 import pygame as pg
-from configuracoes import Configuracoes
+
+from utilidades import Configuracoes
+from visualizacao import SuperficiePosicionada
+
 from .entidade import Entidade
-from superficie_posicionada import SuperficiePosicionada
 
 
 class BombaDeAsma(Entidade):

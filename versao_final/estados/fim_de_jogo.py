@@ -3,11 +3,10 @@ from typing import TYPE_CHECKING, List
 
 import pygame as pg
 
-from botao import Botao
-from configuracoes import Configuracoes
-from estados.estado import Estado
+from utilidades import Configuracoes, ControladorDeMusica
+from visualizacao import Botao
 
-from controlador_de_musica import ControladorDeMusica
+from .estado import Estado
 
 if TYPE_CHECKING:
     from maquina_de_estado import MaquinaDeEstado
@@ -52,7 +51,7 @@ class FimDeJogo(Estado):
 
     def desenhar(self):
         self.__tela.blit(self.__imagens, (0, 0))
-        self.__tela.blit(self.__filtro, (-22,0))
+        self.__tela.blit(self.__filtro, (-22, 0))
 
         texto_tela = self.__configuracoes.fonte_botao.render('Você Perdeu!', True, (255, 255, 255))
         texto = texto_tela.get_rect()

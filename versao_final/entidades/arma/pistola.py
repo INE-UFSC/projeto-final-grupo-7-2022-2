@@ -3,9 +3,8 @@ from typing import TYPE_CHECKING, List, Tuple
 
 import pygame as pg
 
-from configuracoes import Configuracoes
-from controlador_de_musica import ControladorDeMusica
-
+from utilidades import Configuracoes, ControladorDeMusica
+from visualizacao import SuperficiePosicionada
 
 from .arma import Arma
 from .bala import Bala
@@ -14,7 +13,6 @@ if TYPE_CHECKING:
     from entidades import Jogador
     from fase import Fase
 
-from superficie_posicionada import SuperficiePosicionada
 
 
 class Pistola(Arma):
