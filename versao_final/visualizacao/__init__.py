@@ -1,4 +1,3 @@
-from .barra_deslocamento import BarraDeslocamento
 from .botao_texto_rotacionado import BotaoTextoRotacionado
 from .botao_volume import BotaoVolume
 from .botao import Botao
