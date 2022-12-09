@@ -14,10 +14,10 @@ class Guerreiro(Inimigo):
         super().__init__()
 
         # Informacoes Inimigo
-        self._velocidade = 2
-        self._raio_ataque = 20
+        self._velocidade = 0.5
+        self._raio_ataque = 0.1
         self._vida = 3
-        self._raio_percepcao = 150
+        self._raio_percepcao = 5
         self.__frame_indice = 0
         self.__status = 'right'
         self.__spritesheet = Spritesheet("guerreiro")

@@ -21,9 +21,9 @@ class Arqueiro(Inimigo):
         # Informacoes Inimigo
         self.__configuracoes = Configuracoes()
 
-        self._velocidade = 0
-        self._raio_ataque = 200
-        self._raio_percepcao = 300
+        self._velocidade = 0.5
+        self._raio_ataque = 4
+        self._raio_percepcao = 30
         self._vida = 1
 
         self.__frame_indice = 0
