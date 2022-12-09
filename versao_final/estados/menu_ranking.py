@@ -6,6 +6,8 @@ import pygame as pg
 from botao import Botao
 from configuracoes import Configuracoes
 from estados.estado import Estado
+from controlador_de_musica import ControladorDeMusica
+
 
 if TYPE_CHECKING:
     from maquina_de_estado import MaquinaDeEstado
@@ -16,6 +18,7 @@ class MenuRanking(Estado):
         super().__init__(maquina_de_estado)
         self.__configuracoes = Configuracoes()
         self.__tela = pg.display.get_surface()
+        self.__controle_de_musica = ControladorDeMusica()
 
         self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_nuvem_off.png')),(self.__configuracoes.tamanho_botoes))
         self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_nuvem_on.png')),(self.__configuracoes.tamanho_botoes))
@@ -40,6 +43,10 @@ class MenuRanking(Estado):
                     'filtro_ranking.png')),
             (self.__configuracoes.largura_tela,
              self.__configuracoes.altura_tela))
+
+        self.__controle_de_musica.parar_musica()
+        self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_ranking)
+        self.__controle_de_musica.mudar_volume_musica()
 
     def __evento_botao_voltar_clicado(self):
         self._maquina_de_estado.voltar()

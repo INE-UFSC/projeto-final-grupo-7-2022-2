@@ -7,6 +7,8 @@ from botao import Botao
 from configuracoes import Configuracoes
 from estados.estado import Estado
 
+from controlador_de_musica import ControladorDeMusica
+
 if TYPE_CHECKING:
     from maquina_de_estado import MaquinaDeEstado
 
@@ -15,6 +17,7 @@ class FimDeJogo(Estado):
     def __init__(self, maquina_de_estado: 'MaquinaDeEstado'):
         super().__init__(maquina_de_estado)
         self.__configuracoes = Configuracoes()
+        self.__controle_de_musica = ControladorDeMusica()
         self.__tela = pg.display.get_surface()
 
         self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_off.png')), (225, 75))
@@ -42,6 +45,10 @@ class FimDeJogo(Estado):
                     'filtro.png')),
             (self.__configuracoes.largura_tela,
              self.__configuracoes.altura_tela))
+
+        self.__controle_de_musica.parar_musica()
+        self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_fim)
+        self.__controle_de_musica.mudar_volume_musica()
 
     def desenhar(self):
         self.__tela.blit(self.__imagens, (0, 0))

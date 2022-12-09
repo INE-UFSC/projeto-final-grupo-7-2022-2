@@ -4,14 +4,22 @@ from typing import Callable, Tuple
 
 
 class BotaoVolume(Botao):
-    def __init__(self, posicao: Tuple[int, int], imagens: Tuple[pg.Surface, pg.Surface], texto: str):
-        super().__init__(posicao, imagens, texto)
+    def __init__(self, posicao: Tuple[int, int], imagens: Tuple[pg.Surface, ...]):
+        super().__init__(posicao, imagens, '')
+        self.__volume = 0
+        self.__tela = pg.display.get_surface()
 
-    def atualizar(self, evento: pg.event.Event, imagens) -> None:
-        self.ativo = 0
-        if self.rect.collidepoint(evento.pos):
-            self.ativo = 1
-            if evento.type == pg.MOUSEBUTTONDOWN:
-                if self.on_click_callback:
-                    self.on_click_callback()
-                    self.imagens = imagens
+    @property
+    def volume(self) -> int:
+        return self.__volume
+
+    @volume.setter
+    def volume(self, volume: int) -> None:
+        self.__volume = volume
+
+    def desenhar(self) -> None:
+        if self.ativo == 1:
+            self.imagens[self.__volume].set_alpha(255)
+        else:
+            self.imagens[self.__volume].set_alpha(200)
+        self.__tela.blit(self.imagens[self.__volume], self.rect.topleft)

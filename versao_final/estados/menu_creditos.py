@@ -17,7 +17,7 @@ class MenuCreditos(Estado):
     def __init__(self, maquina_de_estado: 'MaquinaDeEstado'):
         super().__init__(maquina_de_estado)
         self.__configuracoes = Configuracoes()
-        self.__musica_control = ControladorDeMusica()
+        self.__controle_de_musica = ControladorDeMusica()
         self.__tela = pg.display.get_surface()
 
         self.__nuvens_x = random.randrange(0, self.__configuracoes.largura_tela - 300, 10)
@@ -71,8 +71,9 @@ class MenuCreditos(Estado):
         self.__nuvem_atual = random.randrange(0, 4, 1)
         self.__nuvem_desenho = self.__nuvens[self.__nuvem_atual]
 
-        self.__musica_control.parar_musica()
-        self.__musica_control.iniciar_musica(self.__configuracoes.musica_creditos)
+        self.__controle_de_musica.parar_musica()
+        self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_creditos)
+        self.__controle_de_musica.mudar_volume_musica()
 
     def __mover_nuvem(self):
         if self.__nuvens_y > - self.__nuvem_desenho.get_height() and self.__nuvens_x < self.__configuracoes.largura_tela:
@@ -100,7 +101,7 @@ class MenuCreditos(Estado):
 
     def __evento_botao_voltar_clicado(self):
         self._maquina_de_estado.voltar()
-        self.__musica_control.som_click()
+        self.__controle_de_musica.som_click()
 
     def desenhar(self):
         self.__tela.blit(self.__imagens[0], (0, 0))

@@ -15,9 +15,14 @@ class Configuracoes(Singleton):
         self.__max_fps = 240
         self.__tps = 60
 
-        self.__musica_menu = os.path.join('recursos', 'musicas', '8_Bit_Nostalgia.ogg')
-        self.__musica_creditos = os.path.join('recursos', 'musicas', 'wind_sound.ogg')
-        self.__som_opcoes = os.path.join('recursos', 'musicas', 'som_grama.ogg')
+        self.__musica_menu = os.path.join('recursos', 'musicas', 'principal.mp3')
+        self.__musica_creditos = os.path.join('recursos', 'musicas', 'creditos.mp3')
+        self.__musica_fim = os.path.join('recursos', 'musicas', 'fim_de_jogo.mp3')
+        self.__musica_ranking = os.path.join('recursos', 'musicas', 'ranking.mp3')
+        self.__musica_registro = os.path.join('recursos', 'musicas', 'registro.mp3')
+        self.__musica_opcoes = os.path.join('recursos', 'musicas', 'som_grama.ogg')
+        self.__musica_jogo = os.path.join('recursos', 'musicas', 'jogo.mp3')
+
         self.__som_bandeira = os.path.join('recursos', 'musicas', 'som_bandeira.ogg')
 
         pg.font.init()
@@ -84,8 +89,24 @@ class Configuracoes(Singleton):
         return self.__som_bandeira
 
     @property
-    def som_opcoes(self):
-        return self.__som_opcoes
+    def musica_opcoes(self):
+        return self.__musica_opcoes
+
+    @property
+    def musica_fim(self):
+        return self.__musica_fim
+
+    @property
+    def musica_ranking(self):
+        return self.__musica_ranking
+
+    @property
+    def musica_registro(self):
+        return self.__musica_registro
+
+    @property
+    def musica_jogo(self):
+        return self.__musica_jogo
 
     @property
     def tamanho_botoes(self):

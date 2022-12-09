@@ -5,15 +5,19 @@ from estados.estado import Estado
 from botao import Botao
 from entrada_texto_usuario import EntradaTextoUsuario
 from typing import TYPE_CHECKING, List
+from controlador_de_musica import ControladorDeMusica
+
 
 if TYPE_CHECKING:
     from maquina_de_estado import MaquinaDeEstado
+    
 
 
 class MenuRegistro(Estado):
     def __init__(self, maquina_de_estado: 'MaquinaDeEstado'):
         super().__init__(maquina_de_estado)
         self.__configuracoes = Configuracoes()
+        self.__controle_de_musica = ControladorDeMusica()
         self.__tela = pg.display.get_surface()
         imagem_botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_pedra_off.png')),(self.__configuracoes.tamanho_botoes))
         imagem_botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_pedra_on.png')),(self.__configuracoes.tamanho_botoes))
@@ -38,6 +42,10 @@ class MenuRegistro(Estado):
         self.__clique_registro = 0
         self.__mostra_mensagem = False
         self.__duracao_mensagem = 2000
+
+        self.__controle_de_musica.parar_musica()
+        self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_registro)
+        self.__controle_de_musica.mudar_volume_musica()
 
     def __evento_botao_voltar_clicado(self):
         self._maquina_de_estado.mover_para_estado('menu_principal')

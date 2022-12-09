@@ -36,10 +36,10 @@ class MenuOpcoes(Estado):
                              pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'volume_som_2.png')),(self.__tamanho_botao_volume)),
                              pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'volume_som_3.png')),(self.__tamanho_botao_volume))]
 
-        self.__botao_volume_musica = BotaoVolume((75, 100), (self.__volume_musica[self.__nivel_musica], self.__volume_musica[self.__nivel_musica]), '')
+        self.__botao_volume_musica = BotaoVolume((75, 100),self.__volume_musica)
         self.__botao_volume_musica.no_clique(self.__evento_botao_volume_musica_clicado)
 
-        self.__botao_volume_som = BotaoVolume((75, 350), (self.__volume_som[self.__nivel_som], self.__volume_som[self.__nivel_som]), '')
+        self.__botao_volume_som = BotaoVolume((75, 350),self.__volume_som)
         self.__botao_volume_som.no_clique(self.__evento_botao_volume_som_clicado)
 
         self.__botao_voltar = Botao((1080, 580), (self.__botao_off, self.__botao_on), 'Voltar')
@@ -67,6 +67,8 @@ class MenuOpcoes(Estado):
         else:
             self.__nivel_musica += 1
 
+        self.__botao_volume_musica.volume = self.__nivel_musica
+
     def __evento_botao_volume_som_clicado(self):
         self.__musica_control.mudar_volume_som()
 
@@ -74,6 +76,8 @@ class MenuOpcoes(Estado):
             self.__nivel_som = 0
         else:
             self.__nivel_som += 1
+        
+        self.__botao_volume_som.volume = self.__nivel_som
 
     def desenhar(self):
         self.__tela.blit(self.__imagens, (0, 0))
@@ -88,5 +92,5 @@ class MenuOpcoes(Estado):
                     self._maquina_de_estado.voltar()
             if evento.type == pg.MOUSEBUTTONDOWN or evento.type == pg.MOUSEMOTION:
                 self.__botao_voltar.atualizar(evento)
-                self.__botao_volume_musica.atualizar(evento, (self.__volume_musica[self.__nivel_musica], self.__volume_musica[self.__nivel_musica]))
-                self.__botao_volume_som.atualizar(evento, (self.__volume_som[self.__nivel_som], self.__volume_som[self.__nivel_som]))
+                self.__botao_volume_musica.atualizar(evento)
+                self.__botao_volume_som.atualizar(evento)

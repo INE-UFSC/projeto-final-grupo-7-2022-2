@@ -8,6 +8,7 @@ from botao import Botao
 from configuracoes import Configuracoes
 from controlador_de_musica import ControladorDeMusica
 from estados.estado import Estado
+from controlador_de_musica import ControladorDeMusica
 
 if TYPE_CHECKING:
     from maquina_de_estado import MaquinaDeEstado
@@ -17,7 +18,7 @@ class MenuPausa(Estado):
     def __init__(self, maquina_de_estado: 'MaquinaDeEstado'):
         super().__init__(maquina_de_estado)
         self.__configuracoes = Configuracoes()
-        self.__musica_control = ControladorDeMusica()
+        self.__controle_de_musica = ControladorDeMusica()
         self.__tela = pg.display.get_surface()
 
         botao_superficie_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_off.png')),(self.__configuracoes.tamanho_botoes))
@@ -25,7 +26,10 @@ class MenuPausa(Estado):
 
         self.__botao_voltar = Botao((1080, 600), (botao_superficie_off, botao_superficie_on), 'Voltar')
         self.__botao_voltar.no_clique(self.__voltar_para_jogo)
-        self.__musica_control.parar_musica()
+
+        self.__controle_de_musica.parar_musica()
+        self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_creditos)
+        self.__controle_de_musica.mudar_volume_musica()
 
 
     def iniciar(self):

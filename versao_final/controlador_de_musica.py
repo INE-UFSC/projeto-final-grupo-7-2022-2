@@ -43,8 +43,8 @@ class ControladorDeMusica(Singleton):
         self.__som_click.play()
 
     # ------------ método incompleto
-    def tocar_som(self, som):
-        self.som.play()
+    #def tocar_som(self, som):
+        #self.som.play()
 
     def mudar_volume_musica(self):
         if self.__volume_musica == 1.0:
@@ -83,7 +83,17 @@ class ControladorDeMusica(Singleton):
         elif rotulo == "menu_creditos":
             path = self.__configuracoes.musica_creditos
         elif rotulo == "menu_opcoes":
-            path = self.__configuracoes.som_opcoes
+            path = self.__configuracoes.musica_opcoes
+        elif rotulo == "menu_ranking":
+            path = self.__configuracoes.musica_ranking
+        elif rotulo == "menu_registro":
+            path = self.__configuracoes.musica_registro
+        elif rotulo == "fim_de_jogo":
+            path = self.__configuracoes.musica_fim
+        elif rotulo == "menu_pausa":
+            path = self.__configuracoes.musica_creditos
+        elif rotulo == "menu_vitoria":
+            path = self.__configuracoes.musica_registro
         else:
             # Provisório
             path = self.__configuracoes.musica_menu
