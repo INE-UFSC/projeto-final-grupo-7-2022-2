@@ -1,12 +1,13 @@
-from typing import Tuple, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Tuple
 
 import pygame as pg
 
+from configuracoes import Configuracoes
 from superficie_posicionada import SuperficiePosicionada
 
 if TYPE_CHECKING:
-    from fase import Fase
     from entidades import Entidade
+    from fase import Fase
 
 
 class Bala():
@@ -14,10 +15,11 @@ class Bala():
         super().__init__()
 
         self.__fase = fase
+        self.__configuracoes = Configuracoes()
 
         # Imagem
-        self.__escala = (8, 8)
-        self.__superficie = pg.Surface(self.__escala)
+        self.__tamanho = pg.Vector2(2, 2) * self.__configuracoes.tamanho_tile * 0.05
+        self.__superficie = pg.Surface(self.__tamanho)
         self.__superficie.fill((255, 255, 255))
         self.__rect = self.__superficie.get_rect(center=posicao)
         self.__posicao = pg.Vector2(self.__rect.topleft)

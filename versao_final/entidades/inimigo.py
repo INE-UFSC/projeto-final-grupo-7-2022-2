@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Tuple
+from configuracoes import Configuracoes
 
 import pygame as pg
 
@@ -14,6 +15,7 @@ class Inimigo(Entidade):
     def __init__(self):
         super().__init__()
 
+        self.__configuracoes = Configuracoes()
         self.status = 'right_idle'
 
         self._raio_ataque: int = None
@@ -30,10 +32,10 @@ class Inimigo(Entidade):
         # Pega a distância do player e o inimigo
         distancia = vetor_diferenca_jogador.magnitude()
 
-        if distancia <= self._raio_ataque and self._pode_atacar:
+        if distancia <= self._raio_ataque * self.__configuracoes.tamanho_tile and self._pode_atacar:
             if self.status != 'attack':
                 self.status = 'attack'
-        elif distancia <= self._raio_percepcao:
+        elif distancia <= self._raio_percepcao * self.__configuracoes.tamanho_tile:
             self.status = 'move'
         else:
             self.status = 'right_idle'

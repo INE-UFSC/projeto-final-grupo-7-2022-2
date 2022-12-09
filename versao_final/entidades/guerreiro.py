@@ -20,7 +20,7 @@ class Guerreiro(Inimigo):
         self._raio_percepcao = 150
         self.__frame_indice = 0
         self.__status = 'right'
-        self.__spritesheet = Spritesheet("guerreiro", 1)
+        self.__spritesheet = Spritesheet("guerreiro")
         self.__animacoes = self.__spritesheet.get_animation_frames()
 
         configuracoes = Configuracoes()
@@ -45,19 +45,13 @@ class Guerreiro(Inimigo):
 
         # Orientação do personagem com relação ao mouse
         if posicao_do_jogador.x > 0:
-            if 'right' not in self.__status:
-                self.__status = 'right'
+            self.__status = 'right'
         else:
-            if 'left' not in self.__status:
-                self.__status = 'left'
+            self.__status = 'left'
 
         # Animação de movimento
         if self._direcao.x == 0 and self._direcao.y == 0:
-            if 'idle' not in self.__status and 'attack' not in self.__status:
-                self.__status += '_idle'
-        else:
-            if 'idle' in self.__status:
-                self.__status = self.__status.replace('_idle', '')
+            self.__status += '_idle'
 
     def __animar(self) -> None:
         animacao = self.__animacoes[self.__status]

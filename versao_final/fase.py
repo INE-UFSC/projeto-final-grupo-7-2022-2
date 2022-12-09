@@ -62,17 +62,17 @@ class Fase:
             superficies_para_desenho.extend(entidade.desenhar())
 
         self.__camera.desenhar(centro_do_desenho, superficies_para_desenho)
-        self.desenhar_vidas_restantes()
-        self.desenhar_balas()
-        self.desenhar_tempo()
-        self.desenhar_barra_tempo()
+        self.__desenhar_vidas_restantes()
+        self.__desenhar_balas()
+        self.__desenhar_tempo()
+        self.__desenhar_barra_tempo()
 
     def matar_entidade(self, entidade: Entidade) -> None:
         self.__gerenciador_de_grupos.matar_entidade(entidade)
         if entidade is self.__jogador:
             self.__partida.jogo_perdido()
 
-    def desenhar_vidas_restantes(self):
+    def __desenhar_vidas_restantes(self):
         tamanho = 100
         coracao = pg.transform.scale(pg.image.load(os.path.join('recursos', 'sprites', 'coracao.png')), (tamanho, tamanho))
         meio_coracao = pg.transform.scale(pg.image.load(os.path.join('recursos', 'sprites', 'meio_coracao.png')), (tamanho, tamanho))
@@ -89,14 +89,14 @@ class Fase:
             tamanho_ultimo = (vida_atual // 2) * tamanho * 0.8
             self.__tela.blit(meio_coracao, (tamanho_ultimo, 0))
 
-    def desenhar_balas(self):
+    def __desenhar_balas(self):
         tamanho = 75
         bala = pg.transform.scale(pg.image.load(os.path.join('recursos', 'sprites', 'bala_tela.png')), (tamanho, tamanho))
         # A ser concluído: Pegar o número de balas restantes para o loop
-        for i in range(6):
+        for i in range(self.__jogador.balas_restantes_da_pistola):
             self.__tela.blit(bala, (i * tamanho * 0.75, self.__configuracoes.altura_tela - 100))
 
-    def desenhar_barra_tempo(self):
+    def __desenhar_barra_tempo(self):
         tempo_restante = self.__tempo.temporizador(self.__tempo_maximo)
         barra = pg.Rect(self.__configuracoes.largura_tela - tempo_restante * 2 - 50, 100, tempo_restante * 2, 30)
         # A ser concuído: Efeitos colaterais no jogador
@@ -105,7 +105,7 @@ class Fase:
         else:
             pg.draw.rect(self.__tela, (0, 255, 0), barra)
 
-    def desenhar_tempo(self):
+    def __desenhar_tempo(self):
         self.__tempo_passado = int(self.__tempo.ver_tempo())
 
         minutos = self.__tempo_passado // 60

@@ -19,27 +19,26 @@ class Arqueiro(Inimigo):
         super().__init__()
 
         # Informacoes Inimigo
+        self.__configuracoes = Configuracoes()
+
         self._velocidade = 0
         self._raio_ataque = 200
         self._raio_percepcao = 300
         self._vida = 1
+
         self.__frame_indice = 0
         self.__status = 'right'
-        self.__spritesheet = Spritesheet("arqueiro", 1)
+        self.__spritesheet = Spritesheet("arqueiro")
         self.__animacoes = self.__spritesheet.get_animation_frames()
 
-        configuracoes = Configuracoes()
-        self.__tempo_de_recarga_ataque = 20 * configuracoes.tps
+        self.__tempo_de_recarga_ataque = 600
         self.__flechas: List[Flecha] = []
 
         # Configurações de gráfico - Ainda estão provisórias
-        self.__superficie = pg.Surface((configuracoes.tamanho_tile, configuracoes.tamanho_tile))
 
         # Movimento
-        self._rect = self.__superficie.get_rect()
+        self._rect = self.__superficie_atual.get_rect()
         self._hitbox = self.rect.inflate(0, -10)
-        self.__linha = pg.surface.Surface((1, 1))
-        self.__linha_posicao = (0, 0)
 
     @property
     def tipo(self) -> str:
@@ -53,30 +52,19 @@ class Arqueiro(Inimigo):
 
         # Orientação do personagem com relação ao mouse
         if posicao_do_jogador.x > 0:
-            if 'right' not in self.__status:
-                self.__status = 'right'
+            self.__status = 'right'
         else:
-            if 'left' not in self.__status:
-                self.__status = 'left'
+            self.__status = 'left'
 
         # Animação de movimento
         if self._direcao.x == 0 and self._direcao.y == 0:
-            if 'idle' not in self.__status and 'attack' not in self.__status:
-                self.__status += '_idle'
-        else:
-            if 'idle' in self.__status:
-                self.__status = self.__status.replace('_idle', '')
+            self.__status += '_idle'
 
     def __ira_atigir_o_jogador(self, direcao: pg.Vector2) -> bool:
-        destino = -direcao.normalize() * self._raio_ataque
+        destino = -direcao.normalize() * self._raio_ataque * self.__configuracoes.tamanho_tile
 
         posicao = pg.Vector2(self._rect.center)
         linha = (posicao, posicao + destino)
-
-        self.__linha_posicao = pg.Vector2(min(linha[0].x, linha[1].x), min(linha[0].y, linha[1].y))
-        self.__linha = pg.surface.Surface((abs(linha[0].x - linha[1].x), abs(linha[0].y - linha[1].y))).convert_alpha()
-        self.__linha.set_colorkey((0, 0, 0))
-        pg.draw.line(self.__linha, (0, 255, 128), linha[0] - self.__linha_posicao, linha[1]-self.__linha_posicao, 1)
 
         objetos_colididos: List[Tuple['Jogador' | None, Tuple[int, int]]] = []
 
@@ -133,5 +121,4 @@ class Arqueiro(Inimigo):
         arqueiro_superficies = (SuperficiePosicionada(self.__superficie_atual, self._rect.topleft),)
         for flecha in self.__flechas:
             arqueiro_superficies += flecha.desenhar()
-        arqueiro_superficies += (SuperficiePosicionada(self.__linha, self.__linha_posicao),)
         return arqueiro_superficies

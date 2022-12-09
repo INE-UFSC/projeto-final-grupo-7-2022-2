@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Tuple
 
 import pygame as pg
 
+from configuracoes import Configuracoes
 from spritesheet import Spritesheet
 from superficie_posicionada import SuperficiePosicionada
 
@@ -23,17 +24,17 @@ class Jogador(Entidade):
             pg.K_d: False,
             pg.K_SPACE: False,
         }
-
+        self.__configuracoes = Configuracoes()
         # Imagem e hitbox
         self.__status = 'right'
-        self.__spritesheet = Spritesheet("lamparina", 1)
+        self.__spritesheet = Spritesheet("lamparina")
         self.__animacoes = self.__spritesheet.get_animation_frames()
         self.__frame_indice = 0
         self._rect = self.__superficie_atual.get_rect()
-        self._hitbox = self._rect.inflate(0, -8)
+        self._hitbox = self._rect.inflate(pg.Vector2(0, 0.1) * self.__configuracoes.tamanho_tile)
 
         # Movimento
-        self._velocidade = 4
+        self._velocidade = 2
 
         self.__vida = kwargs.get('vida', 100)
 
@@ -63,12 +64,8 @@ class Jogador(Entidade):
         self.__centro_da_tela = self.__calcular_centro_da_tela()
 
     @property
-    def velocidade(self):
-        return self._velocidade
-
-    @velocidade.setter
-    def velocidade(self, velocidade):
-        self._velocidade = velocidade
+    def balas_restantes_da_pistola(self):
+        return self.__pistola.balas_restantes
 
     @property
     def tipo(self):
@@ -91,7 +88,6 @@ class Jogador(Entidade):
             'arma': self.__arma.tipo,
             'vida': self.__vida,
             'armas': {
-                'faca': self.__faca.gerar_dict_do_estado(),
                 'pistola': self.__pistola.gerar_dict_do_estado(),
             }
         }
@@ -268,7 +264,6 @@ class Jogador(Entidade):
         self.__animar()
         self.__faca.atualizar(posicao_do_mouse_relativa_ao_jogador, tempo_passado)
         self.__pistola.atualizar(posicao_do_mouse_relativa_ao_jogador, tempo_passado)
-
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
         jogador_desenho = SuperficiePosicionada(self.__superficie_atual, self._rect.topleft)

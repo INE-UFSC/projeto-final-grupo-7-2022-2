@@ -99,7 +99,7 @@ class GerenciadorDeGrupos():
                     novas_tiles_por_x[tile.rect.x] = [tile]
                 else:
                     novas_tiles_por_x[tile.rect.x].append(tile)
-                    
+
         for novas_tiles in novas_tiles_por_x.values():
             novas_tiles.sort(key=lambda tile: tile.rect.y)
             i = 0
@@ -149,27 +149,29 @@ class GerenciadorDeGrupos():
 
     def __gerar_entidades(self, dados: pytmx.TiledMap) -> None:
         entidades: List[Entidade] = []
+        if dados.tilewidth != dados.tileheight:
+            raise ValueError('Mapa com tiles de largura e altura diferentes')
+        escala = self.__configuracao.tamanho_tile / dados.tilewidth
         for grupo in dados.objectgroups:
             if grupo.name == 'entities':
                 for entidade in grupo:
                     if entidade.name == 'player':
                         entidades.append(self.__fase.jogador)
-                        self.__fase.jogador.definir_posicao(pg.Vector2(entidade.x, entidade.y))
+                        self.__fase.jogador.definir_posicao(pg.Vector2(entidade.x, entidade.y) * escala)
                     elif entidade.name == 'ladino':
                         ladino = Ladino()
-                        ladino.definir_posicao(posicao=pg.Vector2(entidade.x, entidade.y))
+                        ladino.definir_posicao(posicao=pg.Vector2(entidade.x, entidade.y) * escala)
                         entidades.append(ladino)
                     elif entidade.name == 'guerreiro':
                         guerreiro = Guerreiro()
-                        guerreiro.definir_posicao(posicao=pg.Vector2(entidade.x, entidade.y))
+                        guerreiro.definir_posicao(posicao=pg.Vector2(entidade.x, entidade.y) * escala)
                         entidades.append(guerreiro)
                     elif entidade.name == 'arqueiro':
                         arqueiro = Arqueiro()
-                        arqueiro.definir_posicao(posicao=pg.Vector2(entidade.x, entidade.y))
+                        arqueiro.definir_posicao(posicao=pg.Vector2(entidade.x, entidade.y) * escala)
                         entidades.append(arqueiro)
 
         self.__entidades = entidades
 
     def matar_entidade(self, entidade: Entidade) -> None:
         self.__entidades.remove(entidade)
-

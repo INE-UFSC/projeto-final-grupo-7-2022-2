@@ -37,8 +37,6 @@ class MaquinaDeEstado:
             self.__estado_atual_rotulo = rotulo
             self.estado_atual.iniciar()
 
-
-
     def voltar_para_inicio(self) -> None:
         self.__estado_atual_rotulo = self.__estado_inicial_rotulo
         self.__estado_pilha = []

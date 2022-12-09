@@ -1,8 +1,9 @@
-from typing import List, Tuple, TYPE_CHECKING
+from os import path
+from typing import TYPE_CHECKING, List, Tuple
 
 import pygame as pg
 
-from os import path
+from configuracoes import Configuracoes
 from superficie_posicionada import SuperficiePosicionada
 
 if TYPE_CHECKING:
@@ -15,16 +16,15 @@ class Flecha():
         super().__init__()
 
         self.__fase = fase
+        self.__configuracoes = Configuracoes()
 
         # Imagem
-        self.__tamanho = (8, 5)
-        self.__superficie = pg.Surface(self.__tamanho)
-        self.__rect = self.__superficie.get_rect(center=posicao)
+        self.__tamanho = pg.Vector2(16, 3) * self.__configuracoes.tamanho_tile * 0.05
+        self.__imagem = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'flecha.png')), self.__tamanho)
+        self.__rect = self.__imagem.get_rect(center=posicao)
         self.__posicao = pg.Vector2(self.__rect.center)
         # Movimento
         self.__direcao = direcao
-        self.__imagem = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'flecha.png')),(16, 3))
-
 
     def __atualizar_posicao(self, tempo_passado: int) -> pg.Vector2:
         # Transforma o comprimento do vetor em 1
@@ -61,5 +61,5 @@ class Flecha():
         colidiu = self.__verificar_colisao(nova_posicao)
         self.__posicao = nova_posicao
         self.__rect.center = nova_posicao
-        
+
         return colidiu

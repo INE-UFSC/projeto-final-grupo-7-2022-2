@@ -19,7 +19,7 @@ class Ladino(Inimigo):
         self._raio_percepcao = 150
         self.__frame_indice = 0
         self.__status = 'right'
-        self.__spritesheet = Spritesheet("ladino", 1)
+        self.__spritesheet = Spritesheet("ladino")
         self.__animacoes = self.__spritesheet.get_animation_frames()
 
         configuracoes = Configuracoes()

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Tuple
 import pygame as pg
 
 from superficie_posicionada import SuperficiePosicionada
+from configuracoes import Configuracoes
 
 if TYPE_CHECKING:
     from entidades import Jogador
@@ -13,13 +14,13 @@ if TYPE_CHECKING:
 class Arma(ABC):
     def __init__(self, jogador: 'Jogador'):
         super().__init__()
-
+        self.__configuracoes = Configuracoes()
         self._jogador = jogador
         self.__tipo = None
         self.__ativo = False
 
         self._direcao = None
-        self._distancia = 20
+        self._distancia = 0.5
 
         self._posicao = pg.Vector2(0, 0)
 
@@ -51,7 +52,7 @@ class Arma(ABC):
             self._direcao = posicao_do_mouse_relativa_ao_jogador.normalize()
             vetor_jogador = pg.Vector2(self._jogador.rect.center)
             # Posição da arma
-            vetor_posicao_da_arma = (vetor_jogador + (self._direcao * self._distancia))
+            vetor_posicao_da_arma = (vetor_jogador + (self._direcao * self._distancia * self.__configuracoes.tamanho_tile))
             self._posicao = (vetor_posicao_da_arma.x, vetor_posicao_da_arma.y)
 
     def atualizar(self, posicao_do_mouse_relativa_ao_jogador: pg.Vector2, tempo_passado: int) -> None:
@@ -60,6 +61,11 @@ class Arma(ABC):
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
         if self.ativo:
-            rect = self._imagem.get_rect(center=self._posicao)
-            return (SuperficiePosicionada(self._imagem, rect.topleft),)
+            angulo = 0
+            if self._direcao is not None and self._direcao.magnitude() > 0:
+                angulo = self._direcao.angle_to(pg.Vector2(1, 0))
+
+            superficie = pg.transform.rotate(self._imagem, angulo)
+            rect = superficie.get_rect(center=self._posicao)
+            return (SuperficiePosicionada(superficie, rect.topleft),)
         return tuple()

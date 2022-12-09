@@ -1,8 +1,10 @@
+from os import path
 from typing import TYPE_CHECKING, List, Tuple
 
 import pygame as pg
 
-from os import path
+from configuracoes import Configuracoes
+
 from .arma import Arma
 from .bala import Bala
 
@@ -16,11 +18,9 @@ from superficie_posicionada import SuperficiePosicionada
 class Pistola(Arma):
     def __init__(self, jogador: 'Jogador', *args, **kwargs) -> None:
         super().__init__(jogador)
-        # Imagem
-        self._imagem = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'pistola.png')),(16, 8))
-        #._imagem.fill('blue')
-        # self.rect = self.image.get_rect(center = (0, 0))
-
+        self.__configuracoes = Configuracoes()
+        tamanho = pg.Vector2(16, 8) * self.__configuracoes.tamanho_tile * 0.05
+        self._imagem = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'pistola.png')), tamanho)
         # Capacidade
         self.__regarga = 6
         self.__balas_restantes = kwargs.get('balas_restantes', self.__regarga)
@@ -33,6 +33,10 @@ class Pistola(Arma):
     @property
     def tipo(self) -> str:
         return 'pistola'
+
+    @property
+    def balas_restantes(self) -> int:
+        return self.__balas_restantes
 
     def gerar_dict_do_estado(self) -> dict:
         return {
