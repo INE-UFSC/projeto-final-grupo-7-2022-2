@@ -4,10 +4,12 @@ import pygame as pg
 import os
 
 from configuracoes import Configuracoes
-from entidades import Entidade, Jogador
+from entidades import Entidade, Jogador, Inimigo, Guerreiro, Inimigo, Guerreiro
 from gerenciador_de_grupos import GerenciadorDeGrupos
 from View.camera import Camera
 from tempo import Tempo
+from View.transicao import Transicao
+from View.transicao import Transicao
 
 if TYPE_CHECKING:
     from estados import Partida
@@ -21,9 +23,11 @@ class Fase:
         self.__partida = partida
         self.__nome = nome
 
-        self.__tela = pg.display.get_surface()
+        self.__tela = pg.surface.Surface((self.__configuracoes.largura_tela, self.__configuracoes.altura_tela))
         self.__tempo_passado = 0
         self.__tempo_maximo = 60
+
+        self.__porta = pg.Rect(640, 192, 64, 64)
 
     @property
     def jogador(self) -> Jogador:
@@ -36,6 +40,7 @@ class Fase:
         for entidade in self.entidades:
             entidade.registrar_na_fase(fase=self)
         self.__tempo.iniciar()
+        self.__fase_iniciada = True
 
     def esperar_certo_tempo(self, tempo: int, callback: Callable) -> int:
         return self.__partida.esperar_certo_tempo(tempo, callback)
@@ -46,22 +51,36 @@ class Fase:
     def registrar_evento(self, tipo: int, callback: Callable) -> int:
         return self.__partida.registrar_evento(tipo, callback)
 
-    def terminar_fase(self):
+    def passar_de_fase(self) -> None:
+        if self.__fase_iniciada:
+            if self.__jogador.rect.colliderect(self.__porta):
+                inimigos = [entidade for entidade in self.entidades if isinstance(entidade, Inimigo)]
+                if len(inimigos) == 0:
+                    self.__terminar_fase()
+                    self.__fase_iniciada = False
+
+    def __terminar_fase(self):
         self.__partida.terminar_fase()
 
     def atualizar(self, tempo_passado: int):
         for entidade in self.entidades:
             entidade.atualizar(tempo_passado)
         self.__tempo.retomar()
+        self.passar_de_fase()
 
-    def desenhar(self) -> None:
+    def desenhar(self) -> pg.Surface:
         centro_do_desenho = pg.Vector2(self.__jogador.rect.center)
         superficies_para_desenho = []
 
         for entidade in self.entidades:
             superficies_para_desenho.extend(entidade.desenhar())
 
-        self.__camera.desenhar(centro_do_desenho, superficies_para_desenho)
+        self.__tela.fill('black')
+        self.__tela.blit(self.__camera.desenhar(centro_do_desenho, superficies_para_desenho), (0, 0))
+        self.__desenhar_hud()
+        return self.__tela
+    
+    def __desenhar_hud(self):
         self.__desenhar_vidas_restantes()
         self.__desenhar_balas()
         self.__desenhar_tempo()
