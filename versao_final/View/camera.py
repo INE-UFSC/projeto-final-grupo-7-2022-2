@@ -30,7 +30,7 @@ class Camera():
             self.__quadro.blit(superficie_posicionada.superficie, posicao)
 
     def __desenhar_camada_superior(self, deslocamento: pg.Vector2):
-        for bloco in self.__gerenciador_de_grupos.camada_superior:
+        for bloco in self.__gerenciador_de_grupos.blocos_superiores:
             posicao = bloco.posicao - deslocamento
             self.__quadro.blit(bloco.superficie, posicao)
 
@@ -42,7 +42,6 @@ class Camera():
         self.__desenhar_camada_inferior(deslocamento)
         # Ao invés de desenharmos os objetos numa posição fixa, nos os posicionamos de acordo com o centro.
         # Além disso, a ordem de desenho dos objetos na tela é crescente com relação a sua posição y
-        self.__desenhar_lista_pelo_y(deslocamento, self.__gerenciador_de_grupos.estruturas)
         lista_de_superficies_posicionadas = self.__gerenciador_de_grupos.blocos.copy()
         lista_de_superficies_posicionadas.extend(superficie_posicionadas)
         self.__desenhar_lista_pelo_y(deslocamento, lista_de_superficies_posicionadas)

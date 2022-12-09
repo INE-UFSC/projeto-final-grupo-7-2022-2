@@ -23,38 +23,46 @@ class GerenciadorDeGrupos():
         # Carrega o arquivo .tmx
         tmx_path = os.path.join('./View/mapas', self.__nome, self.__nome + '.tmx')
         dados_do_pytmx = pytmx.load_pygame(tmx_path, pixelalpha=True)
-        self.__gerar_blocos(dados_do_pytmx)
-        self.__gerar_colisores(dados_do_pytmx)
-        self.__gerar_chao(dados_do_pytmx)
+        self.__gerar_camada_inferior(dados_do_pytmx)
+        self.__gerar_camada_intermediaria(dados_do_pytmx)
         self.__gerar_camada_superior(dados_do_pytmx)
-        self.__gerar_estruturas(dados_do_pytmx)
+        self.__gerar_colisores(dados_do_pytmx)
         self.__gerar_entidades(dados_do_pytmx)
 
+    # Camada inferior:
     @property
     def chao(self) -> list[Tile]:
         return self.__chao
 
-    @property
-    def camada_superior(self) -> list[Tile]:
-        return self.__camada_superior
-
-    @property
-    def entidades(self) -> List[Entidade]:
-        return self.__entidades
-
+    # Camada intermediaria:
     @property
     def blocos(self) -> List[Tile]:
         return self.__blocos
 
     @property
+    def objetos_estaticos(self) -> List[Tile]:
+        return self.__objetos_estaticos
+
+    @property
+    def objetos_dinamicos(self) -> List[Tile]:
+        return self.__objetos_dinamicos
+
+    # Camada superior:
+    @property
+    def blocos_superiores(self) -> list[Tile]:
+        return self.__blocos_superiores
+
+    # Outros:
+    @property
+    def entidades(self) -> List[Entidade]:
+        return self.__entidades
+
+    @property
     def colisores(self) -> List[Tile]:
         return self.__colisores
 
-    @property
-    def estruturas(self) -> List[Tile]:
-        return self.__estruturas
 
-    def __gerar_chao(self, dados: pytmx.TiledMap) -> None:
+    def __gerar_camada_inferior(self, dados: pytmx.TiledMap) -> None:
 
         chao = []
         for layer in dados.visible_layers:
@@ -68,26 +76,62 @@ class GerenciadorDeGrupos():
 
     def __gerar_camada_superior(self, dados: pytmx.TiledMap) -> None:
         
-        camada_superior = []
+        blocos_superiores = []
         for layer in dados.visible_layers:
             if hasattr(layer, 'data'):
-                if layer.name == 'camada_superior':
+                if layer.name == 'blocos_superiores':
                     for x, y, superficie in layer.tiles():
                         posicao = (x * self.__configuracao.tamanho_tile, y * self.__configuracao.tamanho_tile)
-                        camada_superior.append(Tile(posicao=posicao, superficie=superficie))
+                        blocos_superiores.append(Tile(posicao=posicao, superficie=superficie))
 
-        self.__camada_superior = camada_superior
+        self.__blocos_superiores = blocos_superiores
 
-    def __gerar_blocos(self, dados: pytmx.TiledMap) -> None:
+    def __gerar_camada_intermediaria(self, dados: pytmx.TiledMap) -> None:
 
+        # Cria uma lista com os blocos que seguem o grid do mapa
+        # Nenhum desses blocos é interativo
+        # Podem ser paredes, grades, etc
         blocos = []
         for layer in dados.visible_layers:
             if hasattr(layer, 'data'):
-                for x, y, superficie in layer.tiles():
-                    posicao = (x * self.__configuracao.tamanho_tile, y * self.__configuracao.tamanho_tile)
-                    blocos.append(Tile(posicao=posicao, superficie=superficie))
+                if layer.name == 'blocos':
+                    for x, y, superficie in layer.tiles():
+                        posicao = (x * self.__configuracao.tamanho_tile, y * self.__configuracao.tamanho_tile)
+                        blocos.append(Tile(posicao=posicao, superficie=superficie))
 
         self.__blocos = blocos
+
+        # Cria uma lista com objetos que não seguem o grid do mapa, mas não tem interação com a fase
+        # Podem ser árvores, estátuas, pedras, etc
+        objetos_estaticos = []
+        for grupo in dados.objectgroups:
+            if grupo.name == 'objetos_estaticos':
+                for objeto in grupo:
+                    posicao = objeto.x, objeto.y
+                    objetos_estaticos.append(
+                        Tile(
+                            posicao,
+                            superficie=estrutura.image,
+                            largura=estrutura.width,
+                            altura=estrutura.height))
+
+        self.__objetos_estaticos = objetos_estaticos
+
+        # Cria uma lista com objetos que não seguem o grid do mapa, mas tem interação com a fase
+        # Podem ser portas, armadilhas, etc
+        objetos_dinamicos = []
+        for grupo in dados.objectgroups:
+            if grupo.name == 'objetos_dinamicos':
+                for estrutura in grupo:
+                    posicao = estrutura.x, estrutura.y
+                    objetos_dinamicos.append(
+                        Tile(
+                            posicao,
+                            superficie=estrutura.image,
+                            largura=estrutura.width,
+                            altura=estrutura.height))
+
+        self.__objetos_dinamicos = objetos_dinamicos
 
     def __unir_tiles_proximas(self, tiles: List[Tile]) -> List[Tile]:
         novas_tiles_por_y = {}
@@ -159,22 +203,6 @@ class GerenciadorDeGrupos():
 
         self.__colisores = self.__unir_tiles_proximas(colisores)
 
-    def __gerar_estruturas(self, dados: pytmx.TiledMap) -> None:
-
-        estruturas = []
-        # Percorre o arquivo tmx e inlcui os objetos em seu respectivo grupo
-        for grupo in dados.objectgroups:
-            if grupo.name == 'estruturas':
-                for estrutura in grupo:
-                    posicao = estrutura.x, estrutura.y
-                    estruturas.append(
-                        Tile(
-                            posicao,
-                            superficie=estrutura.image,
-                            largura=estrutura.width,
-                            altura=estrutura.height))
-
-        self.__estruturas = estruturas
 
     def __gerar_entidades(self, dados: pytmx.TiledMap) -> None:
         entidades: List[Entidade] = []
