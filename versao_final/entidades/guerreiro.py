@@ -24,13 +24,9 @@ class Guerreiro(Inimigo):
         self.__animacoes = self.__spritesheet.get_animation_frames()
 
         configuracoes = Configuracoes()
-        self._tempo_de_recarga_ataque = 6 * configuracoes.tps
+        self._tempo_de_recarga_ataque = 360
 
-        # Configurações de gráfico - Ainda estão provisórias
-        self.__superficie = pg.Surface((configuracoes.tamanho_tile, configuracoes.tamanho_tile))
-
-        # Movimento
-        self._rect = self.__superficie.get_rect()
+        self._rect = self.__superficie_atual.get_rect()
         self._hitbox = self.rect.inflate(0, -10)
 
     @property
