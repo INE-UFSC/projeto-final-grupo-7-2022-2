@@ -5,7 +5,7 @@ import pygame as pg
 import pytmx
 
 from configuracoes import Configuracoes
-from entidades import Arqueiro, Entidade, Guerreiro, Ladino
+from entidades import Arqueiro, Entidade, Guerreiro, Ladino, BombaDeAsma
 
 from View.tile import Tile
 
@@ -205,10 +205,13 @@ class GerenciadorDeGrupos():
 
 
     def __gerar_entidades(self, dados: pytmx.TiledMap) -> None:
-        entidades: List[Entidade] = []
+        bomba_de_asma = BombaDeAsma()
+        entidades: List[Entidade] = [bomba_de_asma]
         if dados.tilewidth != dados.tileheight:
             raise ValueError('Mapa com tiles de largura e altura diferentes')
         escala = self.__configuracao.tamanho_tile / dados.tilewidth
+        bomba_de_asma.definir_posicao(pg.Vector2(30, 40) * escala)
+
         for grupo in dados.objectgroups:
             if grupo.name == 'entidades':
                 for entidade in grupo:

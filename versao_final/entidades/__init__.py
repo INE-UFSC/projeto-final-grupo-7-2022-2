@@ -4,3 +4,4 @@ from .guerreiro import Guerreiro
 from .inimigo import Inimigo
 from .jogador import Jogador
 from .ladino import Ladino
+from .bomba_de_asma import BombaDeAsma

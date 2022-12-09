@@ -178,34 +178,15 @@ class Jogador(Entidade):
         return pg.Vector2(pg.mouse.get_pos()) - self.__centro_da_tela
 
     def __calcular_tipo_de_animacao(self, posicao_do_mouse_relativa_ao_jogador: pg.Vector2) -> str:
-
         # Orientação do personagem com relação ao mouse
         if posicao_do_mouse_relativa_ao_jogador.x > 0:
-            if 'right' not in self.__status:
-                self.__status = 'right'
+            self.__status = 'right'
         else:
-            if 'left' not in self.__status:
-                self.__status = 'left'
+            self.__status = 'left'
 
         # Animação de movimento
         if self._direcao.x == 0 and self._direcao.y == 0:
-            if 'idle' not in self.__status and 'attack' not in self.__status:
-                self.__status += '_idle'
-        else:
-            if 'idle' in self.__status:
-                self.__status = self.__status.replace('_idle', '')
-
-        # if self.__pode_atacar:
-        #     self._direcao.x = 0
-        #     self._direcao.y = 0
-        #     if not 'attack' in self.__status:
-        #         if 'idle' in self.__status:
-        #             self.__status = self.__status.replace('_idle', '_attack')
-        #         else:
-        #             self.__status += '_attack'
-        # else:
-        #     if 'attack' in self.__status:
-        #         self.__status = self.__status.replace('_attack', '')
+            self.__status += '_idle'
 
     # def dash(self):
     #     if self.__dashing and self.__active_dash:
