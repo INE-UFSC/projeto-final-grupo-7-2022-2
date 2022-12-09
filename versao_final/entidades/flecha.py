@@ -20,9 +20,13 @@ class Flecha():
 
         # Imagem
         self.__tamanho = pg.Vector2(16, 3) * self.__configuracoes.tamanho_tile * 0.05
-        self.__imagem = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'flecha.png')), self.__tamanho)
+        imagem = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'flecha.png')), self.__tamanho)
+        angulo = direcao.angle_to(pg.Vector2(1, 0))
+        self.__imagem = pg.transform.rotate(imagem, angulo)
+
         self.__rect = self.__imagem.get_rect(center=posicao)
         self.__posicao = pg.Vector2(self.__rect.center)
+
         # Movimento
         self.__direcao = direcao
 
