@@ -26,12 +26,17 @@ class GerenciadorDeGrupos():
         self.__gerar_blocos(dados_do_pytmx)
         self.__gerar_colisores(dados_do_pytmx)
         self.__gerar_chao(dados_do_pytmx)
+        self.__gerar_camada_superior(dados_do_pytmx)
         self.__gerar_estruturas(dados_do_pytmx)
         self.__gerar_entidades(dados_do_pytmx)
 
     @property
-    def chao(self) -> pg.surface.Surface:
+    def chao(self) -> list[Tile]:
         return self.__chao
+
+    @property
+    def camada_superior(self) -> list[Tile]:
+        return self.__camada_superior
 
     @property
     def entidades(self) -> List[Entidade]:
@@ -50,12 +55,28 @@ class GerenciadorDeGrupos():
         return self.__estruturas
 
     def __gerar_chao(self, dados: pytmx.TiledMap) -> None:
-        floor_path = os.path.join('./View/mapas', self.__nome, 'floor.png')
-        superficie = pg.image.load(floor_path).convert_alpha()
-        altura = dados.height * self.__configuracao.tamanho_tile
-        largura = dados.width * self.__configuracao.tamanho_tile
 
-        self.__chao = pg.transform.scale(superficie, (largura, altura))
+        chao = []
+        for layer in dados.visible_layers:
+            if hasattr(layer, 'data'):
+                if layer.name == 'chao':
+                    for x, y, superficie in layer.tiles():
+                        posicao = (x * self.__configuracao.tamanho_tile, y * self.__configuracao.tamanho_tile)
+                        chao.append(Tile(posicao=posicao, superficie=superficie))
+
+        self.__chao = chao
+
+    def __gerar_camada_superior(self, dados: pytmx.TiledMap) -> None:
+        
+        camada_superior = []
+        for layer in dados.visible_layers:
+            if hasattr(layer, 'data'):
+                if layer.name == 'camada_superior':
+                    for x, y, superficie in layer.tiles():
+                        posicao = (x * self.__configuracao.tamanho_tile, y * self.__configuracao.tamanho_tile)
+                        camada_superior.append(Tile(posicao=posicao, superficie=superficie))
+
+        self.__camada_superior = camada_superior
 
     def __gerar_blocos(self, dados: pytmx.TiledMap) -> None:
 
@@ -121,12 +142,20 @@ class GerenciadorDeGrupos():
     def __gerar_colisores(self, dados: pytmx.TiledMap) -> None:
 
         colisores = []
-        for layer in dados.layers:
-            if hasattr(layer, 'data'):
-                if layer.name == 'collision' or layer.name == 'object_obstacles':
-                    for x, y, superficie in layer.tiles():
-                        posicao = (x * self.__configuracao.tamanho_tile, y * self.__configuracao.tamanho_tile)
-                        colisores.append(Tile(posicao=posicao, superficie=superficie))
+
+        for grupo in dados.objectgroups:
+            if grupo.name == 'objetos_de_colisao':
+                for estrutura in grupo:
+                    superficie = pg.Surface((estrutura.width, estrutura.height))
+                    superficie.fill('white')
+                    superficie.set_alpha(128)
+                    posicao = estrutura.x, estrutura.y
+                    colisores.append(
+                        Tile(
+                            posicao,
+                            superficie=superficie,
+                            largura=estrutura.width,
+                            altura=estrutura.height))
 
         self.__colisores = self.__unir_tiles_proximas(colisores)
 
@@ -135,7 +164,7 @@ class GerenciadorDeGrupos():
         estruturas = []
         # Percorre o arquivo tmx e inlcui os objetos em seu respectivo grupo
         for grupo in dados.objectgroups:
-            if grupo.name == 'structures':
+            if grupo.name == 'estruturas':
                 for estrutura in grupo:
                     posicao = estrutura.x, estrutura.y
                     estruturas.append(
@@ -153,9 +182,9 @@ class GerenciadorDeGrupos():
             raise ValueError('Mapa com tiles de largura e altura diferentes')
         escala = self.__configuracao.tamanho_tile / dados.tilewidth
         for grupo in dados.objectgroups:
-            if grupo.name == 'entities':
+            if grupo.name == 'entidades':
                 for entidade in grupo:
-                    if entidade.name == 'player':
+                    if entidade.name == 'jogador':
                         entidades.append(self.__fase.jogador)
                         self.__fase.jogador.definir_posicao(pg.Vector2(entidade.x, entidade.y) * escala)
                     elif entidade.name == 'ladino':

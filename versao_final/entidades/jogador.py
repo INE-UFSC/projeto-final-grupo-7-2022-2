@@ -17,13 +17,6 @@ class Jogador(Entidade):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__()
 
-        self.__teclas_usadas_estado = {
-            pg.K_w: False,
-            pg.K_a: False,
-            pg.K_s: False,
-            pg.K_d: False,
-            pg.K_SPACE: False,
-        }
         self.__configuracoes = Configuracoes()
         # Imagem e hitbox
         self.__status = 'right'
@@ -31,7 +24,7 @@ class Jogador(Entidade):
         self.__animacoes = self.__spritesheet.get_animation_frames()
         self.__frame_indice = 0
         self._rect = self.__superficie_atual.get_rect()
-        self._hitbox = self._rect.inflate(pg.Vector2(0, 0.1) * self.__configuracoes.tamanho_tile)
+        self._hitbox = self._rect.inflate(pg.Vector2(-0.5, -0.5) * self.__configuracoes.tamanho_tile)
 
         # Movimento
         self._velocidade = 2
@@ -51,7 +44,7 @@ class Jogador(Entidade):
             self.__faca = Faca.apartir_do_dict(kwargs['armas']['faca'], self)
             self.__pistola = Pistola.apartir_do_dict(kwargs['armas']['pistola'], self)
         else:
-            self.__faca = Faca(self)
+            self.__faca = Faca(self, distancia=20)
             self.__pistola = Pistola(self)
 
         if kwargs.get('arma', 'faca') == 'faca':
@@ -107,6 +100,14 @@ class Jogador(Entidade):
         fase.registrar_evento(pg.MOUSEBUTTONDOWN, self.__evento_mouse)
         self.__faca.definir_fase(fase)
         self.__pistola.definir_fase(fase)
+
+        self.__teclas_usadas_estado = {
+            pg.K_w: False,
+            pg.K_a: False,
+            pg.K_s: False,
+            pg.K_d: False,
+            pg.K_SPACE: False,
+        }
 
     def __calcular_direcao(self):
         if self.__esta_com_impulso:
@@ -206,9 +207,9 @@ class Jogador(Entidade):
         #     if 'attack' in self.__status:
         #         self.__status = self.__status.replace('_attack', '')
 
-    def dash(self):
-        if self.__dashing and self.__active_dash:
-            self.__velocidade = 20
+    # def dash(self):
+    #     if self.__dashing and self.__active_dash:
+    #         self.__velocidade = 20
 
     def __animar(self):
         animacao = self.__animacoes[self.__status]

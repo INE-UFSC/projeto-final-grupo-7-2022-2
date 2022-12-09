@@ -30,7 +30,7 @@ class Configuracoes(Singleton):
         self.__fonte_botao = pg.font.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 55)
         self.__fonte_digitar = pg.font.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 82)
 
-        self.__fases = ['test2']
+        self.__fases = ['fase1','fase2']
 
     @property
     def fases(self):
