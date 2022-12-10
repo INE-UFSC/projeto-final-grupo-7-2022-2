@@ -28,6 +28,8 @@ class Fase:
         self.__tempo_maximo = 60
 
         self.__porta = pg.Rect(640, 192, 64, 64)
+        self.__bomba_coletada = None
+        self.__tempo_coleta = 0
 
     @property
     def jogador(self) -> Jogador:
@@ -67,6 +69,7 @@ class Fase:
             entidade.atualizar(tempo_passado)
         self.__tempo.retomar()
         self.passar_de_fase()
+        self.bomba_esta_coletada()
 
     def desenhar(self) -> pg.Surface:
         centro_do_desenho = pg.Vector2(self.__jogador.rect.center)
@@ -96,7 +99,6 @@ class Fase:
         coracao = pg.transform.scale(pg.image.load(os.path.join('recursos', 'sprites', 'coracao.png')), (tamanho, tamanho))
         meio_coracao = pg.transform.scale(pg.image.load(os.path.join('recursos', 'sprites', 'meio_coracao.png')), (tamanho, tamanho))
 
-        # A ser concluído: Decidir quantos corações serão usados e esquema de dano
         vida_atual = self.__jogador.vida // 10
 
         if vida_atual % 2 == 0:
@@ -111,16 +113,17 @@ class Fase:
     def __desenhar_balas(self):
         tamanho = 75
         bala = pg.transform.scale(pg.image.load(os.path.join('recursos', 'sprites', 'bala_tela.png')), (tamanho, tamanho))
-        # A ser concluído: Pegar o número de balas restantes para o loop
         for i in range(self.__jogador.balas_restantes_da_pistola):
             self.__tela.blit(bala, (i * tamanho * 0.75, self.__configuracoes.altura_tela - 100))
 
     def __desenhar_barra_tempo(self):
         tempo_restante = self.__tempo.temporizador(self.__tempo_maximo)
         barra = pg.Rect(self.__configuracoes.largura_tela - tempo_restante * 2 - 50, 100, tempo_restante * 2, 30)
-        # A ser concuído: Efeitos colaterais no jogador
+
         if tempo_restante < 1/3 * self.__tempo_maximo:
             pg.draw.rect(self.__tela, (255, 0, 0), barra)
+            if not self.__bomba_coletada:
+                self.__jogador.receber_dano(1)
         else:
             pg.draw.rect(self.__tela, (0, 255, 0), barra)
 
@@ -137,6 +140,17 @@ class Fase:
 
     def pausar_tempo(self):
         self.__tempo.pausar()
+
+    def bomba_esta_coletada(self):
+        self.__bomba_coletada = None
+        for entidade in self.entidades:
+            if entidade.tipo == 'bomba_de_asma':
+                self.__bomba_coletada = False
+
+        if self.__bomba_coletada is not False and self.__tempo_coleta == 0:
+            self.__bomba_coletada = True
+            self.__tempo_coleta = self.__tempo_passado
+            self.__tempo_maximo += self.__tempo_coleta
 
     @property
     def colisores(self):
