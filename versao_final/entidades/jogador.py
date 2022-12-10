@@ -31,19 +31,14 @@ class Jogador(Entidade):
         self.__vida = kwargs.get('vida', 100)
 
         # Flags para cooldown
-        self.__vulneravel = True
-        self.__pode_atacar = True
-        self.__impulso_disponivel = True
-        self.__esta_com_impulso = False
 
         self.__duracao_do_impulso = 100
         self.__duracao_de_recarga_do_impulso = 1000
 
+        self.__faca = Faca(self)
         if 'armas' in kwargs:
-            self.__faca = Faca.apartir_do_dict(kwargs['armas']['faca'], self)
             self.__pistola = Pistola.apartir_do_dict(kwargs['armas']['pistola'], self)
         else:
-            self.__faca = Faca(self, distancia=20)
             self.__pistola = Pistola(self)
 
         if kwargs.get('arma', 'faca') == 'faca':
@@ -107,6 +102,11 @@ class Jogador(Entidade):
             pg.K_d: False,
             pg.K_SPACE: False,
         }
+        self.__vulneravel = True
+        self.__pode_atacar = True
+        self.__impulso_disponivel = True
+        self.__esta_com_impulso = False
+        self._velocidade = 0.8
 
     def __calcular_direcao(self):
         if self.__esta_com_impulso:

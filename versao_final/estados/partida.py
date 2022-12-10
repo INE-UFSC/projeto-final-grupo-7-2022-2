@@ -4,7 +4,7 @@ import pygame as pg
 
 from entidades import Jogador
 from fase import Fase
-from utilidades import CallbackDeEvento, Configuracoes, ControladorDeMusica
+from utilidades import CallbackDeEvento, Configuracoes, ControladorDeMusica, Armazenamento
 from visualizacao import Transicao
 
 from .estado import Estado
@@ -16,11 +16,12 @@ if TYPE_CHECKING:
 class Partida(Estado):
     def __init__(self, maquina_de_estado: 'MaquinaDeEstado'):
         super().__init__(maquina_de_estado)
+        self.__armazenamento = Armazenamento()
+
         self.__fases = []
         self.__fase_atual_indice = 0
         self.__tem_jogo = False
         self.__musica_control = ControladorDeMusica()
-        self.__jogador = Jogador()
         self.__marcador_de_tempo_para_eventos = 0
         self.__callback_de_eventos = []
         self.__callback_eventos_de_tempo = []
@@ -63,11 +64,20 @@ class Partida(Estado):
         self.__fases.append(fase)
 
     def jogo_perdido(self):
+        self.__armazenamento.apagar_partida()
         self._maquina_de_estado.mover_para_estado('fim_de_jogo')
         self.__tem_jogo = False
 
+    def __gerar_estado(self) -> dict:
+        jogador = self.__jogador.gerar_dict_do_estado()
+        return {
+            'indice_fase': self.__fase_atual_indice,
+            'jogador': jogador
+        }
+
     def iniciar_fase(self):
         self.__fases[self.__fase_atual_indice].iniciar(jogador=self.__jogador)
+        self.__armazenamento.salvar_partida(self.__gerar_estado())
 
     def terminar_fase(self):
         self.__ultimo_quadro_fase = self.__tela.copy()
@@ -96,6 +106,7 @@ class Partida(Estado):
                 self.__fase_atual_indice += 1
                 self.__fase_ativa = True
                 if self.__fase_atual_indice >= len(self.__fases):
+                    self.__armazenamento.apagar_partida()
                     self._maquina_de_estado.mover_para_estado('menu_vitoria')
                     self.__tem_jogo = False
                 else:
@@ -126,7 +137,13 @@ class Partida(Estado):
     def iniciar(self):
         if not self.__tem_jogo:
             self.__fase_atual_indice = 0
-            self.__fases[self.__fase_atual_indice].iniciar(jogador=self.__jogador)
             self.__tem_jogo = True
+            estado = self.__armazenamento.partida
+            if estado:
+                self.__fase_atual_indice = estado['indice_fase']
+                self.__jogador = Jogador(**estado['jogador'])
+            else:
+                self.__jogador = Jogador()
+            self.iniciar_fase()
         self.__musica_control.parar_musica()
         self.__musica_control.iniciar_musica(self.__configuracoes.musica_jogo)
