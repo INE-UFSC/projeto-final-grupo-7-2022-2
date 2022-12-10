@@ -20,20 +20,20 @@ class Camera():
         self.__centro_da_tela = pg.Vector2(centro_da_tela_x, centro_da_tela_y)
 
     def __desenhar_camada_inferior(self, deslocamento: pg.Vector2):
-        for bloco in self.__gerenciador_de_grupos.chao:
-            posicao = bloco.posicao - deslocamento
-            self.__quadro.blit(bloco.superficie, posicao)
+        chao = self.__gerenciador_de_grupos.chao
+        posicao = chao.posicao - deslocamento
+        self.__quadro.blit(chao.superficie, posicao)
+
+    def __desenhar_camada_superior(self, deslocamento: pg.Vector2):
+        blocos_superiores = self.__gerenciador_de_grupos.blocos_superiores
+        posicao = blocos_superiores.posicao - deslocamento
+        self.__quadro.blit(blocos_superiores.superficie, posicao)
 
     def __desenhar_lista_pelo_y(self, deslocamento: pg.Vector2, lista: List[SuperficiePosicionada]):
         lista.sort(key=lambda superficie: superficie.rect.centery)
         for superficie_posicionada in lista:
             posicao = superficie_posicionada.posicao - deslocamento
             self.__quadro.blit(superficie_posicionada.superficie, posicao)
-
-    def __desenhar_camada_superior(self, deslocamento: pg.Vector2):
-        for bloco in self.__gerenciador_de_grupos.blocos_superiores:
-            posicao = bloco.posicao - deslocamento
-            self.__quadro.blit(bloco.superficie, posicao)
 
     def desenhar(self, centro_do_desenho: pg.Vector2, superficie_posicionadas: List[SuperficiePosicionada]) -> pg.Surface:
         self.__quadro.fill('black')
@@ -43,19 +43,12 @@ class Camera():
         self.__desenhar_camada_inferior(deslocamento)
         # Ao invés de desenharmos os objetos numa posição fixa, nos os posicionamos de acordo com o centro.
         # Além disso, a ordem de desenho dos objetos na tela é crescente com relação a sua posição y
-        lista_de_superficies_posicionadas = self.__gerenciador_de_grupos.blocos.copy()
+        lista_de_superficies_posicionadas = self.__gerenciador_de_grupos.blocos_estaticos.copy()
+        lista_de_superficies_posicionadas.extend(self.__gerenciador_de_grupos.blocos_dinamicos)
         lista_de_superficies_posicionadas.extend(superficie_posicionadas)
         self.__desenhar_lista_pelo_y(deslocamento, lista_de_superficies_posicionadas)
-        # self.__desenhar_lista_pelo_y(deslocamento, self.__gerenciador_de_grupos.colisores)
+        
 
         self.__desenhar_camada_superior(deslocamento)
-
-        hitboxs = []
-        for entidade in self.__gerenciador_de_grupos.entidades:
-            superficie_hitbox = pg.Surface((entidade.hitbox.width, entidade.hitbox.height))
-            superficie_hitbox.fill((255, 64, 0))
-            superficie_hitbox.set_alpha(128)
-            hitboxs.append(SuperficiePosicionada(superficie_hitbox, entidade.hitbox.topleft))
-        self.__desenhar_lista_pelo_y(deslocamento, hitboxs)
 
         return self.__quadro

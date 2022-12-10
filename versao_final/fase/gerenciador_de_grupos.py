@@ -4,14 +4,14 @@ from typing import TYPE_CHECKING, List
 import pygame as pg
 import pytmx
 
+from entidades import Arqueiro, BombaDeAsma, Entidade, Guerreiro, Ladino
 from utilidades import Configuracoes
-from entidades import Arqueiro, Entidade, Guerreiro, Ladino, BombaDeAsma
-
-from visualizacao import Tile
+from visualizacao import SuperficiePosicionada, Tile
 
 if TYPE_CHECKING:
     from fase import Fase
-
+class CamadaNaoEncontrada(Exception):
+    pass
 
 class GerenciadorDeGrupos():
     def __init__(self, fase: 'Fase', nome: str):
@@ -23,33 +23,28 @@ class GerenciadorDeGrupos():
         # Carrega o arquivo .tmx
         tmx_path = os.path.join('./visualizacao/mapas', self.__nome, self.__nome + '.tmx')
         dados_do_pytmx = pytmx.load_pygame(tmx_path, pixelalpha=True)
-        self.__gerar_camada_inferior(dados_do_pytmx)
+        self.__chao = self.__gerar_chao(dados_do_pytmx)
+        self.__blocos_superiores = self.__gerar_superficie_unica_da_camada(dados_do_pytmx, 'blocos_superiores')
         self.__gerar_camada_intermediaria(dados_do_pytmx)
-        self.__gerar_camada_superior(dados_do_pytmx)
         self.__gerar_colisores(dados_do_pytmx)
         self.__gerar_entidades(dados_do_pytmx)
 
     # Camada inferior:
     @property
-    def chao(self) -> list[Tile]:
+    def chao(self) -> SuperficiePosicionada:
         return self.__chao
 
-    # Camada intermediaria:
     @property
-    def blocos(self) -> List[Tile]:
-        return self.__blocos
+    def blocos_estaticos(self) -> List[Tile]:
+        return self.__blocos_estaticos
 
     @property
-    def objetos_estaticos(self) -> List[Tile]:
-        return self.__objetos_estaticos
-
-    @property
-    def objetos_dinamicos(self) -> List[Tile]:
-        return self.__objetos_dinamicos
+    def blocos_dinamicos(self) -> List[Tile]:
+        return self.__blocos_dinamicos
 
     # Camada superior:
     @property
-    def blocos_superiores(self) -> list[Tile]:
+    def blocos_superiores(self) -> SuperficiePosicionada:
         return self.__blocos_superiores
 
     # Outros:
@@ -61,86 +56,79 @@ class GerenciadorDeGrupos():
     def colisores(self) -> List[Tile]:
         return self.__colisores
 
-
-    def __gerar_camada_inferior(self, dados: pytmx.TiledMap) -> None:
-
-        chao = []
-        for layer in dados.visible_layers:
-            if hasattr(layer, 'data'):
-                if layer.name == 'chao':
-                    for x, y, superficie in layer.tiles():
-                        posicao = (x * self.__configuracao.tamanho_tile, y * self.__configuracao.tamanho_tile)
-                        chao.append(Tile(posicao=posicao, superficie=superficie))
-
-        for layer in dados.visible_layers:
-            if hasattr(layer, 'data'):
-                if layer.name == 'chao_detalhes':
-                    for x, y, superficie in layer.tiles():
-                        posicao = (x * self.__configuracao.tamanho_tile, y * self.__configuracao.tamanho_tile)
-                        chao.append(Tile(posicao=posicao, superficie=superficie))
-
-        self.__chao = chao
-
-    def __gerar_camada_superior(self, dados: pytmx.TiledMap) -> None:
+    def __gerar_chao(self, dados: pytmx.TiledMap) -> SuperficiePosicionada:
+        chao = self.__gerar_superficie_unica_da_camada(dados, 'chao')
+        try:
+            chao_detalhes = self.__gerar_superficie_unica_da_camada(dados, 'chao_detalhes')
+            chao.superficie.blit(chao_detalhes.superficie, chao_detalhes.posicao)
+        except CamadaNaoEncontrada:
+            pass
         
-        blocos_superiores = []
+        return chao
+
+    def __gerar_superficie_unica_da_camada(self, dados: pytmx.TiledMap, camada: str) -> None:
         for layer in dados.visible_layers:
             if hasattr(layer, 'data'):
-                if layer.name == 'blocos_superiores':
-                    for x, y, superficie in layer.tiles():
-                        posicao = (x * self.__configuracao.tamanho_tile, y * self.__configuracao.tamanho_tile)
-                        blocos_superiores.append(Tile(posicao=posicao, superficie=superficie))
+                tamanho_tile = self.__configuracao.tamanho_tile
+                superficie_final = pg.Surface((tamanho_tile * layer.width, tamanho_tile * layer.height))
+                superficie_final.set_colorkey((0, 0, 0))
+                print(layer.name, camada)
+                if layer.name == camada:
+                    for x, y, superficie_da_tile in layer.tiles():
+                        x = x * self.__configuracao.tamanho_tile
+                        y = y * self.__configuracao.tamanho_tile
+                        w = self.__configuracao.tamanho_tile
+                        h = self.__configuracao.tamanho_tile
+                        superficie_escalada = pg.transform.scale(superficie_da_tile, (w, h))
+                        superficie_final.blit(superficie_escalada, (x, y), (0, 0, w, h))
+                    
+                    return SuperficiePosicionada(superficie=superficie_final, topo_esquerdo=(0, 0))
 
-        self.__blocos_superiores = blocos_superiores
+        raise CamadaNaoEncontrada(f'Não foi possível encontrar a camada "{camada}" no arquivo .tmx')
 
     def __gerar_camada_intermediaria(self, dados: pytmx.TiledMap) -> None:
 
         # Cria uma lista com os blocos que seguem o grid do mapa
         # Nenhum desses blocos é interativo
         # Podem ser paredes, grades, etc
-        blocos = []
+        blocos_estaticos = []
         for layer in dados.visible_layers:
             if hasattr(layer, 'data'):
                 if layer.name == 'blocos':
                     for x, y, superficie in layer.tiles():
                         posicao = (x * self.__configuracao.tamanho_tile, y * self.__configuracao.tamanho_tile)
-                        blocos.append(Tile(posicao=posicao, superficie=superficie))
-
-        self.__blocos = blocos
+                        blocos_estaticos.append(Tile(posicao=posicao, superficie=superficie))
 
         # Cria uma lista com objetos que não seguem o grid do mapa, mas não tem interação com a fase
         # Podem ser árvores, estátuas, pedras, etc
-        objetos_estaticos = []
         for grupo in dados.objectgroups:
             if grupo.name == 'objetos_estaticos':
                 for objeto in grupo:
                     superficie = pg.Surface(size=(objeto.width, objeto.height))
                     posicao = objeto.x, objeto.y
-                    objetos_estaticos.append(
+                    blocos_estaticos.append(
                         Tile(
                             posicao,
                             superficie=superficie,
                             largura=objeto.width,
                             altura=objeto.height))
 
-        self.__objetos_estaticos = objetos_estaticos
-
+        self.__blocos_estaticos = blocos_estaticos
         # Cria uma lista com objetos que não seguem o grid do mapa, mas tem interação com a fase
         # Podem ser portas, armadilhas, etc
-        objetos_dinamicos = []
+        blocos_dinamicos = []
         for grupo in dados.objectgroups:
             if grupo.name == 'objetos_dinamicos':
-                for objeto in grupo:
-                    superficie = pg.Surface(size=(objeto.width, objeto.height))
-                    posicao = objeto.x, objeto.y
-                    objetos_dinamicos.append(
+                for estrutura in grupo:
+                    posicao = estrutura.x, estrutura.y
+                    blocos_dinamicos.append(
                         Tile(
                             posicao,
                             superficie=superficie,
                             largura=objeto.width,
                             altura=objeto.height))
 
-        self.__objetos_dinamicos = objetos_dinamicos
+        self.__blocos_dinamicos = blocos_dinamicos
 
     def __unir_tiles_proximas(self, tiles: List[Tile]) -> List[Tile]:
         novas_tiles_por_y = {}
@@ -211,7 +199,6 @@ class GerenciadorDeGrupos():
                             altura=estrutura.height))
 
         self.__colisores = self.__unir_tiles_proximas(colisores)
-
 
     def __gerar_entidades(self, dados: pytmx.TiledMap) -> None:
         bomba_de_asma = BombaDeAsma()

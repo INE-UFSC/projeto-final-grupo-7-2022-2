@@ -87,7 +87,7 @@ class Arqueiro(Inimigo):
         return True
 
     def __atirar(self) -> None:
-        if self._pode_atacar:
+        if self._pode_atacar and self.__esta_morto:
             vetor_diferenca = self._calcular_vetor_diferenca_jogador()
             if vetor_diferenca.magnitude() != 0 and self.__ira_atigir_o_jogador(vetor_diferenca):
                 flecha = Flecha(self._fase, self._rect.center, -vetor_diferenca.normalize())
@@ -127,6 +127,8 @@ class Arqueiro(Inimigo):
         super().atualizar(tempo_passado)
         self.__atirar()
         self.__atualizar_flechas(tempo_passado)
+        if self.__esta_morto and len(self.__flechas) == 0:
+            self._fase.matar_entidade(self)
         self.__animar()
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
