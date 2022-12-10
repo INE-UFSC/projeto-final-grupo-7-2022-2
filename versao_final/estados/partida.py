@@ -96,7 +96,7 @@ class Partida(Estado):
                 self.__fase_atual_indice += 1
                 self.__fase_ativa = True
                 if self.__fase_atual_indice >= len(self.__fases):
-                    self._maquina_de_estado.mover_para_estado('fim_de_jogo')
+                    self._maquina_de_estado.mover_para_estado('menu_vitoria')
                     self.__tem_jogo = False
                 else:
                     self.iniciar_fase()

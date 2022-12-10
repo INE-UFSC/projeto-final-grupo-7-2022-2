@@ -72,6 +72,13 @@ class GerenciadorDeGrupos():
                         posicao = (x * self.__configuracao.tamanho_tile, y * self.__configuracao.tamanho_tile)
                         chao.append(Tile(posicao=posicao, superficie=superficie))
 
+        for layer in dados.visible_layers:
+            if hasattr(layer, 'data'):
+                if layer.name == 'chao_detalhes':
+                    for x, y, superficie in layer.tiles():
+                        posicao = (x * self.__configuracao.tamanho_tile, y * self.__configuracao.tamanho_tile)
+                        chao.append(Tile(posicao=posicao, superficie=superficie))
+
         self.__chao = chao
 
     def __gerar_camada_superior(self, dados: pytmx.TiledMap) -> None:
@@ -107,13 +114,14 @@ class GerenciadorDeGrupos():
         for grupo in dados.objectgroups:
             if grupo.name == 'objetos_estaticos':
                 for objeto in grupo:
+                    superficie = pg.Surface(size=(objeto.width, objeto.height))
                     posicao = objeto.x, objeto.y
                     objetos_estaticos.append(
                         Tile(
                             posicao,
-                            superficie=estrutura.image,
-                            largura=estrutura.width,
-                            altura=estrutura.height))
+                            superficie=superficie,
+                            largura=objeto.width,
+                            altura=objeto.height))
 
         self.__objetos_estaticos = objetos_estaticos
 
@@ -122,14 +130,15 @@ class GerenciadorDeGrupos():
         objetos_dinamicos = []
         for grupo in dados.objectgroups:
             if grupo.name == 'objetos_dinamicos':
-                for estrutura in grupo:
-                    posicao = estrutura.x, estrutura.y
+                for objeto in grupo:
+                    superficie = pg.Surface(size=(objeto.width, objeto.height))
+                    posicao = objeto.x, objeto.y
                     objetos_dinamicos.append(
                         Tile(
                             posicao,
-                            superficie=estrutura.image,
-                            largura=estrutura.width,
-                            altura=estrutura.height))
+                            superficie=superficie,
+                            largura=objeto.width,
+                            altura=objeto.height))
 
         self.__objetos_dinamicos = objetos_dinamicos
 

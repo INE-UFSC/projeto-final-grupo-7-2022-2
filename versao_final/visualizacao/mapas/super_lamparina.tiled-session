@@ -3,30 +3,89 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "fase1/fase1.tmx",
+    "activeFile": "fase_teste/fase_teste.tmx",
     "expandedProjectPaths": [
-        "tsx",
+        "fase_2",
+        ".",
+        "fase2",
         "fase1",
-        "."
+        "tsx",
+        "fase1.1",
+        "fase_1",
+        "fase1-1"
     ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
-        "fase1/fase1.tmx": {
+        "fase1-1/fase1-1.tmx": {
             "expandedGroupLayers": [
+                5,
                 11,
-                12,
+                12
+            ],
+            "expandedObjectLayers": [
+                11,
+                12
+            ],
+            "scale": 0.33,
+            "selectedLayer": 8,
+            "viewCenter": {
+                "x": 974.2424242424242,
+                "y": 1262.1212121212122
+            }
+        },
+        "fase1.1/fase1-1.tmx": {
+            "expandedGroupLayers": [
+                5,
+                11,
                 13,
-                14,
-                5
+                12,
+                14
             ],
             "expandedObjectLayers": [
                 9,
-                12
+                11,
+                10,
+                12,
+                15,
+                14
             ],
-            "scale": 0.6954296875,
-            "selectedLayer": 1,
+            "scale": 0.5,
+            "selectedLayer": 8,
             "viewCenter": {
-                "x": 607.538055383924,
-                "y": 621.9176543279223
+                "x": 817,
+                "y": 741
+            }
+        },
+        "fase1.1/fase1.1.tmx": {
+            "expandedGroupLayers": [
+                3
+            ],
+            "scale": 0.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 889,
+                "y": 2395
+            }
+        },
+        "fase1/fase1.tmx": {
+            "expandedGroupLayers": [
+                5,
+                11,
+                13,
+                12,
+                14
+            ],
+            "expandedObjectLayers": [
+                9,
+                11,
+                12,
+                14
+            ],
+            "scale": 0.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 941,
+                "y": 531
             }
         },
         "fase2/fase2.tmx": {
@@ -37,10 +96,79 @@
                 3
             ],
             "scale": 0.6954296875,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 832.578778857496,
+                "y": 613.2898949615234
+            }
+        },
+        "fase_1/fase_1.tmx": {
+            "expandedGroupLayers": [
+                12
+            ],
+            "scale": 0.34771484375,
+            "selectedLayer": 10,
+            "viewCenter": {
+                "x": 898.7249339998878,
+                "y": 1137.4262764702576
+            }
+        },
+        "fase_2/fase_1.tmx": {
+            "scale": 0.34771484375,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 603.2241757007247,
-                "y": 627.6694939055216
+                "x": 706.0383081503117,
+                "y": 1281.22226591024
+            }
+        },
+        "fase_2/fase_2.tmx": {
+            "expandedGroupLayers": [
+                11,
+                5,
+                12,
+                13,
+                14
+            ],
+            "expandedObjectLayers": [
+                14,
+                15
+            ],
+            "scale": 0.33,
+            "selectedLayer": 11,
+            "viewCenter": {
+                "x": 834.8484848484848,
+                "y": 1471.2121212121212
+            }
+        },
+        "fase_3/fase_3.tmx": {
+            "expandedGroupLayers": [
+                11,
+                5,
+                12,
+                13,
+                14
+            ],
+            "expandedObjectLayers": [
+                9,
+                10,
+                11,
+                12,
+                14,
+                15
+            ],
+            "scale": 0.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 831,
+                "y": 1105
+            }
+        },
+        "fase_teste/fase_teste.tmx": {
+            "scale": 0.6954296875,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 640.6111329551198,
+                "y": 640.61113295512
             }
         },
         "test2/test2.tmx": {
@@ -59,27 +187,54 @@
             "scaleInDock": 0.5,
             "scaleInEditor": 1
         },
+        "tsx/Props.tsx": {
+            "scaleInDock": 1
+        },
+        "tsx/Props_Forest.tsx": {
+            "scaleInDock": 0.25,
+            "scaleInEditor": 1
+        },
         "tsx/Tiles_Dungeon.tsx": {
             "scaleInDock": 0.5,
             "scaleInEditor": 1
+        },
+        "tsx/Tiles_Forest.tsx": {
+            "scaleInDock": 0.25,
+            "scaleInEditor": 1
+        },
+        "tsx/Trees.tsx": {
+            "scaleInDock": 0.25,
+            "scaleInEditor": 1
+        },
+        "tsx/collision_tile_64.tsx": {
+            "scaleInDock": 1
         }
     },
     "last.externalTilesetPath": "/home/oasjs/Documents/code-shenanigans/python/projeto-final-grupo-7-2022-2/versao_final/View/mapas/tsx",
-    "last.imagePath": "/home/oasjs/Documents/code-shenanigans/python/projeto-final-grupo-7-2022-2/versao_final/View/mapas/assets",
+    "last.imagePath": "/home/oasjs/Documents/code-shenanigans/python/projeto-final-grupo-7-2022-2/versao_final/visualizacao/mapas/assets",
+    "map.height": 30,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 64,
     "map.tileWidth": 64,
-    "map.width": 20,
+    "map.width": 50,
     "openFiles": [
-        "fase1/fase1.tmx",
-        "tsx/Tiles_Dungeon.tsx"
+        "fase_1/fase_1.tmx",
+        "fase_teste/fase_teste.tmx"
     ],
     "project": "super_lamparina.tiled-project",
     "recentFiles": [
         "tsx/Tiles_Dungeon.tsx",
-        "test2/test2.tmx",
+        "tsx/Trees.tsx",
+        "tsx/Props_Forest.tsx",
+        "tsx/Tiles_Forest.tsx",
+        "fase_3/fase_3.tmx",
+        "fase_teste/fase_teste.tmx",
+        "fase_1/fase_1.tmx",
+        "fase_2/fase_1.tmx",
+        "fase1-1/fase1-1.tmx",
+        "fase2/fase2.tmx",
         "fase1/fase1.tmx",
-        "tsx/Collision_Block.tsx"
+        "fase1.1/fase1-1.tmx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",
