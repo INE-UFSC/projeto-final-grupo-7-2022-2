@@ -205,7 +205,7 @@ class GerenciadorDeGrupos():
         if dados.tilewidth != dados.tileheight:
             raise ValueError('Mapa com tiles de largura e altura diferentes')
         escala = self.__configuracao.tamanho_tile / dados.tilewidth
-        bomba_de_asma.definir_posicao(pg.Vector2(30, 40) * escala)
+        bomba_de_asma.definir_posicao(pg.Vector2(600, 400) * escala)
 
         for grupo in dados.objectgroups:
             if grupo.name == 'entidades':

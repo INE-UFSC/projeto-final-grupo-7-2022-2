@@ -20,6 +20,7 @@ class Jogo:
 
         self.__tela = pg.display.set_mode((self.__configuracoes.largura_tela, self.__configuracoes.altura_tela))
         pg.display.set_caption('SUPER LAMPARINA ARFANTE')
+        pg.display.set_icon(self.__configuracoes.icon)
 
         self.__timer_fps = pg.time.Clock()
         self.__timer_tps = pg.time.Clock()
