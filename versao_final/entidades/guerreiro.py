@@ -23,7 +23,8 @@ class Guerreiro(Inimigo):
         self.__animacoes = self.__spritesheet.get_animation_frames()
 
         configuracoes = Configuracoes()
-        self._tempo_de_recarga_ataque = 360
+        self._tempo_de_recarga_ataque = 700
+        self.__momento_ataque = 0
 
         self._rect = self.__superficie_atual.get_rect()
         self._hitbox = self.rect.inflate(0, -10)
@@ -55,11 +56,20 @@ class Guerreiro(Inimigo):
         if self.__frame_indice >= len(animacao):
             self.__frame_indice = 0
 
+    def __atacar(self) -> None:
+        dano = 10
+        jogador = self._fase.jogador
+        agora = pg.time.get_ticks()
+        if self._hitbox.colliderect(jogador._hitbox) and agora > self.__momento_ataque + self._tempo_de_recarga_ataque:
+            self.__momento_ataque = pg.time.get_ticks()
+            jogador.receber_dano(dano)
+
     def atualizar(self, tempo_passado: int) -> None:
         direcao = self._calcular_vetor_diferenca_jogador()*-1
         super().atualizar(tempo_passado)
         self.__calcular_tipo_de_animacao(direcao)
         self.__animar()
+        self.__atacar()
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
         guerreiro_desenho = SuperficiePosicionada(self.__superficie_atual, self._rect.topleft)

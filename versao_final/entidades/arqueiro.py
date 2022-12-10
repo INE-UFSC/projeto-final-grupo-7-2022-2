@@ -33,6 +33,7 @@ class Arqueiro(Inimigo):
 
         self.__tempo_de_recarga_ataque = 1000
         self.__flechas: List[Flecha] = []
+        self.__esta_morto = False
 
         # Configurações de gráfico - Ainda estão provisórias
 
@@ -110,6 +111,16 @@ class Arqueiro(Inimigo):
         if self.__frame_indice >= len(animacao):
             self.__frame_indice = 0
 
+    def receber_dano(self, dano: int):
+        self._vida -= dano
+        if self._vida <= 0:
+            if len(self.__flechas) == 0:
+                self._fase.matar_entidade(self)
+            else:
+                self.__esta_morto = True
+                self._hitbox = pg.Rect(0, 0, 0, 0)
+                self._rect = pg.Rect(0, 0, 0, 0)
+
     def atualizar(self, tempo_passado: int) -> None:
         direcao = self._calcular_vetor_diferenca_jogador()*-1
         self.__calcular_tipo_de_animacao(direcao)
@@ -119,7 +130,10 @@ class Arqueiro(Inimigo):
         self.__animar()
 
     def desenhar(self) -> Tuple[SuperficiePosicionada, ...]:
-        arqueiro_superficies = (SuperficiePosicionada(self.__superficie_atual, self._rect.topleft),)
+        if not self.__esta_morto:
+            arqueiro_superficies = (SuperficiePosicionada(self.__superficie_atual, self._rect.topleft),)
+        else:
+            arqueiro_superficies = tuple()
         for flecha in self.__flechas:
             arqueiro_superficies += flecha.desenhar()
         return arqueiro_superficies

@@ -7,7 +7,13 @@ class Tempo:
         self.__tempo_pausado = None
         self.__pausado = False
 
+    def zerar(self):
+        self.__tempo_inicio = None
+        self.__tempo_pausado = None
+        self.__pausado = False
+
     def iniciar(self):
+        self.zerar()
         self.__tempo_inicio = time.time()
 
     def pausar(self):
