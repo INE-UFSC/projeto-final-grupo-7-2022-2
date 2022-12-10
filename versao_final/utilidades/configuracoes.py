@@ -38,11 +38,17 @@ class Configuracoes(Singleton):
         self.__fonte_botao = pg.font.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 55)
         self.__fonte_digitar = pg.font.Font(os.path.join('recursos', 'fontes', 'FieldGuide.ttf'), 82)
 
+        self.__icon = pg.image.load(os.path.join('recursos', 'sprites', 'bomba.png'))
+
         self.__fases = ['fase_1','fase_2']
 
     @property
     def fases(self):
         return self.__fases
+
+    @property
+    def icon(self):
+        return self.__icon
 
     @property
     def fonte_titulo(self):
