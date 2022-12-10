@@ -32,7 +32,7 @@ class Flecha():
 
     def __atualizar_posicao(self, tempo_passado: int) -> pg.Vector2:
         # Transforma o comprimento do vetor em 1
-        velocidade = 0.5
+        velocidade = 0.8
         # Move a bala baseado na direção e velocidade
         return self.__posicao + self.__direcao * (velocidade * tempo_passado)
 

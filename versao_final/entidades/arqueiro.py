@@ -21,9 +21,9 @@ class Arqueiro(Inimigo):
         self.__configuracoes = Configuracoes()
         self.__controle_de_musica = ControladorDeMusica()
 
-        self._velocidade = 0.5
-        self._raio_ataque = 4
-        self._raio_percepcao = 30
+        self._velocidade = 0.6
+        self._raio_ataque = 10
+        self._raio_percepcao = 20
         self._vida = 1
 
         self.__frame_indice = 0
@@ -31,7 +31,7 @@ class Arqueiro(Inimigo):
         self.__spritesheet = Spritesheet("arqueiro")
         self.__animacoes = self.__spritesheet.get_animation_frames()
 
-        self.__tempo_de_recarga_ataque = 600
+        self.__tempo_de_recarga_ataque = 1000
         self.__flechas: List[Flecha] = []
 
         # Configurações de gráfico - Ainda estão provisórias

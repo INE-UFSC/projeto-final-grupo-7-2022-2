@@ -26,7 +26,7 @@ class Jogador(Entidade):
         self._hitbox = self._rect.inflate(pg.Vector2(-0.5, -0.5) * self.__configuracoes.tamanho_tile)
 
         # Movimento
-        self._velocidade = 2
+        self._velocidade = 0.8
 
         self.__vida = kwargs.get('vida', 100)
 
