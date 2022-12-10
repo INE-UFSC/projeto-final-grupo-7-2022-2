@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List
 
 import pygame as pg
 
-from utilidades import Configuracoes, ControladorDeMusica
+from utilidades import Configuracoes, ControladorDeMusica, Armazenamento
 from visualizacao import Botao
 
 from .estado import Estado
@@ -18,6 +18,7 @@ class FimDeJogo(Estado):
         self.__configuracoes = Configuracoes()
         self.__controle_de_musica = ControladorDeMusica()
         self.__tela = pg.display.get_surface()
+        self.__armazenamento = Armazenamento()
 
         self.__botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_off.png')), (225, 75))
         self.__botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_final_on.png')), (225, 75))
@@ -57,12 +58,20 @@ class FimDeJogo(Estado):
         texto = texto_tela.get_rect()
         texto.center = (self.__configuracoes.largura_tela // 2, self.__configuracoes.altura_tela // 3)
         self.__tela.blit(texto_tela, texto)
+        registro = self.__armazenamento.ultima_pontuacao
 
-        # Sua pontuação foi - A ser terminado
-        texto_tela2 = self.__configuracoes.fonte_botao.render('Sua pontuação foi: ???', True, (255, 255, 255))
-        texto2 = texto_tela2.get_rect()
-        texto2.center = (self.__configuracoes.largura_tela // 2, self.__configuracoes.altura_tela // 2)
-        self.__tela.blit(texto_tela2, texto2)
+        minutos = int(registro['tempo']) // 60
+        segundos = int(registro['tempo']) % 60
+        tempo_string = "{0:02}:{1:02}".format(minutos, segundos)
+
+        texto_tempo = self.__configuracoes.fonte_botao.render(f'Tempo: {tempo_string}', True, (255, 255, 255))
+        texto_tempo_rect = texto_tempo.get_rect(center=(self.__configuracoes.largura_tela // 2, self.__configuracoes.altura_tela // 2))
+        self.__tela.blit(texto_tempo, texto_tempo_rect)
+
+        texto_fase = self.__configuracoes.fonte_botao.render(f'Fase: {registro["fase_indice"]+1}', True, (255, 255, 255))
+        texto_fase_rect = texto_fase.get_rect(center=texto_tempo_rect.center)
+        texto_fase_rect.y += texto_tempo_rect.height + 10
+        self.__tela.blit(texto_fase, texto_fase_rect)
 
         self.__botao_voltar.desenhar()
         self.__botao_ranking.desenhar()

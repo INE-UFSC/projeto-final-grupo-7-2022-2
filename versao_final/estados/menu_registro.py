@@ -3,24 +3,24 @@ from typing import TYPE_CHECKING, List
 
 import pygame as pg
 
-from utilidades import Configuracoes, ControladorDeMusica
+from utilidades import Configuracoes, ControladorDeMusica, Armazenamento
 from visualizacao import Botao, EntradaTextoUsuario
 
 from .estado import Estado
 
 if TYPE_CHECKING:
     from maquina_de_estado import MaquinaDeEstado
-    
 
 
 class MenuRegistro(Estado):
     def __init__(self, maquina_de_estado: 'MaquinaDeEstado'):
         super().__init__(maquina_de_estado)
         self.__configuracoes = Configuracoes()
+        self.__armazenamento = Armazenamento()
         self.__controle_de_musica = ControladorDeMusica()
         self.__tela = pg.display.get_surface()
-        imagem_botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_pedra_off.png')),(self.__configuracoes.tamanho_botoes))
-        imagem_botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_pedra_on.png')),(self.__configuracoes.tamanho_botoes))
+        imagem_botao_off = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_pedra_off.png')), (self.__configuracoes.tamanho_botoes))
+        imagem_botao_on = pg.transform.scale(pg.image.load(path.join('recursos', 'imagens', 'botao_pedra_on.png')), (self.__configuracoes.tamanho_botoes))
 
         self.__botao_voltar = Botao((5, 300), (imagem_botao_off, imagem_botao_on), 'Voltar')
         self.__botao_voltar.no_clique(self.__evento_botao_voltar_clicado)
@@ -43,7 +43,6 @@ class MenuRegistro(Estado):
         self.__mostra_mensagem = False
         self.__duracao_mensagem = 2000
 
-
     def __evento_botao_voltar_clicado(self):
         self._maquina_de_estado.voltar()
         self.__controle_de_musica.som_botao("tijolo")
@@ -52,6 +51,7 @@ class MenuRegistro(Estado):
         self.__clique_registro = pg.time.get_ticks()
         self.__controle_de_musica.som_botao("tijolo")
         if self.__entrada_usuario.texto_usuario.upper().isupper():
+            self.__armazenamento.nome_da_partida = self.__entrada_usuario.texto_usuario
             self._maquina_de_estado.mover_para_estado('partida')
         else:
             self.__mostra_mensagem = True
@@ -89,6 +89,8 @@ class MenuRegistro(Estado):
         self.__entrada_usuario.atualizar(eventos)
 
     def iniciar(self):
+        if self.__armazenamento.partida:
+            self._maquina_de_estado.mover_para_estado('partida')
         self.__entrada_usuario.texto_usuario = ''
         self.__controle_de_musica.parar_musica()
         self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_registro)

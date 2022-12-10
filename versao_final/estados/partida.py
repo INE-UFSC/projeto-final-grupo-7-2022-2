@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Callable, List
 import pygame as pg
 
 from entidades import Jogador
-from fase import Fase
+from fase import Fase, Tempo
 from utilidades import CallbackDeEvento, Configuracoes, ControladorDeMusica, Armazenamento
 from visualizacao import Transicao
 
@@ -17,6 +17,7 @@ class Partida(Estado):
     def __init__(self, maquina_de_estado: 'MaquinaDeEstado'):
         super().__init__(maquina_de_estado)
         self.__armazenamento = Armazenamento()
+        self.__tempo_maximo = 60
 
         self.__fases = []
         self.__fase_atual_indice = 0
@@ -63,7 +64,45 @@ class Partida(Estado):
     def registrar_fase(self, fase: 'Fase'):
         self.__fases.append(fase)
 
+    def __desenhar_tempo(self):
+        self.__tempo_passado = int(self.__tempo.ver_tempo())
+
+        minutos = self.__tempo_passado // 60
+        segundos = self.__tempo_passado % 60
+
+        tempo_string = "{0:02}:{1:02}".format(minutos, segundos)
+
+        texto = self.__configuracoes.fonte_digitar.render(tempo_string, True, (255, 255, 255))
+        self.__tela.blit(texto, (self.__configuracoes.largura_tela - texto.get_width() - 50, 0))
+
+    def __desenhar_barra_tempo(self):
+        tamanho_maximo = 120
+        margem = 3
+        escala = 2
+        altura = 30
+        tempo_restante = min(tamanho_maximo,  max(self.__tempo.temporizador(self.__tempo_maximo), 0))
+        barra_fundo = pg.Surface((tamanho_maximo + margem * escala, altura))
+        barra_fundo.fill('black')
+        barra_fundo.set_alpha(150)
+        barra = pg.Surface((tempo_restante * escala, altura - 2 * margem))
+        if tempo_restante < tamanho_maximo / 3:
+            barra.fill('red')
+            for entidade in self.__fases[self.__fase_atual_indice].entidades:
+                if entidade.tipo == 'bomba_de_asma':
+                    self.__jogador.receber_dano(1)
+                    break
+        else:
+            barra.fill('green')
+        barra_fundo.blit(barra, (tamanho_maximo - tempo_restante * escala + margem, margem))
+        self.__tela.blit(barra_fundo, (max(0, self.__configuracoes.largura_tela - tamanho_maximo - 20), 100))
+
+    def adicionar_tempo(self, tempo: int):
+        self.__tempo_maximo += tempo
+        self.__tempo_maximo = min(self.__tempo_maximo, 60 + self.__tempo.ver_tempo())
+
     def jogo_perdido(self):
+        tempo = self.__tempo.ver_tempo()
+        self.__armazenamento.adicionar_pontuacao(self.__armazenamento.nome_da_partida, tempo, self.__fase_atual_indice)
         self.__armazenamento.apagar_partida()
         self._maquina_de_estado.mover_para_estado('fim_de_jogo')
         self.__tem_jogo = False
@@ -71,6 +110,8 @@ class Partida(Estado):
     def __gerar_estado(self) -> dict:
         jogador = self.__jogador.gerar_dict_do_estado()
         return {
+            'tempo_restante': self.__tempo_maximo - self.__tempo.ver_tempo(),
+            'tempo': self.__tempo.ver_tempo(),
             'indice_fase': self.__fase_atual_indice,
             'jogador': jogador
         }
@@ -94,6 +135,8 @@ class Partida(Estado):
             if self.__ultimo_quadro_fase is not None:
                 self.__tela.blit(self.__ultimo_quadro_fase, (0, 0))
                 self.__tela.blit(self.__transicao.desenhar(), (0, 0))
+        self.__desenhar_barra_tempo()
+        self.__desenhar_tempo()
 
     def atualizar(self, eventos: List[pg.event.Event], tempo_passado: int):
         if self.__fase_ativa:
@@ -106,6 +149,11 @@ class Partida(Estado):
                 self.__fase_atual_indice += 1
                 self.__fase_ativa = True
                 if self.__fase_atual_indice >= len(self.__fases):
+                    self.__armazenamento.adicionar_pontuacao(
+                        self.__armazenamento.nome_da_partida,
+                        self.__tempo.ver_tempo(),
+                        self.__fase_atual_indice
+                    )
                     self.__armazenamento.apagar_partida()
                     self._maquina_de_estado.mover_para_estado('menu_vitoria')
                     self.__tem_jogo = False
@@ -128,7 +176,7 @@ class Partida(Estado):
         for evento in eventos:
             if evento.type == pg.KEYDOWN and evento.key == pg.K_ESCAPE:
                 self._maquina_de_estado.mover_para_estado('menu_pausa')
-                self.__fases[self.__fase_atual_indice].pausar_tempo()
+                self.__tempo.pausar()
             else:
                 for callback_de_evento in self.__callback_de_eventos:
                     if evento.type == callback_de_evento.tipo:
@@ -138,12 +186,18 @@ class Partida(Estado):
         if not self.__tem_jogo:
             self.__fase_atual_indice = 0
             self.__tem_jogo = True
+            self.__tempo = Tempo()
+            self.__tempo.iniciar()
             estado = self.__armazenamento.partida
             if estado:
                 self.__fase_atual_indice = estado['indice_fase']
+                self.__tempo.retomar(estado['tempo'])
+                self.__tempo_maximo = estado['tempo_restante'] + estado['tempo']
                 self.__jogador = Jogador(**estado['jogador'])
             else:
                 self.__jogador = Jogador()
             self.iniciar_fase()
+        else:
+            self.__tempo.retomar()
         self.__musica_control.parar_musica()
         self.__musica_control.iniciar_musica(self.__configuracoes.musica_jogo)

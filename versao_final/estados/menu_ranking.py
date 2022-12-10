@@ -5,7 +5,7 @@ import pygame as pg
 from math import ceil
 
 from visualizacao import Botao
-from utilidades import Configuracoes, ControladorDeMusica
+from utilidades import Configuracoes, ControladorDeMusica, Armazenamento
 from .estado import Estado
 
 
@@ -17,6 +17,7 @@ class MenuRanking(Estado):
     def __init__(self, maquina_de_estado: 'MaquinaDeEstado'):
         super().__init__(maquina_de_estado)
         self.__configuracoes = Configuracoes()
+        self.__armazenamento = Armazenamento()
         self.__tela = pg.display.get_surface()
         self.__controle_de_musica = ControladorDeMusica()
 
@@ -36,7 +37,8 @@ class MenuRanking(Estado):
         self.__botao_pagina_seguinte.no_clique(self.__evento_botao_pagina_seguinte_clicado)
 
         # Aqui deverá ser colocado o que for escrito na tela
-        self.__texto = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+        self.__texto = []
+
         self.__a_ser_desenhado = []
         self.__pagina_atual = 1
         self.__quant_pag = 1
@@ -63,6 +65,11 @@ class MenuRanking(Estado):
     def iniciar(self):
         self.__controle_de_musica.parar_musica()
         self.__controle_de_musica.iniciar_musica(self.__configuracoes.musica_ranking)
+        self.__texto = []
+        for registro in self.__armazenamento.pontuacoes:
+            minutos = int(registro['tempo']) // 60
+            segundos = int(registro['tempo']) % 60
+            self.__texto.append(f"{registro['nome']} tempo: {minutos:02d}:{segundos:02d} fase: {registro['fase_indice']+1}")
 
     def __evento_botao_voltar_clicado(self):
         self._maquina_de_estado.voltar()
@@ -95,10 +102,10 @@ class MenuRanking(Estado):
             texto_render = []
             for linha in self.__texto:
                 texto_render.append(self.__configuracoes.fonte_botao.render(linha, True, (255, 255, 255)))
-            
+
             espaco_desenho = 500
             altura_texto = texto_render[0].get_height()
-            altura_total = ((altura_texto + 15)* len(texto_render))
+            altura_total = ((altura_texto + 15) * len(texto_render))
             ultima_linha = 0
 
             self.__a_ser_desenhado = []

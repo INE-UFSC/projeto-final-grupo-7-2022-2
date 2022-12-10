@@ -29,6 +29,7 @@ class BombaDeAsma(Entidade):
     def atualizar(self, tempo_passado: int):
         if self._fase.jogador:
             if self._fase.jogador.hitbox.colliderect(self.hitbox):
+                self._fase.adicionar_tempo(60)
                 self._fase.matar_entidade(self)
 
     def desenhar(self):
