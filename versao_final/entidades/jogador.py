@@ -138,7 +138,7 @@ class Jogador(Entidade):
 
     def __desativar_impulso(self):
         self.__esta_com_impulso = False
-        self._velocidade = 5
+        self._velocidade = 2
 
     def __recarregar_impulso(self):
         self.__impulso_disponivel = True
@@ -148,7 +148,7 @@ class Jogador(Entidade):
         if espaco and self.__impulso_disponivel and self._direcao.magnitude() != 0:
             self.__impulso_disponivel = False
             self.__esta_com_impulso = True
-            self._velocidade = 10
+            self._velocidade = 4
             duracao_da_recarga = self.__duracao_de_recarga_do_impulso
             self._fase.esperar_certo_tempo(duracao_da_recarga, self.__recarregar_impulso)
             duracao = self.__duracao_do_impulso
@@ -202,7 +202,7 @@ class Jogador(Entidade):
 
         # Oscila a visibilidade quando é atacado
         if not self.__vulneravel:
-            alfa = self._wave_value()
+            alfa = self._oscilar_valor()
             self.image.set_alpha(alfa)
         else:
             self.image.set_alpha(255)

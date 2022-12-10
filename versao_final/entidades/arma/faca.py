@@ -23,7 +23,7 @@ class Faca(Arma):
         self._imagem = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'peixeira.png')), self.__tamanho)
         self._esta_em_ataque = False
         self.__chegou_no_fim = False
-        self.__distancia_maxima = 2
+        self.__distancia_maxima = 0.9
         self.__distancia_minima = 0.5
         self._distancia = self.__distancia_minima
         self.__ja_atacou = False
@@ -50,13 +50,13 @@ class Faca(Arma):
         if self.ativo:
             if self._esta_em_ataque:
                 if self.__chegou_no_fim:
-                    self._distancia -= 0.5
+                    self._distancia -= 0.2
                     if self._distancia <= self.__distancia_minima:
                         self._esta_em_ataque = False
                         self.__chegou_no_fim = False
                         self.__ja_atacou = False
                 else:
-                    self._distancia += 0.5
+                    self._distancia += 0.2
                     if self._distancia >= self.__distancia_maxima:
                         self.__chegou_no_fim = True
                 if not self.__ja_atacou:

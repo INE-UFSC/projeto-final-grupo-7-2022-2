@@ -68,7 +68,7 @@ class Entidade():
                         self.hitbox.top = colisor.rect.bottom
 
     # Função usada para oscilar a visibilidade com base no seno
-    def _wave_value(self) -> float:
+    def _oscilar_valor(self) -> float:
         value = sin(pg.time.get_ticks())
         if value >= 0:
             return 255
