@@ -27,7 +27,7 @@ class Fase:
         self.__tempo_passado = 0
         self.__tempo_maximo = 60
 
-        self.__porta = pg.Rect(640, 192, 64, 64)
+        self.__porta = pg.Rect(640, 64, 128, 64)
 
     @property
     def jogador(self) -> Jogador:

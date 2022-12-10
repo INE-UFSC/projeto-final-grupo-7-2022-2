@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "fase_teste/fase_teste.tmx",
+    "activeFile": "fase_1/fase_1.tmx",
     "expandedProjectPaths": [
         "fase_2",
         ".",
@@ -12,7 +12,8 @@
         "tsx",
         "fase1.1",
         "fase_1",
-        "fase1-1"
+        "fase1-1",
+        "fase_3"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -110,13 +111,15 @@
             ],
             "expandedObjectLayers": [
                 9,
+                10,
+                11,
                 12
             ],
             "scale": 0.5,
             "selectedLayer": 6,
             "viewCenter": {
                 "x": 745,
-                "y": 449
+                "y": 551
             }
         },
         "fase_2/fase_1.tmx": {
@@ -136,18 +139,16 @@
                 14
             ],
             "expandedObjectLayers": [
-                9,
-                10,
                 11,
                 12,
                 14,
                 15
             ],
             "scale": 0.5,
-            "selectedLayer": 11,
+            "selectedLayer": 3,
             "viewCenter": {
                 "x": 989,
-                "y": 1337
+                "y": 853
             }
         },
         "fase_3/fase_3.tmx": {
@@ -205,7 +206,7 @@
             "scaleInEditor": 1
         },
         "tsx/Tiles_Dungeon.tsx": {
-            "scaleInDock": 0.5,
+            "scaleInDock": 0.25,
             "scaleInEditor": 1
         },
         "tsx/Tiles_Forest.tsx": {
@@ -229,22 +230,22 @@
     "map.width": 50,
     "openFiles": [
         "fase_1/fase_1.tmx",
-        "fase_teste/fase_teste.tmx"
+        "fase_2/fase_2.tmx"
     ],
     "project": "super_lamparina.tiled-project",
     "recentFiles": [
+        "fase_2/fase_2.tmx",
+        "fase_1/fase_1.tmx",
         "tsx/Tiles_Dungeon.tsx",
         "tsx/Trees.tsx",
         "tsx/Props_Forest.tsx",
         "tsx/Tiles_Forest.tsx",
         "fase_3/fase_3.tmx",
         "fase_teste/fase_teste.tmx",
-        "fase_1/fase_1.tmx",
         "fase_2/fase_1.tmx",
         "fase1-1/fase1-1.tmx",
         "fase2/fase2.tmx",
-        "fase1/fase1.tmx",
-        "fase1.1/fase1-1.tmx"
+        "fase1/fase1.tmx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",
