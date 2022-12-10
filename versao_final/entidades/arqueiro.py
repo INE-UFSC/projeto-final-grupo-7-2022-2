@@ -87,7 +87,7 @@ class Arqueiro(Inimigo):
         return True
 
     def __atirar(self) -> None:
-        if self._pode_atacar and self.__esta_morto:
+        if self._pode_atacar and not self.__esta_morto:
             vetor_diferenca = self._calcular_vetor_diferenca_jogador()
             if vetor_diferenca.magnitude() != 0 and self.__ira_atigir_o_jogador(vetor_diferenca):
                 flecha = Flecha(self._fase, self._rect.center, -vetor_diferenca.normalize())
