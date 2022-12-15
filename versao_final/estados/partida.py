@@ -17,8 +17,8 @@ class Partida(Estado):
     def __init__(self, maquina_de_estado: 'MaquinaDeEstado'):
         super().__init__(maquina_de_estado)
         self.__armazenamento = Armazenamento()
-        self.__tempo_maximo = 60
-
+        self.__limite_de_tempo = 60
+        self.__tempo_maximo = self.__limite_de_tempo
         self.__fases = []
         self.__fase_atual_indice = 0
         self.__tem_jogo = False
@@ -76,29 +76,25 @@ class Partida(Estado):
         self.__tela.blit(texto, (self.__configuracoes.largura_tela - texto.get_width() - 50, 0))
 
     def __desenhar_barra_tempo(self):
-        tamanho_maximo = 120
+        escala = 4
+        tamanho_maximo = self.__tempo_maximo * escala
         margem = 3
-        escala = 2
         altura = 30
-        tempo_restante = min(tamanho_maximo,  max(self.__tempo.temporizador(self.__tempo_maximo), 0))
+        tempo_restante = min(self.__tempo_maximo,  max(self.__tempo.temporizador(self.__limite_de_tempo), 0))
         barra_fundo = pg.Surface((tamanho_maximo + margem * escala, altura))
         barra_fundo.fill('black')
         barra_fundo.set_alpha(150)
         barra = pg.Surface((tempo_restante * escala, altura - 2 * margem))
-        if tempo_restante < tamanho_maximo / 3:
+        if tempo_restante < tamanho_maximo / escala / 3:
             barra.fill('red')
-            for entidade in self.__fases[self.__fase_atual_indice].entidades:
-                if entidade.tipo == 'bomba_de_asma':
-                    self.__jogador.receber_dano(1)
-                    break
         else:
             barra.fill('green')
         barra_fundo.blit(barra, (tamanho_maximo - tempo_restante * escala + margem, margem))
         self.__tela.blit(barra_fundo, (max(0, self.__configuracoes.largura_tela - tamanho_maximo - 20), 100))
 
     def adicionar_tempo(self, tempo: int):
-        self.__tempo_maximo += tempo
-        self.__tempo_maximo = min(self.__tempo_maximo, 60 + self.__tempo.ver_tempo())
+        self.__limite_de_tempo += tempo
+        self.__limite_de_tempo = min(self.__limite_de_tempo, self.__tempo_maximo + self.__tempo.ver_tempo())
 
     def jogo_perdido(self):
         tempo = self.__tempo.ver_tempo()
@@ -110,7 +106,7 @@ class Partida(Estado):
     def __gerar_estado(self) -> dict:
         jogador = self.__jogador.gerar_dict_do_estado()
         return {
-            'tempo_restante': self.__tempo_maximo - self.__tempo.ver_tempo(),
+            'tempo_restante': self.__limite_de_tempo - self.__tempo.ver_tempo(),
             'tempo': self.__tempo.ver_tempo(),
             'indice_fase': self.__fase_atual_indice,
             'jogador': jogador
@@ -138,8 +134,18 @@ class Partida(Estado):
         self.__desenhar_barra_tempo()
         self.__desenhar_tempo()
 
+    def __atualizar_dano_por_tempo(self):
+        tempo_restante = min(self.__tempo_maximo,  max(self.__tempo.temporizador(self.__limite_de_tempo), 0))
+        if tempo_restante < self.__tempo_maximo / 3:
+            for entidade in self.__fases[self.__fase_atual_indice].entidades:
+                if entidade.tipo == 'bomba_de_asma':
+                    self.__jogador.receber_dano(1)
+                    break
+        
+    
     def atualizar(self, eventos: List[pg.event.Event], tempo_passado: int):
         if self.__fase_ativa:
+            self.__atualizar_dano_por_tempo()
             self.__atualizar_fase(eventos, tempo_passado)
             if not self.__transicao.terminou:
                 self.__transicao.atualizar(tempo_passado)
@@ -192,7 +198,7 @@ class Partida(Estado):
             if estado:
                 self.__fase_atual_indice = estado['indice_fase']
                 self.__tempo.retomar(estado['tempo'])
-                self.__tempo_maximo = estado['tempo_restante'] + estado['tempo']
+                self.__limite_de_tempo = estado['tempo_restante'] + estado['tempo']
                 self.__jogador = Jogador(**estado['jogador'])
             else:
                 self.__jogador = Jogador()
