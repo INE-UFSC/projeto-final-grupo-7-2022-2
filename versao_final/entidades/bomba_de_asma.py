@@ -10,8 +10,7 @@ from .entidade import Entidade
 class BombaDeAsma(Entidade):
     def __init__(self):
         super().__init__()
-        self.__configuracoes = Configuracoes()
-        self.__escala = self.__configuracoes.tamanho_tile
+        self.__escala = self._configuracoes.tamanho_tile
 
         # Define o retângulo que representa o item
         self.__image = pg.transform.scale(pg.image.load(path.join('recursos', 'sprites', 'bomba.png')), (self.__escala, self.__escala))

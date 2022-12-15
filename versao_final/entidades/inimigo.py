@@ -16,7 +16,6 @@ class Inimigo(Entidade):
     def __init__(self):
         super().__init__()
 
-        self.__configuracoes = Configuracoes()
         self.status = 'right_idle'
 
         self._raio_ataque: int = None
@@ -38,7 +37,7 @@ class Inimigo(Entidade):
         return vetor_inimigo - vetor_jogador
 
     def _acoes(self, vetor_diferenca_jogador: pg.Vector2) -> None:
-        distancia = vetor_diferenca_jogador.magnitude() / self.__configuracoes.tamanho_tile
+        distancia = vetor_diferenca_jogador.magnitude() / self._configuracoes.tamanho_tile
         if distancia != 0 and distancia < self._raio_percepcao:
             if self.__foi_atacado:
                 self._direcao = vetor_diferenca_jogador.normalize()

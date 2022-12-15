@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class Entidade():
     def __init__(self) -> None:
         super().__init__()
-        self.__configuracoes = Configuracoes()
+        self._configuracoes = Configuracoes()
         self._velocidade = 0
         self._direcao = pg.Vector2()
 
@@ -39,7 +39,7 @@ class Entidade():
 
     def _mover(self, tempo_passado: int):
         if self._direcao.magnitude() != 0:
-            escala = (self.__configuracoes.tamanho_tile *
+            escala = (self._configuracoes.tamanho_tile *
                       tempo_passado * self._velocidade / 100)
             self._direcao = self._direcao.normalize() * escala
 

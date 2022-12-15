@@ -13,21 +13,22 @@ class Ladino(Inimigo):
         super().__init__()
 
         # Informacoes Inimigo
-        self._velocidade = 0.5
+        self._vida = 1
+        self._velocidade = 0.9
         self._raio_ataque = 0.1
         self._raio_percepcao = 5
+
         self.__frame_indice = 0
         self.__status = 'right'
         self.__spritesheet = Spritesheet("ladino")
         self.__animacoes = self.__spritesheet.get_animation_frames()
 
-        configuracoes = Configuracoes()
         self._tempo_de_recarga_ataque = 1000
         self.__momento_ataque = 0
 
         # Movimento
         self._rect = self.__superficie_atual.get_rect()
-        self._hitbox = self.rect.inflate(0, -8)
+        self._hitbox = self.rect.inflate(pg.Vector2(-0.5, -0.5) * self._configuracoes.tamanho_tile)
 
     @property
     def tipo(self) -> str:

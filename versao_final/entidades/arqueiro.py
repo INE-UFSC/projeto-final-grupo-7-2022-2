@@ -18,28 +18,25 @@ class Arqueiro(Inimigo):
         super().__init__()
 
         # Informacoes Inimigo
-        self.__configuracoes = Configuracoes()
         self.__controle_de_musica = ControladorDeMusica()
 
+        self._vida = 1
         self._velocidade = 0.6
         self._raio_ataque = 10
         self._raio_percepcao = 20
-        self._vida = 1
 
         self.__frame_indice = 0
         self.__status = 'right'
         self.__spritesheet = Spritesheet("arqueiro")
         self.__animacoes = self.__spritesheet.get_animation_frames()
+        self._rect = self.__superficie_atual.get_rect()
+        self._hitbox = self.rect.inflate(pg.Vector2(-0.5, -0.5) * self._configuracoes.tamanho_tile)
 
+        # Tempo de recarga do ataque
         self.__tempo_de_recarga_ataque = 1000
         self.__flechas: List[Flecha] = []
         self.__esta_morto = False
 
-        # Configurações de gráfico - Ainda estão provisórias
-
-        # Movimento
-        self._rect = self.__superficie_atual.get_rect()
-        self._hitbox = self.rect.inflate(0, -10)
 
     @property
     def tipo(self) -> str:
@@ -62,7 +59,7 @@ class Arqueiro(Inimigo):
             self.__status += '_idle'
 
     def __ira_atigir_o_jogador(self, direcao: pg.Vector2) -> bool:
-        destino = -direcao.normalize() * self._raio_ataque * self.__configuracoes.tamanho_tile
+        destino = -direcao.normalize() * self._raio_ataque * self._configuracoes.tamanho_tile
 
         posicao = pg.Vector2(self._rect.center)
         linha = (posicao, posicao + destino)

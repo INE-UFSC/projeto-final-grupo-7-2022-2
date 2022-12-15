@@ -13,21 +13,20 @@ class Guerreiro(Inimigo):
         super().__init__()
 
         # Informacoes Inimigo
+        self._vida = 3
         self._velocidade = 0.5
         self._raio_ataque = 0.1
-        self._vida = 3
         self._raio_percepcao = 5
+
         self.__frame_indice = 0
         self.__status = 'right'
         self.__spritesheet = Spritesheet("guerreiro")
         self.__animacoes = self.__spritesheet.get_animation_frames()
-
-        configuracoes = Configuracoes()
+        self._rect = self.__superficie_atual.get_rect()
+        self._hitbox = self._rect.inflate(pg.Vector2(-0.5, -0.5) * self._configuracoes.tamanho_tile)
+    
         self._tempo_de_recarga_ataque = 700
         self.__momento_ataque = 0
-
-        self._rect = self.__superficie_atual.get_rect()
-        self._hitbox = self.rect.inflate(0, -10)
 
     @property
     def tipo(self) -> str:
