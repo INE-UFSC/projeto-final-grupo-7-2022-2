@@ -3,17 +3,17 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "fase_1/fase_1.tmx",
+    "activeFile": "fase_2/fase_2.tmx",
     "expandedProjectPaths": [
-        "fase_2",
-        ".",
-        "fase2",
-        "fase1",
-        "tsx",
         "fase1.1",
-        "fase_1",
         "fase1-1",
-        "fase_3"
+        "tsx",
+        "fase_2",
+        "fase_3",
+        ".",
+        "fase_1",
+        "fase2",
+        "fase1"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -105,23 +105,23 @@
         },
         "fase_1/fase_1.tmx": {
             "expandedGroupLayers": [
+                11,
                 13,
                 12,
                 14,
-                11,
                 5
             ],
             "expandedObjectLayers": [
-                12,
-                9,
                 11,
-                10
+                10,
+                12,
+                9
             ],
             "scale": 0.5,
-            "selectedLayer": 1,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 745,
-                "y": 1641
+                "x": 827,
+                "y": 747
             }
         },
         "fase_2/fase_1.tmx": {
@@ -134,23 +134,24 @@
         },
         "fase_2/fase_2.tmx": {
             "expandedGroupLayers": [
+                11,
                 13,
                 12,
                 14,
-                11,
                 5
             ],
             "expandedObjectLayers": [
+                11,
+                10,
                 12,
                 15,
-                14,
-                11
+                14
             ],
             "scale": 0.5,
-            "selectedLayer": 3,
+            "selectedLayer": 9,
             "viewCenter": {
-                "x": 989,
-                "y": 853
+                "x": 959,
+                "y": 991
             }
         },
         "fase_3/fase_3.tmx": {
@@ -201,14 +202,14 @@
             "scaleInEditor": 1
         },
         "tsx/Props.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 0.5
         },
         "tsx/Props_Forest.tsx": {
             "scaleInDock": 0.25,
             "scaleInEditor": 1
         },
         "tsx/Tiles_Dungeon.tsx": {
-            "scaleInDock": 0.25,
+            "scaleInDock": 0.5,
             "scaleInEditor": 1
         },
         "tsx/Tiles_Forest.tsx": {
@@ -236,8 +237,8 @@
     ],
     "project": "super_lamparina.tiled-project",
     "recentFiles": [
-        "fase_2/fase_2.tmx",
         "fase_1/fase_1.tmx",
+        "fase_2/fase_2.tmx",
         "tsx/Tiles_Dungeon.tsx",
         "tsx/Trees.tsx",
         "tsx/Props_Forest.tsx",

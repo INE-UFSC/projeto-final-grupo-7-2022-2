@@ -205,8 +205,8 @@
    <object id="88" x="896" y="1472" width="192" height="192"/>
    <object id="89" x="320" y="2048" width="192" height="192"/>
    <object id="90" x="896" y="2048" width="192" height="192"/>
-   <object id="94" x="770.667" y="1774.67" width="189.333" height="36"/>
-   <object id="95" x="1086.67" y="1776" width="66.6667" height="36"/>
+   <object id="94" x="770.667" y="1754.67" width="208.333" height="56"/>
+   <object id="95" x="1069.67" y="1752" width="83.6667" height="60"/>
    <object id="96" x="1136" y="1348" width="17.3333" height="426.667"/>
    <object id="97" x="768" y="1344" width="17.3333" height="426.667"/>
    <object id="99" x="789.333" y="1345.33" width="344" height="17.3333"/>
