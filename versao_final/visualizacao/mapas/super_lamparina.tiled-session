@@ -105,21 +105,23 @@
         },
         "fase_1/fase_1.tmx": {
             "expandedGroupLayers": [
-                12,
                 13,
-                14
+                12,
+                14,
+                11,
+                5
             ],
             "expandedObjectLayers": [
+                12,
                 9,
-                10,
                 11,
-                12
+                10
             ],
             "scale": 0.5,
-            "selectedLayer": 6,
+            "selectedLayer": 1,
             "viewCenter": {
                 "x": 745,
-                "y": 551
+                "y": 1641
             }
         },
         "fase_2/fase_1.tmx": {
@@ -132,17 +134,17 @@
         },
         "fase_2/fase_2.tmx": {
             "expandedGroupLayers": [
-                11,
-                5,
-                12,
                 13,
-                14
-            ],
-            "expandedObjectLayers": [
-                11,
                 12,
                 14,
-                15
+                11,
+                5
+            ],
+            "expandedObjectLayers": [
+                12,
+                15,
+                14,
+                11
             ],
             "scale": 0.5,
             "selectedLayer": 3,
