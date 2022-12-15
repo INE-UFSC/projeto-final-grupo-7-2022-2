@@ -200,12 +200,10 @@ class GerenciadorDeGrupos():
         self.__colisores = self.__unir_tiles_proximas(colisores)
 
     def __gerar_entidades(self, dados: pytmx.TiledMap) -> None:
-        bomba_de_asma = BombaDeAsma()
-        entidades: List[Entidade] = [bomba_de_asma]
+        entidades: List[Entidade] = []
         if dados.tilewidth != dados.tileheight:
             raise ValueError('Mapa com tiles de largura e altura diferentes')
         escala = self.__configuracao.tamanho_tile / dados.tilewidth
-        bomba_de_asma.definir_posicao(pg.Vector2(600, 400) * escala)
 
         for grupo in dados.objectgroups:
             if grupo.name == 'entidades':
@@ -225,6 +223,10 @@ class GerenciadorDeGrupos():
                         arqueiro = Arqueiro()
                         arqueiro.definir_posicao(posicao=pg.Vector2(entidade.x, entidade.y) * escala)
                         entidades.append(arqueiro)
+                    elif entidade.name == 'bomba_de_asma':
+                        bomba_de_asma = BombaDeAsma()
+                        bomba_de_asma.definir_posicao(posicao=pg.Vector2(entidade.x, entidade.y) * escala)
+                        entidades.append(bomba_de_asma)
 
         self.__entidades = entidades
 
